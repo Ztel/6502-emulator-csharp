@@ -3,11 +3,11 @@
     public class Emulator
     {
         //Given an index in the ROM, returns an array containing the bytes for the instruction at that location.
-        //Uses the opcode hash table to look up the length of the given instruction in bytes.
+        //Uses the opcode dictionary to look up the length of the given instruction in bytes.
         //Valid indices are indices that fall within the ROM and point to a valid opcode.
         public byte[] GetInstruction(byte[] rom, ushort index, Dictionary<byte, int> opcodes)
         {
-            if(index < 0 || index >= rom.Length)
+            if (index < 0 || index >= rom.Length)
             {
                 throw new ArgumentOutOfRangeException(String.Format("Attempted to retrieve instruction at index {0}, which is out of bounds of the ROM (0 - {1}).", index, rom.Length));
             }
