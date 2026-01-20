@@ -38,10 +38,59 @@
         ///          CPU INSTRUCTIONS        ///
         ////////////////////////////////////////  
 
-        public Dictionary<byte, int> Opcodes { get; } = new Dictionary<byte, int>() //Table of all valid 6502 opcodes and their corresponding number of operand bytes.
+        public Dictionary<byte, int> Opcodes { get; } = new Dictionary<byte, int>() //Table of all valid 6502 opcodes and their operand bytes.
         {                                                                           //Operand byte counts range from 0 - 2 depending on the instruction. 
-            { 0xEA, 0 },    //NOP - No Operation
-                            //TODO: Add the rest of the opcodes
+            //ACCESS INSTRUCTIONS
+
+            { 0xA9, 1 },        //LDA - Load A (#v    - Immediate)
+            { 0xA5, 1 },        //LDA - Load A (d     - Zero Page)
+            { 0xB5, 1 },        //LDA - Load A (d,x   - Zero Page, X)
+            { 0xAD, 2 },        //LDA - Load A (a     - Absolute)
+            { 0xBD, 2 },        //LDA - Load A (a,x   - Absolute, X)
+            { 0xB9, 2 },        //LDA - Load A (a,y   - Absolute, Y)
+            { 0xA1, 1 },        //LDA - Load A ((d,x) - Indexed Indirect)
+            { 0xB1, 1 },        //LDA - Load A ((d),y - Indirect Indexed)
+
+            { 0x85, 1 },        //STA - Store A (d     - Zero Page)
+            { 0x95, 1 },        //STA - Store A (d,x   - Zero Page, X)
+            { 0x8D, 2 },        //STA - Store A (a     - Absolute)
+            { 0x9D, 2 },        //STA - Store A (a,x   - Absolute, X)
+            { 0x99, 2 },        //STA - Store A (a,y   - Absolute, Y)
+            { 0x81, 1 },        //STA - Store A ((d,x) - Indexed Indirect)
+            { 0x91, 1 },        //STA - Store A ((d),y - Indirect Indexed)
+
+            { 0xA2, 1 },        //LDX - Load X (#v    - Immediate)
+            { 0xA6, 1 },        //LDX - Load X (d     - Zero Page)
+            { 0xB6, 1 },        //LDX - Load X (d,y   - Zero Page, Y)
+            { 0xAE, 2 },        //LDX - Load X (a     - Absolute)
+            { 0xBE, 2 },        //LDX - Load X (a,y   - Absolute, Y)
+
+            { 0x86, 1 },        //STX - Store X (d     - Zero Page)
+            { 0x96, 1 },        //STX - Store X (d,y   - Zero Page, Y)
+            { 0x8E, 2 },        //STX - Store X (a     - Absolute)
+
+            { 0xA0, 1 },        //LDY - Load Y (#v    - Immediate)
+            { 0xA4, 1 },        //LDY - Load Y (d     - Zero Page)
+            { 0xB4, 1 },        //LDY - Load Y (d,x   - Zero Page, X)
+            { 0xAC, 2 },        //LDY - Load Y (a     - Absolute)
+            { 0xBC, 2 },        //LDY - Load Y (a,x   - Absolute, X)
+
+            { 0x84, 1 },        //STY - Store Y (d     - Zero Page)
+            { 0x94, 1 },        //STY - Store Y (d,x   - Zero Page, X)
+            { 0x8C, 2 },        //STY - Store Y (a     - Absolute)
+
+            //TRANSFER INSTRUCTIONS
+
+            //ARITHMETIC INSTRUCTIONS
+            //SHIFT INSTRUCTIONS
+            //BITWISE INSTRUCTIONS
+            //COMPARE INSTRUCTIONS
+            //BRANCH INSTRUCTIONS
+            //JUMP INSTRUCTIONS
+            //STACK INSTRUCTIONS
+            //FLAG INSTRUCTIONS
+            //OTHER INSTRUCTIONS
+            { 0xEA, 0 }        //NOP - No Operation (Implicit)
         };
 
 
