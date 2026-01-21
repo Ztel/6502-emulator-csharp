@@ -187,7 +187,40 @@
 
             //COMPARE INSTRUCTIONS
 
+            { 0xC9, 1 },        //CMP - Compare A (#v    - Immediate)
+            { 0xC5, 1 },        //CMP - Compare A (d     - Zero Page)
+            { 0xD5, 1 },        //CMP - Compare A (d,x   - Zero Page, X)
+            { 0xCD, 2 },        //CMP - Compare A (a     - Absolute)
+            { 0xDD, 2 },        //CMP - Compare A (a,x   - Absolute, X)
+            { 0xD9, 2 },        //CMP - Compare A (a,y   - Absolute, Y)
+            { 0xC1, 1 },        //CMP - Compare A ((d,x) - Indexed Indirect)
+            { 0xD1, 1 },        //CMP - Compare A ((d),y - Indirect Indexed)
+
+            { 0xE0, 1 },        //CPX - Compare X (#v    - Immediate)
+            { 0xE4, 1 },        //CPX - Compare X (d     - Zero Page)
+            { 0xEC, 2 },        //CPX - Compare X (a     - Absolute)
+
+            { 0xC0, 1 },        //CPY - Compare Y (#v    - Immediate)
+            { 0xC4, 1 },        //CPY - Compare Y (d     - Zero Page)
+            { 0xCC, 2 },        //CPY - Compare Y (a     - Absolute)
+
             //BRANCH INSTRUCTIONS
+
+            { 0x90, 1 },        //BCC - Branch if Carry Clear (label - Relative)
+
+            { 0xB0, 1 },        //BCS - Branch if Carry Set (label - Relative)
+            
+            { 0xF0, 1 },        //BEQ - Branch if Equal (label - Relative)
+
+            { 0xD0, 1 },        //BNE - Branch if Not Equal (label - Relative)
+
+            { 0x10, 1 },        //BPL - Branch if Plus (label - Relative)
+
+            { 0x30, 1 },        //BMI - Branch if Minus (label - Relative)
+
+            { 0x50, 1 },        //BVC - Branch if Overflow Clear (label - Relative)
+
+            { 0x70, 1 },        //BVS - Branch if Overflow Set (label - Relative)
 
             //JUMP INSTRUCTIONS
 
