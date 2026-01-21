@@ -81,15 +81,68 @@
 
             //TRANSFER INSTRUCTIONS
 
+            { 0xAA, 0 },        //TAX - Transfer A to X (Implicit)
+
+            { 0x8A, 0 },        //TXA - Transfer X to A (Implicit)
+
+            { 0xA8, 0 },        //TAY - Transfer A to Y (Implicit)
+
+            { 0x98, 0 },        //TYA - Transfer Y to A (Implicit)
+
             //ARITHMETIC INSTRUCTIONS
+
+            { 0x69, 1 },        //ADC - Add with Carry (#v    - Immediate)
+            { 0x65, 1 },        //ADC - Add with Carry (d     - Zero Page)
+            { 0x75, 1 },        //ADC - Add with Carry (d,x   - Zero Page, X)
+            { 0x6D, 2 },        //ADC - Add with Carry (a     - Absolute)
+            { 0x7D, 2 },        //ADC - Add with Carry (a,x   - Absolute, X)
+            { 0x79, 2 },        //ADC - Add with Carry (a,y   - Absolute, Y)
+            { 0x61, 1 },        //ADC - Add with Carry ((d,x) - Indexed Indirect)
+            { 0x71, 1 },        //ADC - Add with Carry ((d),y - Indirect Indexed)
+
+            { 0xE9, 1 },        //SBC - Subtract with Carry (#v    - Immediate)
+            { 0xE5, 1 },        //SBC - Subtract with Carry (d     - Zero Page)
+            { 0xF5, 1 },        //SBC - Subtract with Carry (d,x   - Zero Page, X)
+            { 0xED, 2 },        //SBC - Subtract with Carry (a     - Absolute)
+            { 0xFD, 2 },        //SBC - Subtract with Carry (a,x   - Absolute, X)
+            { 0xF9, 2 },        //SBC - Subtract with Carry (a,y   - Absolute, Y)
+            { 0xE1, 1 },        //SBC - Subtract with Carry ((d,x) - Indexed Indirect)
+            { 0xF1, 1 },        //SBC - Subtract with Carry ((d),y - Indirect Indexed)
+
+            { 0xE6, 1 },        //INC - Increment Memory (d     - Zero Page)
+            { 0xF6, 1 },        //INC - Increment Memory (d,x   - Zero Page, X)
+            { 0xEE, 2 },        //INC - Increment Memory (a     - Absolute)
+            { 0xFE, 2 },        //INC - Increment Memory (a,x   - Absolute, X)
+
+            { 0xC6, 1 },        //DEC - Decrement Memory (d     - Zero Page)
+            { 0xD6, 1 },        //DEC - Decrement Memory (d,x   - Zero Page, X)
+            { 0xCE, 2 },        //DEC - Decrement Memory (a     - Absolute)
+            { 0xDE, 2 },        //DEC - Decrement Memory (a,x   - Absolute, X)
+
+            { 0xE8, 0 },        //INX - Increment X (Implicit)
+
+            { 0xCA, 0 },        //DEX - Decrement X (Implicit)
+
+            { 0xC8, 0 },        //INY - Increment Y (Implicit)
+
+            { 0x88, 0 },        //DEY - Decrement Y (Implicit)
+
             //SHIFT INSTRUCTIONS
+
             //BITWISE INSTRUCTIONS
+
             //COMPARE INSTRUCTIONS
+
             //BRANCH INSTRUCTIONS
+
             //JUMP INSTRUCTIONS
+
             //STACK INSTRUCTIONS
+
             //FLAG INSTRUCTIONS
+
             //OTHER INSTRUCTIONS
+
             { 0xEA, 0 }        //NOP - No Operation (Implicit)
         };
 
