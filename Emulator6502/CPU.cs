@@ -224,9 +224,46 @@
 
             //JUMP INSTRUCTIONS
 
+            { 0x4C, 2 },        //JMP - Jump (a     - Absolute)
+            { 0x6C, 2 },        //JMP - Jump ((a)   - Indirect)
+
+            { 0x20, 2 },        //JSR - Jump to Subroutine (a     - Absolute)
+
+            { 0x60, 0 },        //RTS - Return from Subroutine (Implicit)
+
+            { 0x00, 0 },        //BRK - Break (Implicit)
+
+            { 0x40, 0 },        //RTI - Return from Interrupt (Implicit)
+
             //STACK INSTRUCTIONS
 
+            { 0x48, 0 },        //PHA - Push A (Implicit)
+
+            { 0x68, 0 },        //PLA - Pull A (Implicit)
+
+            { 0x08, 0 },        //PHP - Push Processor Status (Implicit)
+
+            { 0x28, 0 },        //PLP - Pull Processor Status (Implicit)
+
+            { 0x9A, 0 },        //TXS - Transfer X to Stack Pointer (Implicit)
+
+            { 0xBA, 0 },        //TSX - Transfer Stack Pointer to X (Implicit)
+
             //FLAG INSTRUCTIONS
+
+            { 0x18, 0 },        //CLC - Clear Carry (Implicit)
+
+            { 0x38, 0 },        //SEC - Set Carry (Implicit)
+
+            { 0x58, 0 },        //CLI - Clear Interrupt Disable (Implicit)
+
+            { 0x78, 0 },        //SEI - Set Interrupt Disable (Implicit)
+
+            { 0xD8, 0 },        //CLD - Clear Decimal (Implicit)
+
+            { 0xF8, 0 },        //SED - Set Decimal (Implicit)
+
+            { 0xB8, 0 },        //CLV - Clear Overflow (Implicit)
 
             //OTHER INSTRUCTIONS
 
