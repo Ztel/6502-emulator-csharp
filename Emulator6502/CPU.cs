@@ -129,7 +129,61 @@
 
             //SHIFT INSTRUCTIONS
 
+            { 0x0A, 0 },        //ASL - Arithmetic Shift Left (A     - Accumulator)
+            { 0x06, 1 },        //ASL - Arithmetic Shift Left (d     - Zero Page)
+            { 0x16, 1 },        //ASL - Arithmetic Shift Left (d,x   - Zero Page, X)
+            { 0x0E, 2 },        //ASL - Arithmetic Shift Left (a     - Absolute)
+            { 0x1E, 2 },        //ASL - Arithmetic Shift Left (a,x   - Absolute, X)
+
+            { 0x4A, 0 },        //LSR - Logical Shift Right (A     - Accumulator)
+            { 0x46, 1 },        //LSR - Logical Shift Right (d     - Zero Page)
+            { 0x56, 1 },        //LSR - Logical Shift Right (d,x   - Zero Page, X)
+            { 0x4E, 2 },        //LSR - Logical Shift Right (a     - Absolute)
+            { 0x5E, 2 },        //LSR - Logical Shift Right (a,x   - Absolute, X)
+
+            { 0x2A, 0 },        //ROL - Rotate Left (A     - Accumulator)
+            { 0x26, 1 },        //ROL - Rotate Left (d     - Zero Page)
+            { 0x36, 1 },        //ROL - Rotate Left (d,x   - Zero Page, X)
+            { 0x2E, 2 },        //ROL - Rotate Left (a     - Absolute)
+            { 0x3E, 2 },        //ROL - Rotate Left (a,x   - Absolute, X)
+
+            { 0x6A, 0 },        //ROR - Rotate Right (A     - Accumulator)
+            { 0x66, 1 },        //ROR - Rotate Right (d     - Zero Page)
+            { 0x76, 1 },        //ROR - Rotate Right (d,x   - Zero Page, X)
+            { 0x6E, 2 },        //ROR - Rotate Right (a     - Absolute)
+            { 0x7E, 2 },        //ROR - Rotate Right (a,x   - Absolute, X)
+
             //BITWISE INSTRUCTIONS
+
+            { 0x29, 1 },        //AND - Bitwise AND (#v    - Immediate)
+            { 0x25, 1 },        //AND - Bitwise AND (d     - Zero Page)
+            { 0x35, 1 },        //AND - Bitwise AND (d,x   - Zero Page, X)
+            { 0x2D, 2 },        //AND - Bitwise AND (a     - Absolute)
+            { 0x3D, 2 },        //AND - Bitwise AND (a,x   - Absolute, X)
+            { 0x39, 2 },        //AND - Bitwise AND (a,y   - Absolute, Y)
+            { 0x21, 1 },        //AND - Bitwise AND ((d,x) - Indexed Indirect)
+            { 0x31, 1 },        //AND - Bitwise AND ((d),y - Indirect Indexed)
+
+            { 0x09, 1 },        //ORA - Bitwise OR (#v    - Immediate)
+            { 0x05, 1 },        //ORA - Bitwise OR (d     - Zero Page)
+            { 0x15, 1 },        //ORA - Bitwise OR (d,x   - Zero Page, X)
+            { 0x0D, 2 },        //ORA - Bitwise OR (a     - Absolute)
+            { 0x1D, 2 },        //ORA - Bitwise OR (a,x   - Absolute, X)
+            { 0x19, 2 },        //ORA - Bitwise OR (a,y   - Absolute, Y)
+            { 0x01, 1 },        //ORA - Bitwise OR ((d,x) - Indexed Indirect)
+            { 0x11, 1 },        //ORA - Bitwise OR ((d),y - Indirect Indexed)
+
+            { 0x49, 1 },        //EOR - Bitwise Exclusive OR (#v    - Immediate)
+            { 0x45, 1 },        //EOR - Bitwise Exclusive OR (d     - Zero Page)
+            { 0x55, 1 },        //EOR - Bitwise Exclusive OR (d,x   - Zero Page, X)
+            { 0x4D, 2 },        //EOR - Bitwise Exclusive OR (a     - Absolute)
+            { 0x5D, 2 },        //EOR - Bitwise Exclusive OR (a,x   - Absolute, X)
+            { 0x59, 2 },        //EOR - Bitwise Exclusive OR (a,y   - Absolute, Y)
+            { 0x41, 1 },        //EOR - Bitwise Exclusive OR ((d,x) - Indexed Indirect)
+            { 0x51, 1 },        //EOR - Bitwise Exclusive OR ((d),y - Indirect Indexed)
+
+            { 0x24, 1 },        //BIT - Bit Test (d     - Zero Page)
+            { 0x2C, 2 },        //BIT - Bit Test (a     - Absolute)
 
             //COMPARE INSTRUCTIONS
 
