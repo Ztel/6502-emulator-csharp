@@ -26,7 +26,7 @@ namespace Emulator6502UnitTests
             //Act and Assert
             foreach (char flag in flags)
             {
-                Assert.AreEqual(cpu.GetStatusRegisterFlag(flag), false);
+                Assert.AreEqual(false, cpu.GetStatusRegisterFlag(flag));
             }
         }
 
@@ -57,8 +57,179 @@ namespace Emulator6502UnitTests
             //Assert
             foreach (char flag in flags)
             {
-                Assert.AreEqual(cpu.GetStatusRegisterFlag(flag), true);
+                Assert.AreEqual(true, cpu.GetStatusRegisterFlag(flag));
             }
+        }
+
+        [TestMethod]
+        public void LDA_Immediate_CorrectValueRead()
+        {
+            //Arrange
+            CPU cpu = new CPU();
+
+            byte[] memory = new byte[65536];
+            memory[0x8000] = 0xA9;
+            memory[0x8000] = 0xFF;
+
+            cpu.ProgramCounter = 0x8000;
+
+            //Act
+            cpu.Step(ref memory);
+
+            //Assert
+            Assert.AreEqual(0xFF, cpu.Accumulator);
+        }
+
+        [TestMethod]
+        public void LDA_ZeroPage_CorrectValueRead()
+        {
+            //Arrange
+            CPU cpu = new CPU();
+
+            byte[] memory = new byte[65536];
+            memory[0x8000] = 0xA5;
+            memory[0x8001] = 0x9B;
+            memory[0x009B] = 0xFF;
+
+            cpu.ProgramCounter = 0x8000;
+
+            //Act
+            cpu.Step(ref memory);
+
+            //Assert
+            Assert.AreEqual(0xFF, cpu.Accumulator);
+        }
+
+        [TestMethod]
+        public void LDA_ZeroPageX_CorrectValueRead()
+        {
+            //Arrange
+            CPU cpu = new CPU();
+
+            byte[] memory = new byte[65536];
+            memory[0x8000] = 0xB5;
+            memory[0x8001] = 0xFF;
+            memory[0x0000] = 0xFF;
+
+            cpu.ProgramCounter = 0x8000;
+            cpu.XRegister = 0x01;
+
+            //Act
+            cpu.Step(ref memory);
+
+            //Assert
+            Assert.AreEqual(0xFF, cpu.Accumulator);
+        }
+
+        [TestMethod]
+        public void LDA_Absolute_CorrectValueRead()
+        {
+            //Arrange
+            CPU cpu = new CPU();
+
+            byte[] memory = new byte[65536];
+            memory[0x8000] = 0xAD;
+            memory[0x8001] = 0xCD;
+            memory[0x8002] = 0xAB;
+            memory[0xABCD] = 0xFF;
+
+            cpu.ProgramCounter = 0x8000;
+
+            //Act
+            cpu.Step(ref memory);
+
+            //Assert
+            Assert.AreEqual(0xFF, cpu.Accumulator);
+        }
+
+        [TestMethod]
+        public void LDA_AbsoluteX_CorrectValueRead()
+        {
+            //Arrange
+            CPU cpu = new CPU();
+
+            byte[] memory = new byte[65536];
+            memory[0x8000] = 0xBD;
+            memory[0x8001] = 0xCD;
+            memory[0x8002] = 0xAB;
+            memory[0xABCE] = 0xFF;
+
+            cpu.ProgramCounter = 0x8000;
+            cpu.XRegister = 0x01;
+
+            //Act
+            cpu.Step(ref memory);
+
+            //Assert
+            Assert.AreEqual(0xFF, cpu.Accumulator);
+        }
+
+        [TestMethod]
+        public void LDA_AbsoluteY_CorrectValueRead()
+        {
+            //Arrange
+            CPU cpu = new CPU();
+
+            byte[] memory = new byte[65536];
+            memory[0x8000] = 0xB9;
+            memory[0x8001] = 0xCD;
+            memory[0x8002] = 0xAB;
+            memory[0xABCE] = 0xFF;
+
+            cpu.ProgramCounter = 0x8000;
+            cpu.YRegister = 0x01;
+
+            //Act
+            cpu.Step(ref memory);
+
+            //Assert
+            Assert.AreEqual(0xFF, cpu.Accumulator);
+        }
+
+        [TestMethod]
+        public void LDA_IndexedIndirect_CorrectValueRead()
+        {
+            //Arrange
+            CPU cpu = new CPU();
+
+            byte[] memory = new byte[65536];
+            memory[0x8000] = 0xA1;
+            memory[0x8001] = 0x00;
+            memory[0x01] = 0xCD;
+            memory[0x02] = 0xAB;
+            memory[0xABCD] = 0xFF;
+
+            cpu.ProgramCounter = 0x8000;
+            cpu.XRegister = 0x01;
+
+            //Act
+            cpu.Step(ref memory);
+
+            //Assert
+            Assert.AreEqual(0xFF, cpu.Accumulator);
+        }
+
+        [TestMethod]
+        public void LDA_IndirectIndexed_CorrectValueRead()
+        {
+            //Arrange
+            CPU cpu = new CPU();
+
+            byte[] memory = new byte[65536];
+            memory[0x8000] = 0xB1;
+            memory[0x8001] = 0x00;
+            memory[0x00] = 0xCD;
+            memory[0x01] = 0xAB;
+            memory[0xABCE] = 0xFF;
+
+            cpu.ProgramCounter = 0x8000;
+            cpu.YRegister = 0x01;
+
+            //Act
+            cpu.Step(ref memory);
+
+            //Assert
+            Assert.AreEqual(0xFF, cpu.Accumulator);
         }
     }
 }

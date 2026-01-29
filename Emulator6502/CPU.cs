@@ -1,7 +1,4 @@
-﻿using System;
-using System.Reflection;
-
-namespace Emulator6502
+﻿namespace Emulator6502
 {
     public class CPU
     {
@@ -64,14 +61,14 @@ namespace Emulator6502
 
         private (ushort, int, bool) ZeroPageX(ref byte[] memory)
         {
-            ushort destinationAddress = (ushort)(memory[ProgramCounter + 1] + XRegister);
+            ushort destinationAddress = (ushort)((memory[ProgramCounter + 1] + XRegister) % 256);
 
             return (destinationAddress, 1, false);
         }
 
         private (ushort, int, bool) ZeroPageY(ref byte[] memory)
         {
-            ushort destinationAddress = (ushort)(memory[ProgramCounter + 1] + YRegister);
+            ushort destinationAddress = (ushort)((memory[ProgramCounter + 1] + YRegister) % 256);
 
             return (destinationAddress, 1, false);
         }
@@ -113,8 +110,8 @@ namespace Emulator6502
             byte destinationLower = memory[sourceLocation];
             byte destinationUpper = memory[sourceLocation + 1];
 
-            ushort destinationAddress = memory[destinationUpper * 256 + destinationLower];
-            
+            ushort destinationAddress = (ushort)(destinationUpper * 256 + destinationLower);
+
             return (destinationAddress, 1, false);
         }
 
@@ -125,7 +122,7 @@ namespace Emulator6502
             byte destinationLower = memory[sourceLocation];
             byte destinationUpper = memory[sourceLocation + 1];
 
-            ushort destinationAddress = (ushort)(memory[destinationUpper * 256 + destinationLower] + YRegister);
+            ushort destinationAddress = (ushort)(destinationUpper * 256 + destinationLower + YRegister);
 
             return (destinationAddress, 1, false);
         }
