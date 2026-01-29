@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 
 namespace Emulator6502
 {
@@ -41,72 +42,109 @@ namespace Emulator6502
         ///          ADDRESSING MODES        ///
         ////////////////////////////////////////
 
-        private delegate (byte, int) TranslateOperands(ref byte[] memory);  //Addressing Mode Methods
-                                                                            //Returns the data byte and number of operand bytes processed.                                                                       
+        private delegate (ushort, int, bool) TranslateOperands(ref byte[] memory);  //Addressing Mode Methods
+                                                                                    //Returns the data byte/s, the number of
+                                                                                    //operand bytes processed, and whether
+                                                                                    //or not the returned data is a direct
+                                                                                    //value (as opposed to a memory address).
 
-        private (byte, int) Immediate(ref byte[] memory)
+        private (ushort, int, bool) Immediate(ref byte[] memory)
         {
-            return (memory[ProgramCounter + 1], 1);
+            ushort value = memory[ProgramCounter + 1];
+
+            return (value, 1, true);
         }
 
-        private (byte, int) ZeroPage(ref byte[] memory)
+        private (ushort, int, bool) ZeroPage(ref byte[] memory)
         {
-            return (0, 0);
+            ushort destinationAddress = memory[ProgramCounter + 1];
+
+            return (destinationAddress, 1, false);
         }
 
-        private (byte, int) ZeroPageX(ref byte[] memory)
+        private (ushort, int, bool) ZeroPageX(ref byte[] memory)
         {
-            return (0, 0);
+            ushort destinationAddress = (ushort)(memory[ProgramCounter + 1] + XRegister);
+
+            return (destinationAddress, 1, false);
         }
 
-        private (byte, int) ZeroPageY(ref byte[] memory)
+        private (ushort, int, bool) ZeroPageY(ref byte[] memory)
         {
-            return (0, 0);
+            ushort destinationAddress = (ushort)(memory[ProgramCounter + 1] + YRegister);
+
+            return (destinationAddress, 1, false);
         }
 
-        private (byte, int) Absolute(ref byte[] memory)
+        private (ushort, int, bool) Absolute(ref byte[] memory)
         {
-            return (0, 0);
+            ushort destinationAddress = (ushort)(memory[ProgramCounter + 2] * 256 + memory[ProgramCounter + 1]);
+
+            return (destinationAddress, 2, false);
         }
 
-        private (byte, int) AbsoluteX(ref byte[] memory)
+        private (ushort, int, bool) AbsoluteX(ref byte[] memory)
         {
-            return (0, 0);
+            ushort destinationAddress = (ushort)(memory[ProgramCounter + 2] * 256 + memory[ProgramCounter + 1] + XRegister);
+
+            return (destinationAddress, 2, false);
         }
 
-        private (byte, int) AbsoluteY(ref byte[] memory)
+        private (ushort, int, bool) AbsoluteY(ref byte[] memory)
         {
-            return (0, 0);
+            ushort destinationAddress = (ushort)(memory[ProgramCounter + 2] * 256 + memory[ProgramCounter + 1] + YRegister);
+
+            return (destinationAddress, 2, false);
         }
 
-        private (byte, int) Indirect(ref byte[] memory)
+        private (ushort, int, bool) Indirect(ref byte[] memory)
         {
-            return (0, 0);
+            ushort sourceLocation = (ushort)(memory[ProgramCounter + 2] * 256 + memory[ProgramCounter + 1]);
+
+            ushort destinationAddress = (ushort)(memory[sourceLocation + 1] * 256 + memory[sourceLocation + 1]);
+
+            return (destinationAddress, 2, false);
         }
 
-        private (byte, int) IndexedIndirect(ref byte[] memory)
+        private (ushort, int, bool) IndexedIndirect(ref byte[] memory)
         {
-            return (0, 0);
+            ushort sourceLocation = (ushort)((memory[ProgramCounter + 1] + XRegister) % 256);
+
+            byte destinationLower = memory[sourceLocation];
+            byte destinationUpper = memory[sourceLocation + 1];
+
+            ushort destinationAddress = memory[destinationUpper * 256 + destinationLower];
+            
+            return (destinationAddress, 1, false);
         }
 
-        private (byte, int) IndirectIndexed(ref byte[] memory)
+        private (ushort, int, bool) IndirectIndexed(ref byte[] memory)
         {
-            return (0, 0);
+            ushort sourceLocation = memory[ProgramCounter + 1];
+
+            byte destinationLower = memory[sourceLocation];
+            byte destinationUpper = memory[sourceLocation + 1];
+
+            ushort destinationAddress = (ushort)(memory[destinationUpper * 256 + destinationLower] + YRegister);
+
+            return (destinationAddress, 1, false);
         }
 
-        private (byte, int) WithAccumulator(ref byte[] memory)
+        private (ushort, int, bool) WithAccumulator(ref byte[] memory)
         {
-            return (0, 0);
+            return (Accumulator, 0, true);
         }
 
-        private (byte, int) Relative(ref byte[] memory)
+        private (ushort, int, bool) Relative(ref byte[] memory)
         {
-            return (0, 0);
+            ushort destinationAddress = (ushort)(ProgramCounter + (sbyte)memory[ProgramCounter] + 2);
+
+            return (destinationAddress, 1, false);
         }
 
-        private (byte, int) Implicit(ref byte[] memory)
+        private (ushort, int, bool) Implicit(ref byte[] memory)
         {
-            return (0, 0);
+            return (0, 0, false);
         }
 
 
@@ -115,19 +153,37 @@ namespace Emulator6502
         ///          CPU INSTRUCTIONS        ///
         ////////////////////////////////////////
 
-        private delegate void PerformOperation(ref byte[] memory, ref byte data, int operands);   //Instruction Methods
+        private delegate void PerformOperation(ref byte[] memory, ref ushort data, int operands, bool isDirectValue);   //Instruction Methods
 
         private (PerformOperation, TranslateOperands) TranslateOpcode(byte opcode) => opcode switch
         {
             0xA9 => (LDA, Immediate),
+            0xA5 => (LDA, ZeroPage),
+            0xB5 => (LDA, ZeroPageX),
+            0xAD => (LDA, Absolute),
+            0xBD => (LDA, AbsoluteX),
+            0xB9 => (LDA, AbsoluteY),
+            0xA1 => (LDA, IndexedIndirect),
+            0xB1 => (LDA, IndirectIndexed),
+
+            0x8D => (STA, Absolute),
             //TODO: Add the rest of the opcodes
             _ => throw new ArgumentException(String.Format("Attempted to parse invalid opcode {0} at index {1}.", opcode, ProgramCounter))
         };
 
         //Load A - Loads a value into the accumulator.
-        private void LDA(ref byte[] memory, ref byte data, int operands)
+        private void LDA(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
-            Accumulator = data;
+            Accumulator = (isDirectValue) ? (byte)data : memory[data];
+
+            ProgramCounter += (ushort)(operands + 1);
+        }
+
+        //Store A - Stores the value of the accumulator into memory.
+        private void STA(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+            memory[data] = Accumulator;
+
             ProgramCounter += (ushort)(operands + 1);
         }
 
@@ -136,12 +192,19 @@ namespace Emulator6502
         ////////////////////////////////////////
         ///           CPU FUNCTIONS          ///
         ////////////////////////////////////////
-        
+
+        public void Step(ref byte[] memory)
+        {
+            (PerformOperation, TranslateOperands) instruction = TranslateOpcode(memory[ProgramCounter]);
+
+            ExecuteInstruction(ref memory, instruction.Item1, instruction.Item2);
+        }
+
         private void ExecuteInstruction(ref byte[] memory, PerformOperation operation, TranslateOperands operands)
         {
-            (byte, int) data = operands(ref memory); //Item1 is the data byte, Item2 is the number of operand bytes processed.
+            (ushort, int, bool) data = operands(ref memory); //Item1 is the data byte, Item2 is the number of operand bytes processed.
 
-            operation(ref memory, ref data.Item1, data.Item2);
+            operation(ref memory, ref data.Item1, data.Item2, data.Item3);
         }
 
         //Returns whether or not a specific flag bit within the status register is set.
