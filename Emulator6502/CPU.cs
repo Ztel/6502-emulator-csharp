@@ -163,8 +163,204 @@
             0xA1 => (LDA, IndexedIndirect),
             0xB1 => (LDA, IndirectIndexed),
 
+            0x85 => (STA, ZeroPage),
+            0x95 => (STA, ZeroPageX),
             0x8D => (STA, Absolute),
-            //TODO: Add the rest of the opcodes
+            0x9D => (STA, AbsoluteX),
+            0x99 => (STA, AbsoluteY),
+            0x81 => (STA, IndexedIndirect),
+            0x91 => (STA, IndirectIndexed),
+
+            0xA2 => (LDX, Immediate),
+            0xA6 => (LDX, ZeroPage),
+            0xB6 => (LDX, ZeroPageY),
+            0xAE => (LDX, Absolute),
+            0xBE => (LDX, AbsoluteY),
+
+            0x86 => (STX, ZeroPage),
+            0x96 => (STX, ZeroPageY),
+            0x8E => (STX, Absolute),
+
+            0xA0 => (LDY, Immediate),
+            0xA4 => (LDY, ZeroPage),
+            0xB4 => (LDY, ZeroPageX),
+            0xAC => (LDY, Absolute),
+            0xBC => (LDY, AbsoluteX),
+
+            0x84 => (STY, ZeroPage),
+            0x94 => (STY, ZeroPageX),
+            0x8C => (STY, Absolute),
+
+            0xAA => (TAX, Implicit),
+
+            0x8A => (TXA, Implicit),
+
+            0xA8 => (TAY, Implicit),
+
+            0x98 => (TYA, Implicit),
+
+            0x69 => (ADC, Immediate),
+            0x65 => (ADC, ZeroPage),
+            0x75 => (ADC, ZeroPageX),
+            0x6D => (ADC, Absolute),
+            0x7D => (ADC, AbsoluteX),
+            0x79 => (ADC, AbsoluteY),
+            0x61 => (ADC, IndexedIndirect),
+            0x71 => (ADC, IndirectIndexed),
+
+            0xE9 => (SBC, Immediate),
+            0xE5 => (SBC, ZeroPage),
+            0xF5 => (SBC, ZeroPageX),
+            0xED => (SBC, Absolute),
+            0xFD => (SBC, AbsoluteX),
+            0xF9 => (SBC, AbsoluteY),
+            0xE1 => (SBC, IndexedIndirect),
+            0xF1 => (SBC, IndirectIndexed),
+
+            0xE6 => (INC, ZeroPage),
+            0xF6 => (INC, ZeroPageX),
+            0xEE => (INC, Absolute),
+            0xFE => (INC, AbsoluteX),
+
+            0xC6 => (DEC, ZeroPage),
+            0xD6 => (DEC, ZeroPageX),
+            0xCE => (DEC, Absolute),
+            0xDE => (DEC, AbsoluteX),
+
+            0xE8 => (INX, Implicit),
+
+            0xCA => (DEX, Implicit),
+
+            0xC8 => (INY, Implicit),
+                       
+            0x88 => (DEY, Implicit),
+
+            0x0A => (ASL, WithAccumulator),
+            0x06 => (ASL, ZeroPage),
+            0x16 => (ASL, ZeroPageX),
+            0x0E => (ASL, Absolute),
+            0x1E => (ASL, AbsoluteX),
+
+            0x4A => (LSR, WithAccumulator),
+            0x46 => (LSR, ZeroPage),
+            0x56 => (LSR, ZeroPageX),
+            0x4E => (LSR, Absolute),
+            0x5E => (LSR, AbsoluteX),
+
+            0x2A => (ROL, WithAccumulator),
+            0x26 => (ROL, ZeroPage),
+            0x36 => (ROL, ZeroPageX),
+            0x2E => (ROL, Absolute),
+            0x3E => (ROL, AbsoluteX),
+
+            0x6A => (ROR, WithAccumulator),
+            0x66 => (ROR, ZeroPage),
+            0x76 => (ROR, ZeroPageX),
+            0x6E => (ROR, Absolute),
+            0x7E => (ROR, AbsoluteX),
+
+            0x29 => (AND, Immediate),
+            0x25 => (AND, ZeroPage),
+            0x35 => (AND, ZeroPageX),
+            0x2D => (AND, Absolute),
+            0x3D => (AND, AbsoluteX),
+            0x39 => (AND, AbsoluteY),
+            0x21 => (AND, IndexedIndirect),
+            0x31 => (AND, IndirectIndexed),
+
+            0x09 => (ORA, Immediate),
+            0x05 => (ORA, ZeroPage),
+            0x15 => (ORA, ZeroPageX),
+            0x0D => (ORA, Absolute),
+            0x1D => (ORA, AbsoluteX),
+            0x19 => (ORA, AbsoluteY),
+            0x01 => (ORA, IndexedIndirect),
+            0x11 => (ORA, IndirectIndexed),
+
+            0x49 => (EOR, Immediate),
+            0x45 => (EOR, ZeroPage),
+            0x55 => (EOR, ZeroPageX),
+            0x4D => (EOR, Absolute),
+            0x5D => (EOR, AbsoluteX),
+            0x59 => (EOR, AbsoluteY),
+            0x41 => (EOR, IndexedIndirect),
+            0x51 => (EOR, IndirectIndexed),
+
+            0x24 => (BIT, ZeroPage),
+            0x2C => (BIT, Absolute),
+
+            0xC9 => (CMP, Immediate),
+            0xC5 => (CMP, ZeroPage),
+            0xD5 => (CMP, ZeroPageX),
+            0xCD => (CMP, Absolute),
+            0xDD => (CMP, AbsoluteX),
+            0xD9 => (CMP, AbsoluteY),
+            0xC1 => (CMP, IndexedIndirect),
+            0xD1 => (CMP, IndirectIndexed),
+
+            0xE0 => (CPX, Immediate),
+            0xE4 => (CPX, ZeroPage),
+            0xEC => (CPX, Absolute),
+
+            0xC0 => (CPY, Immediate),
+            0xC4 => (CPY, ZeroPage),
+            0xCC => (CPY, Absolute),
+
+            0x90 => (BCC, Relative),
+
+            0xB0 => (BCS, Relative),
+
+            0xF0 => (BEQ, Relative),
+
+            0xD0 => (BNE, Relative),
+
+            0x10 => (BPL, Relative),
+
+            0x30 => (BMI, Relative),
+
+            0x50 => (BVC, Relative),
+
+            0x70 => (BVS, Relative),
+
+            0x4C => (JMP, Absolute),
+            0x6C => (JMP, Indirect),
+
+            0x20 => (JSR, Absolute),
+
+            0x60 => (RTS, Implicit),
+
+            0x00 => (BRK, Implicit),
+
+            0x40 => (RTI, Implicit),
+
+            0x48 => (PHA, Implicit),
+
+            0x68 => (PLA, Implicit),
+
+            0x08 => (PHP, Implicit),
+
+            0x28 => (PLP, Implicit),
+
+            0x9A => (TXS, Implicit),
+
+            0xBA => (TSX, Implicit),
+
+            0x18 => (CLC, Implicit),
+
+            0x38 => (SEC, Implicit),
+
+            0x58 => (CLI, Implicit),
+
+            0x78 => (SEI, Implicit),
+
+            0xD8 => (CLD, Implicit),
+
+            0xF8 => (SED, Implicit),
+
+            0xB8 => (CLV, Implicit),
+
+            0xEA => (NOP, Implicit),
+
             _ => throw new ArgumentException(String.Format("Attempted to parse invalid opcode {0} at index {1}.", opcode, ProgramCounter))
         };
 
@@ -182,6 +378,330 @@
             memory[data] = Accumulator;
 
             ProgramCounter += (ushort)(operands + 1);
+        }
+
+        //Load X - Loads a value into the X register.
+        private void LDX(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+            
+        }
+
+        //Store X - Stores the value of the X register into memory.
+        private void STX(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Load Y - Loads a value into the Y register.
+        private void LDY(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Store Y - Stores the value of the Y register into memory.
+        private void STY(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Transfer A to X - Copy the value of the accumulator into the X register. 
+        private void TAX(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Transfer X to A - Copy the value of the X register into the accumulator.
+        private void TXA(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Transfer A to Y - Copy the value of the accumulator into the Y register.
+        private void TAY(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Transfer Y to A - Copy the value of the Y register into the accumulator.
+        private void TYA(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Add with Carry - Add the carry flag and a memory value to the accumulator.
+        private void ADC(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Subtract with Carry - Subtract a memory value and the NOT of the carry flag from the accumulator.
+        private void SBC(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Increment Memory - Add 1 to a value in memory.
+        private void INC(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Decrement Memory - Subtract 1 from a value in memory.
+        private void DEC(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Increment X - Add 1 to the X register.
+        private void INX(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Decrement X - Subtract 1 from the X register.
+        private void DEX(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Increment Y - Add 1 to the Y register.
+        private void INY(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Decrement Y - Subtract 1 from the Y register.
+        private void DEY(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Arithmetic Shift Left - Shift all bits of a value one position to the left and fill the open bit with 0.
+        private void ASL(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Logical Shift Right - Shift all bits of a value one position to the right and fill the open bit with 0.
+        private void LSR(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Rotate Left - Shift all bits of a value one position to the left and fill the open bit with the carry flag.
+        private void ROL(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Rotate Right - Shift all bits of a value one position to the right and fill the open bit with the carry flag.
+        private void ROR(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Bitwise AND - Perform an AND between a value and the accumulator.
+        private void AND(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Bitwise OR - Perform an inclusive OR between a value and the accumulator.
+        private void ORA(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Bitwise Exclusive OR - Perform an exclusive OR between a value and the accumulator.
+        private void EOR(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Bit Test - Perform an AND without modifying the accumulator, only setting status register flags.
+        private void BIT(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Compare A - Compare the accumulator to a value.
+        private void CMP(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Compare X - Compare the X register to a value.
+        private void CPX(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Compare Y - Compare the Y register to a value.
+        private void CPY(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Branch if Carry Clear - Branch to an offset location if the carry flag is clear.
+        private void BCC(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Branch if Carry Set - Branch to an offset location if the carry flag is set.
+        private void BCS(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Branch if Equal - Branch to an offset location if the zero flag is set.
+        private void BEQ(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Branch if Not Equal - Branch to an offset location if the zero flag is clear.
+        private void BNE(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Branch if Plus - Branch to an offset location if the negative flag is clear.
+        private void BPL(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Branch if Minus - Branch to an offset location if the negative flag is set.
+        private void BMI(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Branch if Overflow Clear - Branch to an offset location if the overflow flag is clear.
+        private void BVC(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Branch if Overflow Set - Branch to an offset location if the overflow flag is set.
+        private void BVS(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Jump - Execute code from a new location.
+        private void JMP(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Jump to Subroutine - Push the program counter to the stack, then execute code from a new location.
+        private void JSR(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Return from Subroutine - Pull an address from the stack, then jump to that location plus 1.
+        private void RTS(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Break - Trigger an IRQ (Interrupt Request).
+        private void BRK(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Return from Interrupt - Pull CPU state from the stack, then resume execution using those values.
+        private void RTI(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Push A - Push the value of the accumulator to the stack.
+        private void PHA(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Pull A - Pull from the stack and set the accumulator to that value.
+        private void PLA(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Push Processor Status - Push the value of the status register to the stack.
+        private void PHP(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Pull Processor Status - Pull from the stack and set the status register to that value.
+        private void PLP(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Transfer X to Stack Pointer - Copy the value of the X register to the stack pointer.
+        private void TXS(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Transfer Stack Pointer to X - Copy the value of the stack pointer to the X register.
+        private void TSX(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Clear Carry - Set the carry flag bit to 0.
+        private void CLC(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Set Carry - Set the carry flag bit to 1.
+        private void SEC(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Clear Interrupt Disable - Set the interrupt disable flag bit to 0.
+        private void CLI(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Set Interrupt Disable - Set the interrupt disable flag bit to 1.
+        private void SEI(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Clear Decimal - Set the decimal mode flag bit to 0.
+        private void CLD(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Set Decimal - Set the decimal mode flag bit to 1.
+        private void SED(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //Clear Overflow - Set the overflow flag bit to 0.
+        private void CLV(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
+        }
+
+        //No Operation - Do nothing.
+        private void NOP(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        {
+
         }
 
 
