@@ -369,6 +369,9 @@
         {
             Accumulator = (isDirectValue) ? (byte)data : memory[data];
 
+            SetStatusRegisterFlag('Z', Accumulator == 0);
+            SetStatusRegisterFlag('N', IsNegative(Accumulator));
+
             ProgramCounter += (ushort)(operands + 1);
         }
 
@@ -383,25 +386,39 @@
         //Load X - Loads a value into the X register.
         private void LDX(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
-            
+            XRegister = (isDirectValue) ? (byte)data : memory[data];
+
+            SetStatusRegisterFlag('Z', XRegister == 0);
+            SetStatusRegisterFlag('N', IsNegative(XRegister));
+
+            ProgramCounter += (ushort)(operands + 1);
         }
 
         //Store X - Stores the value of the X register into memory.
         private void STX(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
+            memory[data] = XRegister;
 
+            ProgramCounter += (ushort)(operands + 1);
         }
 
         //Load Y - Loads a value into the Y register.
         private void LDY(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
+            YRegister = (isDirectValue) ? (byte)data : memory[data];
 
+            SetStatusRegisterFlag('Z', YRegister == 0);
+            SetStatusRegisterFlag('N', IsNegative(YRegister));
+
+            ProgramCounter += (ushort)(operands + 1);
         }
 
         //Store Y - Stores the value of the Y register into memory.
         private void STY(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
+            memory[data] = YRegister;
 
+            ProgramCounter += (ushort)(operands + 1);
         }
 
         //Transfer A to X - Copy the value of the accumulator into the X register. 
@@ -762,5 +779,11 @@
             'C' => 0b00000001, //Carry Flag
             _ => throw new ArgumentException(String.Format("{0} is not a valid status register flag.", flag)),
         };
+
+        //Checks if an unsigned byte is negative (the 7th bit is set).
+        bool IsNegative(byte value)
+        {
+            return (value & 0b10000000) == 0b10000000 ? true : false;
+        }
     }
 }
