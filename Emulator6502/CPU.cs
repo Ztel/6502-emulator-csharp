@@ -424,31 +424,63 @@
         //Transfer A to X - Copy the value of the accumulator into the X register. 
         private void TAX(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
+            XRegister = Accumulator;
 
+            SetStatusRegisterFlag('Z', XRegister == 0);
+            SetStatusRegisterFlag('N', IsNegative(XRegister));
+
+            ProgramCounter += (ushort)(operands + 1);
         }
 
         //Transfer X to A - Copy the value of the X register into the accumulator.
         private void TXA(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
+            Accumulator = XRegister;
 
+            SetStatusRegisterFlag('Z', Accumulator == 0);
+            SetStatusRegisterFlag('N', IsNegative(Accumulator));
+
+            ProgramCounter += (ushort)(operands + 1);
         }
 
         //Transfer A to Y - Copy the value of the accumulator into the Y register.
         private void TAY(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
+            YRegister = Accumulator;
 
+            SetStatusRegisterFlag('Z', YRegister == 0);
+            SetStatusRegisterFlag('N', IsNegative(YRegister));
+
+            ProgramCounter += (ushort)(operands + 1);
         }
 
         //Transfer Y to A - Copy the value of the Y register into the accumulator.
         private void TYA(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
+            Accumulator = YRegister;
 
+            SetStatusRegisterFlag('Z', Accumulator == 0);
+            SetStatusRegisterFlag('N', IsNegative(Accumulator));
+
+            ProgramCounter += (ushort)(operands + 1);
         }
 
         //Add with Carry - Add the carry flag and a memory value to the accumulator.
         private void ADC(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
+            byte value = (isDirectValue) ? (byte)data : memory[data];
+            int carry = GetStatusRegisterFlag('C');
+            int result = Accumulator + value + carry;
 
+            SetStatusRegisterFlag('C', result > 255);
+            SetStatusRegisterFlag('V', (((byte)result ^ Accumulator) & ((byte)result ^ value) & 0b10000000) == 0b10000000);
+
+            Accumulator = (byte)result;
+            
+            SetStatusRegisterFlag('Z', Accumulator == 0);
+            SetStatusRegisterFlag('N', IsNegative(Accumulator));
+
+            ProgramCounter += (ushort)(operands + 1);
         }
 
         //Subtract with Carry - Subtract a memory value and the NOT of the carry flag from the accumulator.
@@ -741,13 +773,13 @@
             operation(ref memory, ref data.Item1, data.Item2, data.Item3);
         }
 
-        //Returns whether or not a specific flag bit within the status register is set.
+        //Returns the current value of a specific flag bit within the status register.
         //Valid inputs are chars N, V, B, D, I, Z, C
-        public bool GetStatusRegisterFlag(char flag)
+        public int GetStatusRegisterFlag(char flag)
         {
             byte flagMask = GetStatusRegisterFlagMask(flag);
 
-            return (StatusRegister & flagMask) == flagMask;
+            return ((StatusRegister & flagMask) == flagMask) ? 1 : 0;
         }
 
         //Sets a specified status register to true or false (1 or 0).
