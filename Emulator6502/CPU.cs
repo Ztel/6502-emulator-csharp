@@ -486,43 +486,85 @@
         //Subtract with Carry - Subtract a memory value and the NOT of the carry flag from the accumulator.
         private void SBC(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
+            byte value = (isDirectValue) ? (byte)data : memory[data];
+            int carry = GetStatusRegisterFlag('C');
+            int result = Accumulator + ~value + carry;
 
+            SetStatusRegisterFlag('C', !(result < 0));
+            SetStatusRegisterFlag('V', (((byte)result ^ Accumulator) & ((byte)result ^ ~value) & 0b10000000) == 0b10000000);
+
+            Accumulator = (byte)result;
+
+            SetStatusRegisterFlag('Z', Accumulator == 0);
+            SetStatusRegisterFlag('N', IsNegative(Accumulator));
+
+            ProgramCounter += (ushort)(operands + 1);
         }
 
         //Increment Memory - Add 1 to a value in memory.
         private void INC(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
+            memory[data]++;
 
+            SetStatusRegisterFlag('Z', memory[data] == 0);
+            SetStatusRegisterFlag('N', IsNegative(memory[data]));
+
+            ProgramCounter += (ushort)(operands + 1);
         }
 
         //Decrement Memory - Subtract 1 from a value in memory.
         private void DEC(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
+            memory[data]--;
 
+            SetStatusRegisterFlag('Z', memory[data] == 0);
+            SetStatusRegisterFlag('N', IsNegative(memory[data]));
+
+            ProgramCounter += (ushort)(operands + 1);
         }
 
         //Increment X - Add 1 to the X register.
         private void INX(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
+            XRegister++;
 
+            SetStatusRegisterFlag('Z', XRegister == 0);
+            SetStatusRegisterFlag('N', IsNegative(XRegister));
+
+            ProgramCounter += (ushort)(operands + 1);
         }
 
         //Decrement X - Subtract 1 from the X register.
         private void DEX(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
+            XRegister--;
 
+            SetStatusRegisterFlag('Z', XRegister == 0);
+            SetStatusRegisterFlag('N', IsNegative(XRegister));
+
+            ProgramCounter += (ushort)(operands + 1);
         }
 
         //Increment Y - Add 1 to the Y register.
         private void INY(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
+            YRegister++;
 
+            SetStatusRegisterFlag('Z', YRegister == 0);
+            SetStatusRegisterFlag('N', IsNegative(YRegister));
+
+            ProgramCounter += (ushort)(operands + 1);
         }
 
         //Decrement Y - Subtract 1 from the Y register.
         private void DEY(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
+            YRegister--;
 
+            SetStatusRegisterFlag('Z', YRegister == 0);
+            SetStatusRegisterFlag('N', IsNegative(YRegister));
+
+            ProgramCounter += (ushort)(operands + 1);
         }
 
         //Arithmetic Shift Left - Shift all bits of a value one position to the left and fill the open bit with 0.
