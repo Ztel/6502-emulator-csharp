@@ -367,7 +367,7 @@
         //Load A - Loads a value into the accumulator.
         private void LDA(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
-            Accumulator = (isDirectValue) ? (byte)data : memory[data];
+            Accumulator = isDirectValue ? (byte)data : memory[data];
 
             SetStatusRegisterFlag('Z', Accumulator == 0);
             SetStatusRegisterFlag('N', IsNegative(Accumulator));
@@ -386,7 +386,7 @@
         //Load X - Loads a value into the X register.
         private void LDX(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
-            XRegister = (isDirectValue) ? (byte)data : memory[data];
+            XRegister = isDirectValue ? (byte)data : memory[data];
 
             SetStatusRegisterFlag('Z', XRegister == 0);
             SetStatusRegisterFlag('N', IsNegative(XRegister));
@@ -405,7 +405,7 @@
         //Load Y - Loads a value into the Y register.
         private void LDY(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
-            YRegister = (isDirectValue) ? (byte)data : memory[data];
+            YRegister = isDirectValue ? (byte)data : memory[data];
 
             SetStatusRegisterFlag('Z', YRegister == 0);
             SetStatusRegisterFlag('N', IsNegative(YRegister));
@@ -570,25 +570,103 @@
         //Arithmetic Shift Left - Shift all bits of a value one position to the left and fill the open bit with 0.
         private void ASL(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
+            byte value = isDirectValue ? (byte)data : memory[data];
 
+            SetStatusRegisterFlag('C', value >> 7 == 1);
+
+            value = (byte)(value << 1);
+
+            if (isDirectValue)
+            {
+                Accumulator = value;
+            }
+            else
+            {
+                memory[data] = value;
+            }
+
+            SetStatusRegisterFlag('Z', value == 0);
+            SetStatusRegisterFlag('N', IsNegative(value));
+
+            ProgramCounter += (ushort)(operands + 1);
         }
 
         //Logical Shift Right - Shift all bits of a value one position to the right and fill the open bit with 0.
         private void LSR(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
+            byte value = isDirectValue ? (byte)data : memory[data];
 
+            SetStatusRegisterFlag('C', (value & 0b00000001) == 1);
+
+            value = (byte)(value >> 1);
+
+            if (isDirectValue)
+            {
+                Accumulator = value;
+            }
+            else
+            {
+                memory[data] = value;
+            }
+
+            SetStatusRegisterFlag('Z', value == 0);
+            SetStatusRegisterFlag('N', IsNegative(value));
+
+            ProgramCounter += (ushort)(operands + 1);
         }
 
         //Rotate Left - Shift all bits of a value one position to the left and fill the open bit with the carry flag.
         private void ROL(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
+            byte value = isDirectValue ? (byte)data : memory[data];
 
+            bool carry = value >> 7 == 1;
+
+            value = (byte)(value << 1);
+            value = (byte)((value & 0b11111110) | GetStatusRegisterFlag('C'));
+
+            SetStatusRegisterFlag('C', carry);
+
+            if (isDirectValue)
+            {
+                Accumulator = value;
+            }
+            else
+            {
+                memory[data] = value;
+            }
+
+            SetStatusRegisterFlag('Z', value == 0);
+            SetStatusRegisterFlag('N', IsNegative(value));
+
+            ProgramCounter += (ushort)(operands + 1);
         }
 
         //Rotate Right - Shift all bits of a value one position to the right and fill the open bit with the carry flag.
         private void ROR(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
+            byte value = isDirectValue ? (byte)data : memory[data];
 
+            bool carry = (value & 0b00000001) == 1;
+
+            value = (byte)(value >> 1);
+            value = (byte)((value & 0b01111111) | (GetStatusRegisterFlag('C') << 7));
+
+            SetStatusRegisterFlag('C', carry);
+
+            if (isDirectValue)
+            {
+                Accumulator = value;
+            }
+            else
+            {
+                memory[data] = value;
+            }
+
+            SetStatusRegisterFlag('Z', value == 0);
+            SetStatusRegisterFlag('N', IsNegative(value));
+
+            ProgramCounter += (ushort)(operands + 1);
         }
 
         //Bitwise AND - Perform an AND between a value and the accumulator.
