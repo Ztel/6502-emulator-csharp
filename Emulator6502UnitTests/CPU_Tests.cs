@@ -1996,5 +1996,637 @@ namespace Emulator6502UnitTests
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('Z'));
             Assert.AreEqual(1, cpu.GetStatusRegisterFlag('N'));
         }
+
+        [TestMethod]
+        public void AND_Immediate_CorrectValueWritten()
+        {
+            //Arrange
+            CPU cpu = new CPU();
+
+            byte[] memory = new byte[65536];
+            memory[0x8000] = 0x29;
+            memory[0x8001] = 0b10101010;
+
+            cpu.ProgramCounter = 0x8000;
+            cpu.Accumulator = 0b11110000;
+
+            //Act
+            cpu.Step(ref memory);
+
+            //Assert
+            Assert.AreEqual(0b10100000, cpu.Accumulator);
+            Assert.AreEqual(0, cpu.GetStatusRegisterFlag('Z'));
+            Assert.AreEqual(1, cpu.GetStatusRegisterFlag('N'));
+        }
+
+        [TestMethod]
+        public void AND_ZeroPage_CorrectValueWritten()
+        {
+            //Arrange
+            CPU cpu = new CPU();
+
+            byte[] memory = new byte[65536];
+            memory[0x8000] = 0x25;
+            memory[0x8001] = 0xAB;
+            memory[0x00AB] = 0b10101010;
+
+            cpu.ProgramCounter = 0x8000;
+            cpu.Accumulator = 0b11110000;
+
+            //Act
+            cpu.Step(ref memory);
+
+            //Assert
+            Assert.AreEqual(0b10100000, cpu.Accumulator);
+            Assert.AreEqual(0, cpu.GetStatusRegisterFlag('Z'));
+            Assert.AreEqual(1, cpu.GetStatusRegisterFlag('N'));
+        }
+
+        [TestMethod]
+        public void AND_ZeroPageX_CorrectValueWritten()
+        {
+            //Arrange
+            CPU cpu = new CPU();
+
+            byte[] memory = new byte[65536];
+            memory[0x8000] = 0x35;
+            memory[0x8001] = 0xAB;
+            memory[0x00AC] = 0b10101010;
+
+            cpu.ProgramCounter = 0x8000;
+            cpu.Accumulator = 0b11110000;
+            cpu.XRegister = 0x01;
+
+            //Act
+            cpu.Step(ref memory);
+
+            //Assert
+            Assert.AreEqual(0b10100000, cpu.Accumulator);
+            Assert.AreEqual(0, cpu.GetStatusRegisterFlag('Z'));
+            Assert.AreEqual(1, cpu.GetStatusRegisterFlag('N'));
+        }
+
+        [TestMethod]
+        public void AND_Absolute_CorrectValueWritten()
+        {
+            //Arrange
+            CPU cpu = new CPU();
+
+            byte[] memory = new byte[65536];
+            memory[0x8000] = 0x2D;
+            memory[0x8001] = 0xCD;
+            memory[0x8002] = 0xAB;
+            memory[0xABCD] = 0b10101010;
+
+            cpu.ProgramCounter = 0x8000;
+            cpu.Accumulator = 0b11110000;
+
+            //Act
+            cpu.Step(ref memory);
+
+            //Assert
+            Assert.AreEqual(0b10100000, cpu.Accumulator);
+            Assert.AreEqual(0, cpu.GetStatusRegisterFlag('Z'));
+            Assert.AreEqual(1, cpu.GetStatusRegisterFlag('N'));
+        }
+
+        [TestMethod]
+        public void AND_AbsoluteX_CorrectValueWritten()
+        {
+            //Arrange
+            CPU cpu = new CPU();
+
+            byte[] memory = new byte[65536];
+            memory[0x8000] = 0x3D;
+            memory[0x8001] = 0xCD;
+            memory[0x8002] = 0xAB;
+            memory[0xABCE] = 0b10101010;
+
+            cpu.ProgramCounter = 0x8000;
+            cpu.Accumulator = 0b11110000;
+            cpu.XRegister = 0x01;
+
+            //Act
+            cpu.Step(ref memory);
+
+            //Assert
+            Assert.AreEqual(0b10100000, cpu.Accumulator);
+            Assert.AreEqual(0, cpu.GetStatusRegisterFlag('Z'));
+            Assert.AreEqual(1, cpu.GetStatusRegisterFlag('N'));
+        }
+
+        [TestMethod]
+        public void AND_AbsoluteY_CorrectValueWritten()
+        {
+            //Arrange
+            CPU cpu = new CPU();
+
+            byte[] memory = new byte[65536];
+            memory[0x8000] = 0x39;
+            memory[0x8001] = 0xCD;
+            memory[0x8002] = 0xAB;
+            memory[0xABCE] = 0b10101010;
+
+            cpu.ProgramCounter = 0x8000;
+            cpu.Accumulator = 0b00001111;
+            cpu.YRegister = 0x01;
+
+            //Act
+            cpu.Step(ref memory);
+
+            //Assert
+            Assert.AreEqual(0b00001010, cpu.Accumulator);
+            Assert.AreEqual(0, cpu.GetStatusRegisterFlag('Z'));
+            Assert.AreEqual(0, cpu.GetStatusRegisterFlag('N'));
+        }
+
+        [TestMethod]
+        public void AND_IndexedIndirect_CorrectValueWritten()
+        {
+            //Arrange
+            CPU cpu = new CPU();
+
+            byte[] memory = new byte[65536];
+            memory[0x8000] = 0x21;
+            memory[0x8001] = 0xCC;
+            memory[0x00CD] = 0x34;
+            memory[0x00CE] = 0x12;
+            memory[0x1234] = 0b00000001;
+
+            cpu.ProgramCounter = 0x8000;
+            cpu.Accumulator = 0b00001111;
+            cpu.XRegister = 0x01;
+
+            //Act
+            cpu.Step(ref memory);
+
+            //Assert
+            Assert.AreEqual(0b00000001, cpu.Accumulator);
+            Assert.AreEqual(0, cpu.GetStatusRegisterFlag('Z'));
+            Assert.AreEqual(0, cpu.GetStatusRegisterFlag('N'));
+        }
+
+        [TestMethod]
+        public void AND_IndirectIndexed_CorrectValueWritten()
+        {
+            //Arrange
+            CPU cpu = new CPU();
+
+            byte[] memory = new byte[65536];
+            memory[0x8000] = 0x31;
+            memory[0x8001] = 0xCD;
+            memory[0x00CD] = 0xCD;
+            memory[0x00CE] = 0xAB;
+            memory[0xABCE] = 0b10101010;
+
+            cpu.ProgramCounter = 0x8000;
+            cpu.Accumulator = 0b00001111;
+            cpu.YRegister = 0x01;
+
+            //Act
+            cpu.Step(ref memory);
+
+            //Assert
+            Assert.AreEqual(0b00001010, cpu.Accumulator);
+            Assert.AreEqual(0, cpu.GetStatusRegisterFlag('Z'));
+            Assert.AreEqual(0, cpu.GetStatusRegisterFlag('N'));
+        }
+
+        [TestMethod]
+        public void ORA_Immediate_CorrectValueWritten()
+        {
+            //Arrange
+            CPU cpu = new CPU();
+
+            byte[] memory = new byte[65536];
+            memory[0x8000] = 0x09;
+            memory[0x8001] = 0b10101010;
+
+            cpu.ProgramCounter = 0x8000;
+            cpu.Accumulator = 0b11110000;
+
+            //Act
+            cpu.Step(ref memory);
+
+            //Assert
+            Assert.AreEqual(0b11111010, cpu.Accumulator);
+            Assert.AreEqual(0, cpu.GetStatusRegisterFlag('Z'));
+            Assert.AreEqual(1, cpu.GetStatusRegisterFlag('N'));
+        }
+
+        [TestMethod]
+        public void ORA_ZeroPage_CorrectValueWritten()
+        {
+            //Arrange
+            CPU cpu = new CPU();
+
+            byte[] memory = new byte[65536];
+            memory[0x8000] = 0x05;
+            memory[0x8001] = 0xAB;
+            memory[0x00AB] = 0b10101010;
+
+            cpu.ProgramCounter = 0x8000;
+            cpu.Accumulator = 0b11110000;
+
+            //Act
+            cpu.Step(ref memory);
+
+            //Assert
+            Assert.AreEqual(0b11111010, cpu.Accumulator);
+            Assert.AreEqual(0, cpu.GetStatusRegisterFlag('Z'));
+            Assert.AreEqual(1, cpu.GetStatusRegisterFlag('N'));
+        }
+
+        [TestMethod]
+        public void ORA_ZeroPageX_CorrectValueWritten()
+        {
+            //Arrange
+            CPU cpu = new CPU();
+
+            byte[] memory = new byte[65536];
+            memory[0x8000] = 0x15;
+            memory[0x8001] = 0xAB;
+            memory[0x00AC] = 0b10101010;
+
+            cpu.ProgramCounter = 0x8000;
+            cpu.Accumulator = 0b11110000;
+            cpu.XRegister = 0x01;
+
+            //Act
+            cpu.Step(ref memory);
+
+            //Assert
+            Assert.AreEqual(0b11111010, cpu.Accumulator);
+            Assert.AreEqual(0, cpu.GetStatusRegisterFlag('Z'));
+            Assert.AreEqual(1, cpu.GetStatusRegisterFlag('N'));
+        }
+
+        [TestMethod]
+        public void ORA_Absolute_CorrectValueWritten()
+        {
+            //Arrange
+            CPU cpu = new CPU();
+
+            byte[] memory = new byte[65536];
+            memory[0x8000] = 0x0D;
+            memory[0x8001] = 0xCD;
+            memory[0x8002] = 0xAB;
+            memory[0xABCD] = 0b10101010;
+
+            cpu.ProgramCounter = 0x8000;
+            cpu.Accumulator = 0b11110000;
+
+            //Act
+            cpu.Step(ref memory);
+
+            //Assert
+            Assert.AreEqual(0b11111010, cpu.Accumulator);
+            Assert.AreEqual(0, cpu.GetStatusRegisterFlag('Z'));
+            Assert.AreEqual(1, cpu.GetStatusRegisterFlag('N'));
+        }
+
+        [TestMethod]
+        public void ORA_AbsoluteX_CorrectValueWritten()
+        {
+            //Arrange
+            CPU cpu = new CPU();
+
+            byte[] memory = new byte[65536];
+            memory[0x8000] = 0x1D;
+            memory[0x8001] = 0xCD;
+            memory[0x8002] = 0xAB;
+            memory[0xABCE] = 0b10101010;
+
+            cpu.ProgramCounter = 0x8000;
+            cpu.Accumulator = 0b11110000;
+            cpu.XRegister = 0x01;
+
+            //Act
+            cpu.Step(ref memory);
+
+            //Assert
+            Assert.AreEqual(0b11111010, cpu.Accumulator);
+            Assert.AreEqual(0, cpu.GetStatusRegisterFlag('Z'));
+            Assert.AreEqual(1, cpu.GetStatusRegisterFlag('N'));
+        }
+
+        [TestMethod]
+        public void ORA_AbsoluteY_CorrectValueWritten()
+        {
+            //Arrange
+            CPU cpu = new CPU();
+
+            byte[] memory = new byte[65536];
+            memory[0x8000] = 0x19;
+            memory[0x8001] = 0xCD;
+            memory[0x8002] = 0xAB;
+            memory[0xABCE] = 0b10101010;
+
+            cpu.ProgramCounter = 0x8000;
+            cpu.Accumulator = 0b00001111;
+            cpu.YRegister = 0x01;
+
+            //Act
+            cpu.Step(ref memory);
+
+            //Assert
+            Assert.AreEqual(0b10101111, cpu.Accumulator);
+            Assert.AreEqual(0, cpu.GetStatusRegisterFlag('Z'));
+            Assert.AreEqual(1, cpu.GetStatusRegisterFlag('N'));
+        }
+
+        [TestMethod]
+        public void ORA_IndexedIndirect_CorrectValueWritten()
+        {
+            //Arrange
+            CPU cpu = new CPU();
+
+            byte[] memory = new byte[65536];
+            memory[0x8000] = 0x01;
+            memory[0x8001] = 0xCC;
+            memory[0x00CD] = 0x34;
+            memory[0x00CE] = 0x12;
+            memory[0x1234] = 0b00000001;
+
+            cpu.ProgramCounter = 0x8000;
+            cpu.Accumulator = 0b00001111;
+            cpu.XRegister = 0x01;
+
+            //Act
+            cpu.Step(ref memory);
+
+            //Assert
+            Assert.AreEqual(0b00001111, cpu.Accumulator);
+            Assert.AreEqual(0, cpu.GetStatusRegisterFlag('Z'));
+            Assert.AreEqual(0, cpu.GetStatusRegisterFlag('N'));
+        }
+
+        [TestMethod]
+        public void ORA_IndirectIndexed_CorrectValueWritten()
+        {
+            //Arrange
+            CPU cpu = new CPU();
+
+            byte[] memory = new byte[65536];
+            memory[0x8000] = 0x11;
+            memory[0x8001] = 0xCD;
+            memory[0x00CD] = 0xCD;
+            memory[0x00CE] = 0xAB;
+            memory[0xABCE] = 0b10101010;
+
+            cpu.ProgramCounter = 0x8000;
+            cpu.Accumulator = 0b00001111;
+            cpu.YRegister = 0x01;
+
+            //Act
+            cpu.Step(ref memory);
+
+            //Assert
+            Assert.AreEqual(0b10101111, cpu.Accumulator);
+            Assert.AreEqual(0, cpu.GetStatusRegisterFlag('Z'));
+            Assert.AreEqual(1, cpu.GetStatusRegisterFlag('N'));
+        }
+
+        [TestMethod]
+        public void EOR_Immediate_CorrectValueWritten()
+        {
+            //Arrange
+            CPU cpu = new CPU();
+
+            byte[] memory = new byte[65536];
+            memory[0x8000] = 0x49;
+            memory[0x8001] = 0b10101010;
+
+            cpu.ProgramCounter = 0x8000;
+            cpu.Accumulator = 0b11110000;
+
+            //Act
+            cpu.Step(ref memory);
+
+            //Assert
+            Assert.AreEqual(0b01011010, cpu.Accumulator);
+            Assert.AreEqual(0, cpu.GetStatusRegisterFlag('Z'));
+            Assert.AreEqual(0, cpu.GetStatusRegisterFlag('N'));
+        }
+
+        [TestMethod]
+        public void EOR_ZeroPage_CorrectValueWritten()
+        {
+            //Arrange
+            CPU cpu = new CPU();
+
+            byte[] memory = new byte[65536];
+            memory[0x8000] = 0x45;
+            memory[0x8001] = 0xAB;
+            memory[0x00AB] = 0b10101010;
+
+            cpu.ProgramCounter = 0x8000;
+            cpu.Accumulator = 0b11110000;
+
+            //Act
+            cpu.Step(ref memory);
+
+            //Assert
+            Assert.AreEqual(0b01011010, cpu.Accumulator);
+            Assert.AreEqual(0, cpu.GetStatusRegisterFlag('Z'));
+            Assert.AreEqual(0, cpu.GetStatusRegisterFlag('N'));
+        }
+
+        [TestMethod]
+        public void EOR_ZeroPageX_CorrectValueWritten()
+        {
+            //Arrange
+            CPU cpu = new CPU();
+
+            byte[] memory = new byte[65536];
+            memory[0x8000] = 0x55;
+            memory[0x8001] = 0xAB;
+            memory[0x00AC] = 0b10101010;
+
+            cpu.ProgramCounter = 0x8000;
+            cpu.Accumulator = 0b11110000;
+            cpu.XRegister = 0x01;
+
+            //Act
+            cpu.Step(ref memory);
+
+            //Assert
+            Assert.AreEqual(0b01011010, cpu.Accumulator);
+            Assert.AreEqual(0, cpu.GetStatusRegisterFlag('Z'));
+            Assert.AreEqual(0, cpu.GetStatusRegisterFlag('N'));
+        }
+
+        [TestMethod]
+        public void EOR_Absolute_CorrectValueWritten()
+        {
+            //Arrange
+            CPU cpu = new CPU();
+
+            byte[] memory = new byte[65536];
+            memory[0x8000] = 0x4D;
+            memory[0x8001] = 0xCD;
+            memory[0x8002] = 0xAB;
+            memory[0xABCD] = 0b10101010;
+
+            cpu.ProgramCounter = 0x8000;
+            cpu.Accumulator = 0b11110000;
+
+            //Act
+            cpu.Step(ref memory);
+
+            //Assert
+            Assert.AreEqual(0b01011010, cpu.Accumulator);
+            Assert.AreEqual(0, cpu.GetStatusRegisterFlag('Z'));
+            Assert.AreEqual(0, cpu.GetStatusRegisterFlag('N'));
+        }
+
+        [TestMethod]
+        public void EOR_AbsoluteX_CorrectValueWritten()
+        {
+            //Arrange
+            CPU cpu = new CPU();
+
+            byte[] memory = new byte[65536];
+            memory[0x8000] = 0x5D;
+            memory[0x8001] = 0xCD;
+            memory[0x8002] = 0xAB;
+            memory[0xABCE] = 0b10101010;
+
+            cpu.ProgramCounter = 0x8000;
+            cpu.Accumulator = 0b11110000;
+            cpu.XRegister = 0x01;
+
+            //Act
+            cpu.Step(ref memory);
+
+            //Assert
+            Assert.AreEqual(0b01011010, cpu.Accumulator);
+            Assert.AreEqual(0, cpu.GetStatusRegisterFlag('Z'));
+            Assert.AreEqual(0, cpu.GetStatusRegisterFlag('N'));
+        }
+
+        [TestMethod]
+        public void EOR_AbsoluteY_CorrectValueWritten()
+        {
+            //Arrange
+            CPU cpu = new CPU();
+
+            byte[] memory = new byte[65536];
+            memory[0x8000] = 0x59;
+            memory[0x8001] = 0xCD;
+            memory[0x8002] = 0xAB;
+            memory[0xABCE] = 0b10101010;
+
+            cpu.ProgramCounter = 0x8000;
+            cpu.Accumulator = 0b00001111;
+            cpu.YRegister = 0x01;
+
+            //Act
+            cpu.Step(ref memory);
+
+            //Assert
+            Assert.AreEqual(0b10100101, cpu.Accumulator);
+            Assert.AreEqual(0, cpu.GetStatusRegisterFlag('Z'));
+            Assert.AreEqual(1, cpu.GetStatusRegisterFlag('N'));
+        }
+
+        [TestMethod]
+        public void EOR_IndexedIndirect_CorrectValueWritten()
+        {
+            //Arrange
+            CPU cpu = new CPU();
+
+            byte[] memory = new byte[65536];
+            memory[0x8000] = 0x41;
+            memory[0x8001] = 0xCC;
+            memory[0x00CD] = 0x34;
+            memory[0x00CE] = 0x12;
+            memory[0x1234] = 0b00000001;
+
+            cpu.ProgramCounter = 0x8000;
+            cpu.Accumulator = 0b00001111;
+            cpu.XRegister = 0x01;
+
+            //Act
+            cpu.Step(ref memory);
+
+            //Assert
+            Assert.AreEqual(0b00001110, cpu.Accumulator);
+            Assert.AreEqual(0, cpu.GetStatusRegisterFlag('Z'));
+            Assert.AreEqual(0, cpu.GetStatusRegisterFlag('N'));
+        }
+
+        [TestMethod]
+        public void EOR_IndirectIndexed_CorrectValueWritten()
+        {
+            //Arrange
+            CPU cpu = new CPU();
+
+            byte[] memory = new byte[65536];
+            memory[0x8000] = 0x51;
+            memory[0x8001] = 0xCD;
+            memory[0x00CD] = 0xCD;
+            memory[0x00CE] = 0xAB;
+            memory[0xABCE] = 0b10101010;
+
+            cpu.ProgramCounter = 0x8000;
+            cpu.Accumulator = 0b00001111;
+            cpu.YRegister = 0x01;
+
+            //Act
+            cpu.Step(ref memory);
+
+            //Assert
+            Assert.AreEqual(0b10100101, cpu.Accumulator);
+            Assert.AreEqual(0, cpu.GetStatusRegisterFlag('Z'));
+            Assert.AreEqual(1, cpu.GetStatusRegisterFlag('N'));
+        }
+
+        [TestMethod]
+        public void BIT_ZeroPage_CorrectValueWritten()
+        {
+            //Arrange
+            CPU cpu = new CPU();
+
+            byte[] memory = new byte[65536];
+            memory[0x8000] = 0x24;
+            memory[0x8001] = 0xCD;
+            memory[0x00CD] = 0b01010101;
+
+            cpu.ProgramCounter = 0x8000;
+            cpu.Accumulator = 0b11110000;
+
+            //Act
+            cpu.Step(ref memory);
+
+            //Assert
+            Assert.AreEqual(0, cpu.GetStatusRegisterFlag('Z'));
+            Assert.AreEqual(1, cpu.GetStatusRegisterFlag('V'));
+            Assert.AreEqual(0, cpu.GetStatusRegisterFlag('N'));
+        }
+
+        [TestMethod]
+        public void BIT_Absolute_CorrectValueWritten()
+        {
+            //Arrange
+            CPU cpu = new CPU();
+
+            byte[] memory = new byte[65536];
+            memory[0x8000] = 0x2C;
+            memory[0x8001] = 0xCD;
+            memory[0x8002] = 0xAB;
+            memory[0xABCD] = 0b10101010;
+
+            cpu.ProgramCounter = 0x8000;
+            cpu.Accumulator = 0b00000000;
+
+            //Act
+            cpu.Step(ref memory);
+
+            //Assert
+            Assert.AreEqual(1, cpu.GetStatusRegisterFlag('Z'));
+            Assert.AreEqual(0, cpu.GetStatusRegisterFlag('V'));
+            Assert.AreEqual(1, cpu.GetStatusRegisterFlag('N'));
+        }
     }
 }

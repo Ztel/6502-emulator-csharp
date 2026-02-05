@@ -672,25 +672,46 @@
         //Bitwise AND - Perform an AND between a value and the accumulator.
         private void AND(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
+            Accumulator = isDirectValue ? (byte)(Accumulator & data) : (byte)(Accumulator & memory[data]);
 
+            SetStatusRegisterFlag('Z', Accumulator == 0);
+            SetStatusRegisterFlag('N', IsNegative(Accumulator));
+
+            ProgramCounter += (ushort)(operands + 1);
         }
 
         //Bitwise OR - Perform an inclusive OR between a value and the accumulator.
         private void ORA(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
+            Accumulator = isDirectValue ? (byte)(Accumulator | data) : (byte)(Accumulator | memory[data]);
 
+            SetStatusRegisterFlag('Z', Accumulator == 0);
+            SetStatusRegisterFlag('N', IsNegative(Accumulator));
+
+            ProgramCounter += (ushort)(operands + 1);
         }
 
         //Bitwise Exclusive OR - Perform an exclusive OR between a value and the accumulator.
         private void EOR(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
+            Accumulator = isDirectValue ? (byte)(Accumulator ^ data) : (byte)(Accumulator ^ memory[data]);
 
+            SetStatusRegisterFlag('Z', Accumulator == 0);
+            SetStatusRegisterFlag('N', IsNegative(Accumulator));
+
+            ProgramCounter += (ushort)(operands + 1);
         }
 
         //Bit Test - Perform an AND without modifying the accumulator, only setting status register flags.
         private void BIT(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
+            byte value = memory[data];
 
+            SetStatusRegisterFlag('Z', (Accumulator & value) == 0);
+            SetStatusRegisterFlag('V', (value & 0b01000000) >> 6 == 1);
+            SetStatusRegisterFlag('N', IsNegative(value));
+
+            ProgramCounter += (ushort)(operands + 1);
         }
 
         //Compare A - Compare the accumulator to a value.
