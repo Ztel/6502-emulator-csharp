@@ -378,7 +378,7 @@
         //Store A - Stores the value of the accumulator into memory.
         private void STA(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
-            memory[data] = Accumulator;
+            Write(ref memory, data, Accumulator);
 
             ProgramCounter += (ushort)(operands + 1);
         }
@@ -397,7 +397,7 @@
         //Store X - Stores the value of the X register into memory.
         private void STX(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
-            memory[data] = XRegister;
+            Write(ref memory, data, XRegister);
 
             ProgramCounter += (ushort)(operands + 1);
         }
@@ -416,7 +416,7 @@
         //Store Y - Stores the value of the Y register into memory.
         private void STY(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
-            memory[data] = YRegister;
+            Write(ref memory, data, YRegister);
 
             ProgramCounter += (ushort)(operands + 1);
         }
@@ -504,7 +504,7 @@
         //Increment Memory - Add 1 to a value in memory.
         private void INC(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
-            memory[data]++;
+            Write(ref memory, data, (byte)(memory[data] + 1));
 
             SetStatusRegisterFlag('Z', memory[data] == 0);
             SetStatusRegisterFlag('N', IsNegative(memory[data]));
@@ -515,7 +515,7 @@
         //Decrement Memory - Subtract 1 from a value in memory.
         private void DEC(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
-            memory[data]--;
+            Write(ref memory, data, (byte)(memory[data] - 1));
 
             SetStatusRegisterFlag('Z', memory[data] == 0);
             SetStatusRegisterFlag('N', IsNegative(memory[data]));
@@ -582,7 +582,7 @@
             }
             else
             {
-                memory[data] = value;
+                Write(ref memory, data, value);
             }
 
             SetStatusRegisterFlag('Z', value == 0);
@@ -606,7 +606,7 @@
             }
             else
             {
-                memory[data] = value;
+                Write(ref memory, data, value);
             }
 
             SetStatusRegisterFlag('Z', value == 0);
@@ -633,7 +633,7 @@
             }
             else
             {
-                memory[data] = value;
+                Write(ref memory, data, value);
             }
 
             SetStatusRegisterFlag('Z', value == 0);
@@ -660,7 +660,7 @@
             }
             else
             {
-                memory[data] = value;
+                Write(ref memory, data, value);
             }
 
             SetStatusRegisterFlag('Z', value == 0);
@@ -912,6 +912,14 @@
             (ushort, int, bool) data = operands(ref memory); //Item1 is the data byte, Item2 is the number of operand bytes processed.
 
             operation(ref memory, ref data.Item1, data.Item2, data.Item3);
+        }
+
+        private void Write(ref byte[] memory, int index, byte value)
+        {
+            if(index < 0x8000 || index > 0xFFFF)
+            {
+                memory[index] = value;
+            }
         }
 
         //Returns the current value of a specific flag bit within the status register.
