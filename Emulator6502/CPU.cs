@@ -98,7 +98,7 @@
         {
             ushort sourceLocation = (ushort)(memory[ProgramCounter + 2] * 256 + memory[ProgramCounter + 1]);
 
-            ushort destinationAddress = (ushort)(memory[sourceLocation + 1] * 256 + memory[sourceLocation + 1]);
+            ushort destinationAddress = (ushort)(memory[sourceLocation + 1] * 256 + memory[sourceLocation]);
 
             return (destinationAddress, 2, false);
         }
@@ -801,31 +801,56 @@
         //Jump - Execute code from a new location.
         private void JMP(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
-
+            ProgramCounter = data;
         }
 
         //Jump to Subroutine - Push the program counter to the stack, then execute code from a new location.
         private void JSR(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
+            StackPush(ref memory, (byte)((ProgramCounter + 2) >> 8));
+            StackPush(ref memory, (byte)((ProgramCounter + 2) & 0x00FF));
 
+            ProgramCounter = data;
         }
 
         //Return from Subroutine - Pull an address from the stack, then jump to that location plus 1.
         private void RTS(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
+            byte destinationLower = StackPull(ref memory);
+            byte destinationUpper = StackPull(ref memory);
 
+            ushort destinationAddress = (ushort)(destinationUpper * 256 + destinationLower + 1);
+
+            ProgramCounter = destinationAddress;
         }
 
         //Break - Trigger an IRQ (Interrupt Request).
         private void BRK(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
+            StackPush(ref memory, (byte)((ProgramCounter + 2) >> 8));
+            StackPush(ref memory, (byte)((ProgramCounter + 2) & 0x00FF));
+            StackPush(ref memory, (byte)(StatusRegister | 0b00110000));
 
+            SetStatusRegisterFlag('I', true);
+
+            byte destinationLower = memory[0xFFFE];
+            byte destinationUpper = memory[0xFFFF];
+
+            ushort destinationAddress = (ushort)(destinationUpper * 256 + destinationLower);
+
+            ProgramCounter = destinationAddress;
         }
 
         //Return from Interrupt - Pull CPU state from the stack, then resume execution using those values.
         private void RTI(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
+            StatusRegister = (byte)(StackPull(ref memory) & 0b11001111);
+            byte destinationLower = StackPull(ref memory);
+            byte destinationUpper = StackPull(ref memory);
 
+            ushort destinationAddress = (ushort)(destinationUpper * 256 + destinationLower);
+
+            ProgramCounter = destinationAddress;
         }
 
         //Push A - Push the value of the accumulator to the stack.
@@ -978,6 +1003,24 @@
             'C' => 0b00000001, //Carry Flag
             _ => throw new ArgumentException(String.Format("{0} is not a valid status register flag.", flag)),
         };
+
+        private void StackPush(ref byte[] memory, byte value)
+        {
+            ushort sourceAddress = (ushort)(0x0100 + StackPointer);
+
+            memory[sourceAddress] = value;
+
+            StackPointer--;
+        }
+
+        private byte StackPull(ref byte[] memory)
+        {
+            StackPointer++;
+
+            ushort sourceAddress = (ushort)(0x0100 + StackPointer);
+
+            return memory[sourceAddress];
+        }
 
         //Checks if an unsigned byte is negative (the 7th bit is set).
         bool IsNegative(byte value)

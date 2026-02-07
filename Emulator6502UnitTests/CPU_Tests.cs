@@ -3121,5 +3121,145 @@ namespace Emulator6502UnitTests
             //Assert
             Assert.AreEqual(0x7FFE, cpu.ProgramCounter);
         }
+
+        [TestMethod]
+        public void JMP_Absolute_CorrectAddressLocated()
+        {
+            //Arrange
+            CPU cpu = new CPU();
+
+            byte[] memory = new byte[65536];
+            memory[0x8000] = 0x4C;
+            memory[0x8001] = 0xCD;
+            memory[0x8002] = 0xAB;
+
+            cpu.ProgramCounter = 0x8000;
+
+            //Act
+            cpu.Step(ref memory);
+
+            //Assert
+            Assert.AreEqual(0xABCD, cpu.ProgramCounter);
+        }
+
+        [TestMethod]
+        public void JMP_Indirect_CorrectAddressLocated()
+        {
+            //Arrange
+            CPU cpu = new CPU();
+
+            byte[] memory = new byte[65536];
+            memory[0x8000] = 0x6C;
+            memory[0x8001] = 0x34;
+            memory[0x8002] = 0x12;
+            memory[0x1234] = 0xCD;
+            memory[0x1235] = 0xAB;
+
+            cpu.ProgramCounter = 0x8000;
+
+            //Act
+            cpu.Step(ref memory);
+
+            //Assert
+            Assert.AreEqual(0xABCD, cpu.ProgramCounter);
+        }
+
+        [TestMethod]
+        public void JSR_Absolute_CorrectAddressLocated()
+        {
+            //Arrange
+            CPU cpu = new CPU();
+
+            byte[] memory = new byte[65536];
+            memory[0x8000] = 0x20;
+            memory[0x8001] = 0x34;
+            memory[0x8002] = 0x12;
+
+            cpu.ProgramCounter = 0x8000;
+            cpu.StackPointer = 0xFF;
+
+            //Act
+            cpu.Step(ref memory);
+
+            //Assert
+            Assert.AreEqual(0x1234, cpu.ProgramCounter);
+            Assert.AreEqual(0xFD, cpu.StackPointer);
+            Assert.AreEqual(0x80, memory[0x01FF]);
+            Assert.AreEqual(0x02, memory[0x01FE]);
+        }
+
+        [TestMethod]
+        public void RTS_Implied_CorrectAddressLocated()
+        {
+            //Arrange
+            CPU cpu = new CPU();
+
+            byte[] memory = new byte[65536];
+            memory[0x8000] = 0x60;
+            memory[0x01FE] = 0x02;
+            memory[0x01FF] = 0x80;
+
+            cpu.ProgramCounter = 0x8000;
+            cpu.StackPointer = 0xFD;
+
+            //Act
+            cpu.Step(ref memory);
+
+            //Assert
+            Assert.AreEqual(0x8003, cpu.ProgramCounter);
+            Assert.AreEqual(0xFF, cpu.StackPointer);
+        }
+
+        [TestMethod]
+        public void BRK_Implied_CorrectStatusSet()
+        {
+            //Arrange
+            CPU cpu = new CPU();
+
+            byte[] memory = new byte[65536];
+            memory[0x8000] = 0x00;
+            memory[0xFFFE] = 0xFF;
+            memory[0xFFFF] = 0x80;
+
+            cpu.ProgramCounter = 0x8000;
+            cpu.StackPointer = 0xFF;
+            cpu.SetStatusRegisterFlag('N', true);
+            cpu.SetStatusRegisterFlag('C', true);
+
+            //Act
+            cpu.Step(ref memory);
+
+            //Assert
+            Assert.AreEqual(0x80FF, cpu.ProgramCounter);
+            Assert.AreEqual(0xFC, cpu.StackPointer);
+            Assert.AreEqual(0x80, memory[0x01FF]);
+            Assert.AreEqual(0x02, memory[0x01FE]);
+            Assert.AreEqual(0b10000101, cpu.StatusRegister);
+            Assert.AreEqual(0b10110001, memory[0x01FD]);
+        }
+
+        [TestMethod]
+        public void RTI_Implied_CorrectStatusSet()
+        {
+            //Arrange
+            CPU cpu = new CPU();
+
+            byte[] memory = new byte[65536];
+            memory[0x8000] = 0x40;
+            memory[0x01FD] = 0b10110001;
+            memory[0x01FE] = 0xFF;
+            memory[0x01FF] = 0x80;
+
+            cpu.ProgramCounter = 0x8000;
+            cpu.StackPointer = 0xFC;
+
+            //Act
+            cpu.Step(ref memory);
+
+            //Assert
+            Assert.AreEqual(0x80FF, cpu.ProgramCounter);
+            Assert.AreEqual(0xFF, cpu.StackPointer);
+            Assert.AreEqual(0b10000001, cpu.StatusRegister);
+        }
     }
 }
