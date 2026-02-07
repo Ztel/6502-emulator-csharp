@@ -134,7 +134,7 @@
 
         private (ushort, int, bool) Relative(ref byte[] memory)
         {
-            ushort destinationAddress = (ushort)(ProgramCounter + (sbyte)memory[ProgramCounter] + 2);
+            ushort destinationAddress = (ushort)(ProgramCounter + (sbyte)memory[ProgramCounter + 1] + 2);
 
             return (destinationAddress, 1, false);
         }
@@ -753,49 +753,49 @@
         //Branch if Carry Clear - Branch to an offset location if the carry flag is clear.
         private void BCC(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
-
+            ProgramCounter = GetStatusRegisterFlag('C') == 0 ? data : (ushort)(ProgramCounter + operands + 1);
         }
 
         //Branch if Carry Set - Branch to an offset location if the carry flag is set.
         private void BCS(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
-
+            ProgramCounter = GetStatusRegisterFlag('C') == 1 ? data : (ushort)(ProgramCounter + operands + 1);
         }
 
         //Branch if Equal - Branch to an offset location if the zero flag is set.
         private void BEQ(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
-
+            ProgramCounter = GetStatusRegisterFlag('Z') == 1 ? data : (ushort)(ProgramCounter + operands + 1);
         }
 
         //Branch if Not Equal - Branch to an offset location if the zero flag is clear.
         private void BNE(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
-
+            ProgramCounter = GetStatusRegisterFlag('Z') == 0 ? data : (ushort)(ProgramCounter + operands + 1);
         }
 
         //Branch if Plus - Branch to an offset location if the negative flag is clear.
         private void BPL(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
-
+            ProgramCounter = GetStatusRegisterFlag('N') == 0 ? data : (ushort)(ProgramCounter + operands + 1);
         }
 
         //Branch if Minus - Branch to an offset location if the negative flag is set.
         private void BMI(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
-
+            ProgramCounter = GetStatusRegisterFlag('N') == 1 ? data : (ushort)(ProgramCounter + operands + 1);
         }
 
         //Branch if Overflow Clear - Branch to an offset location if the overflow flag is clear.
         private void BVC(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
-
+            ProgramCounter = GetStatusRegisterFlag('V') == 0 ? data : (ushort)(ProgramCounter + operands + 1);
         }
 
         //Branch if Overflow Set - Branch to an offset location if the overflow flag is set.
         private void BVS(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
-
+            ProgramCounter = GetStatusRegisterFlag('V') == 1 ? data : (ushort)(ProgramCounter + operands + 1);
         }
 
         //Jump - Execute code from a new location.

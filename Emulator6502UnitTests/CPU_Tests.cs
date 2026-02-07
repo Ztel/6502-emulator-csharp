@@ -2583,7 +2583,7 @@ namespace Emulator6502UnitTests
         }
 
         [TestMethod]
-        public void BIT_ZeroPage_CorrectValueWritten()
+        public void BIT_ZeroPage_CorrectFlagsSet()
         {
             //Arrange
             CPU cpu = new CPU();
@@ -2606,7 +2606,7 @@ namespace Emulator6502UnitTests
         }
 
         [TestMethod]
-        public void BIT_Absolute_CorrectValueWritten()
+        public void BIT_Absolute_CorrectFlagsSet()
         {
             //Arrange
             CPU cpu = new CPU();
@@ -2630,7 +2630,7 @@ namespace Emulator6502UnitTests
         }
 
         [TestMethod]
-        public void CMP_Immediate_CorrectValueWritten()
+        public void CMP_Immediate_CorrectFlagsSet()
         {
             //Arrange
             CPU cpu = new CPU();
@@ -2652,7 +2652,7 @@ namespace Emulator6502UnitTests
         }
 
         [TestMethod]
-        public void CMP_ZeroPage_CorrectValueWritten()
+        public void CMP_ZeroPage_CorrectFlagsSet()
         {
             //Arrange
             CPU cpu = new CPU();
@@ -2675,7 +2675,7 @@ namespace Emulator6502UnitTests
         }
 
         [TestMethod]
-        public void CMP_ZeroPageX_CorrectValueWritten()
+        public void CMP_ZeroPageX_CorrectFlagsSet()
         {
             //Arrange
             CPU cpu = new CPU();
@@ -2699,7 +2699,7 @@ namespace Emulator6502UnitTests
         }
 
         [TestMethod]
-        public void CMP_Absolute_CorrectValueWritten()
+        public void CMP_Absolute_CorrectFlagsSet()
         {
             //Arrange
             CPU cpu = new CPU();
@@ -2723,7 +2723,7 @@ namespace Emulator6502UnitTests
         }
 
         [TestMethod]
-        public void CMP_AbsoluteX_CorrectValueWritten()
+        public void CMP_AbsoluteX_CorrectFlagsSet()
         {
             //Arrange
             CPU cpu = new CPU();
@@ -2748,7 +2748,7 @@ namespace Emulator6502UnitTests
         }
 
         [TestMethod]
-        public void CMP_AbsoluteY_CorrectValueWritten()
+        public void CMP_AbsoluteY_CorrectFlagsSet()
         {
             //Arrange
             CPU cpu = new CPU();
@@ -2773,7 +2773,7 @@ namespace Emulator6502UnitTests
         }
 
         [TestMethod]
-        public void CMP_IndexedIndirect_CorrectValueWritten()
+        public void CMP_IndexedIndirect_CorrectFlagsSet()
         {
             //Arrange
             CPU cpu = new CPU();
@@ -2799,7 +2799,7 @@ namespace Emulator6502UnitTests
         }
 
         [TestMethod]
-        public void CMP_IndirectIndexed_CorrectValueWritten()
+        public void CMP_IndirectIndexed_CorrectFlagsSet()
         {
             //Arrange
             CPU cpu = new CPU();
@@ -2825,7 +2825,7 @@ namespace Emulator6502UnitTests
         }
 
         [TestMethod]
-        public void CPX_Immediate_CorrectValueWritten()
+        public void CPX_Immediate_CorrectFlagsSet()
         {
             //Arrange
             CPU cpu = new CPU();
@@ -2847,7 +2847,7 @@ namespace Emulator6502UnitTests
         }
 
         [TestMethod]
-        public void CPX_ZeroPage_CorrectValueWritten()
+        public void CPX_ZeroPage_CorrectFlagsSet()
         {
             //Arrange
             CPU cpu = new CPU();
@@ -2870,7 +2870,7 @@ namespace Emulator6502UnitTests
         }
 
         [TestMethod]
-        public void CPX_Absolute_CorrectValueWritten()
+        public void CPX_Absolute_CorrectFlagsSet()
         {
             //Arrange
             CPU cpu = new CPU();
@@ -2894,7 +2894,7 @@ namespace Emulator6502UnitTests
         }
 
         [TestMethod]
-        public void CPY_Immediate_CorrectValueWritten()
+        public void CPY_Immediate_CorrectFlagsSet()
         {
             //Arrange
             CPU cpu = new CPU();
@@ -2916,7 +2916,7 @@ namespace Emulator6502UnitTests
         }
 
         [TestMethod]
-        public void CPY_ZeroPage_CorrectValueWritten()
+        public void CPY_ZeroPage_CorrectFlagsSet()
         {
             //Arrange
             CPU cpu = new CPU();
@@ -2939,7 +2939,7 @@ namespace Emulator6502UnitTests
         }
 
         [TestMethod]
-        public void CPY_Absolute_CorrectValueWritten()
+        public void CPY_Absolute_CorrectFlagsSet()
         {
             //Arrange
             CPU cpu = new CPU();
@@ -2960,6 +2960,166 @@ namespace Emulator6502UnitTests
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('C'));
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('Z'));
             Assert.AreEqual(1, cpu.GetStatusRegisterFlag('N'));
+        }
+
+        [TestMethod]
+        public void BCC_Relative_CorrectAddressLocated()
+        {
+            //Arrange
+            CPU cpu = new CPU();
+
+            byte[] memory = new byte[65536];
+            memory[0x8000] = 0x90;
+            memory[0x8001] = 0b10000000;
+
+            cpu.ProgramCounter = 0x8000;
+            cpu.SetStatusRegisterFlag('C', false);
+
+            //Act
+            cpu.Step(ref memory);
+
+            //Assert
+            Assert.AreEqual(0x7F82, cpu.ProgramCounter);
+        }
+
+        [TestMethod]
+        public void BCS_Relative_CorrectAddressLocated()
+        {
+            //Arrange
+            CPU cpu = new CPU();
+
+            byte[] memory = new byte[65536];
+            memory[0x8000] = 0xB0;
+            memory[0x8001] = 0b01111111;
+
+            cpu.ProgramCounter = 0x8000;
+            cpu.SetStatusRegisterFlag('C', true);
+
+            //Act
+            cpu.Step(ref memory);
+
+            //Assert
+            Assert.AreEqual(0x8081, cpu.ProgramCounter);
+        }
+
+        [TestMethod]
+        public void BEQ_Relative_CorrectAddressLocated()
+        {
+            //Arrange
+            CPU cpu = new CPU();
+
+            byte[] memory = new byte[65536];
+            memory[0x8000] = 0xF0;
+            memory[0x8001] = 0x02;
+
+            cpu.ProgramCounter = 0x8000;
+            cpu.SetStatusRegisterFlag('Z', true);
+
+            //Act
+            cpu.Step(ref memory);
+
+            //Assert
+            Assert.AreEqual(0x8004, cpu.ProgramCounter);
+        }
+
+        [TestMethod]
+        public void BNE_Relative_CorrectAddressLocated()
+        {
+            //Arrange
+            CPU cpu = new CPU();
+
+            byte[] memory = new byte[65536];
+            memory[0x8000] = 0xD0;
+            memory[0x8001] = 0xFC;
+
+            cpu.ProgramCounter = 0x8000;
+            cpu.SetStatusRegisterFlag('Z', false);
+
+            //Act
+            cpu.Step(ref memory);
+
+            //Assert
+            Assert.AreEqual(0x7FFE, cpu.ProgramCounter);
+        }
+
+        [TestMethod]
+        public void BPL_Relative_CorrectAddressLocated()
+        {
+            //Arrange
+            CPU cpu = new CPU();
+
+            byte[] memory = new byte[65536];
+            memory[0x8000] = 0x10;
+            memory[0x8001] = 0xFC;
+
+            cpu.ProgramCounter = 0x8000;
+            cpu.SetStatusRegisterFlag('N', false);
+
+            //Act
+            cpu.Step(ref memory);
+
+            //Assert
+            Assert.AreEqual(0x7FFE, cpu.ProgramCounter);
+        }
+
+        [TestMethod]
+        public void BMI_Relative_CorrectAddressLocated()
+        {
+            //Arrange
+            CPU cpu = new CPU();
+
+            byte[] memory = new byte[65536];
+            memory[0x8000] = 0x30;
+            memory[0x8001] = 0xFC;
+
+            cpu.ProgramCounter = 0x8000;
+            cpu.SetStatusRegisterFlag('N', true);
+
+            //Act
+            cpu.Step(ref memory);
+
+            //Assert
+            Assert.AreEqual(0x7FFE, cpu.ProgramCounter);
+        }
+
+        [TestMethod]
+        public void BVC_Relative_CorrectAddressLocated()
+        {
+            //Arrange
+            CPU cpu = new CPU();
+
+            byte[] memory = new byte[65536];
+            memory[0x8000] = 0x50;
+            memory[0x8001] = 0xFC;
+
+            cpu.ProgramCounter = 0x8000;
+            cpu.SetStatusRegisterFlag('V', false);
+
+            //Act
+            cpu.Step(ref memory);
+
+            //Assert
+            Assert.AreEqual(0x7FFE, cpu.ProgramCounter);
+        }
+
+        [TestMethod]
+        public void BVS_Relative_CorrectAddressLocated()
+        {
+            //Arrange
+            CPU cpu = new CPU();
+
+            byte[] memory = new byte[65536];
+            memory[0x8000] = 0x70;
+            memory[0x8001] = 0xFC;
+
+            cpu.ProgramCounter = 0x8000;
+            cpu.SetStatusRegisterFlag('V', true);
+
+            //Act
+            cpu.Step(ref memory);
+
+            //Assert
+            Assert.AreEqual(0x7FFE, cpu.ProgramCounter);
         }
     }
 }
