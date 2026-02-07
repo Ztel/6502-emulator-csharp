@@ -717,19 +717,37 @@
         //Compare A - Compare the accumulator to a value.
         private void CMP(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
+            byte value = isDirectValue ? (byte)data : memory[data];
 
+            SetStatusRegisterFlag('C', Accumulator >= value);
+            SetStatusRegisterFlag('Z', Accumulator == value);
+            SetStatusRegisterFlag('N', IsNegative((byte)(Accumulator - value)));
+
+            ProgramCounter += (ushort)(operands + 1);
         }
 
         //Compare X - Compare the X register to a value.
         private void CPX(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
+            byte value = isDirectValue ? (byte)data : memory[data];
 
+            SetStatusRegisterFlag('C', XRegister >= value);
+            SetStatusRegisterFlag('Z', XRegister == value);
+            SetStatusRegisterFlag('N', IsNegative((byte)(XRegister - value)));
+
+            ProgramCounter += (ushort)(operands + 1);
         }
 
         //Compare Y - Compare the Y register to a value.
         private void CPY(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
+            byte value = isDirectValue ? (byte)data : memory[data];
 
+            SetStatusRegisterFlag('C', YRegister >= value);
+            SetStatusRegisterFlag('Z', YRegister == value);
+            SetStatusRegisterFlag('N', IsNegative((byte)(YRegister - value)));
+
+            ProgramCounter += (ushort)(operands + 1);
         }
 
         //Branch if Carry Clear - Branch to an offset location if the carry flag is clear.
