@@ -1,4 +1,6 @@
-﻿namespace Emulator6502
+﻿using System.Xml.Serialization;
+
+namespace Emulator6502
 {
     public class CPU
     {
@@ -856,85 +858,117 @@
         //Push A - Push the value of the accumulator to the stack.
         private void PHA(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
+            StackPush(ref memory, Accumulator);
 
+            ProgramCounter += (ushort)(operands + 1);
         }
 
         //Pull A - Pull from the stack and set the accumulator to that value.
         private void PLA(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
+            Accumulator = StackPull(ref memory);
 
+            SetStatusRegisterFlag('Z', Accumulator == 0);
+            SetStatusRegisterFlag('N', IsNegative(Accumulator));
+
+            ProgramCounter += (ushort)(operands + 1);
         }
 
         //Push Processor Status - Push the value of the status register to the stack.
         private void PHP(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
+            StackPush(ref memory, (byte)(StatusRegister | 0b00110000));
 
+            ProgramCounter += (ushort)(operands + 1);
         }
 
         //Pull Processor Status - Pull from the stack and set the status register to that value.
         private void PLP(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
+            StatusRegister = (byte)((StackPull(ref memory) & 0b11001111) | (StatusRegister & 0b00110000));
 
+            ProgramCounter += (ushort)(operands + 1);
         }
 
         //Transfer X to Stack Pointer - Copy the value of the X register to the stack pointer.
         private void TXS(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
+            StackPointer = XRegister;
 
+            ProgramCounter += (ushort)(operands + 1);
         }
 
         //Transfer Stack Pointer to X - Copy the value of the stack pointer to the X register.
         private void TSX(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
+            XRegister = StackPointer;
 
+            SetStatusRegisterFlag('Z', XRegister == 0);
+            SetStatusRegisterFlag('N', IsNegative(XRegister));
+
+            ProgramCounter += (ushort)(operands + 1);
         }
 
         //Clear Carry - Set the carry flag bit to 0.
         private void CLC(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
+            SetStatusRegisterFlag('C', false);
 
+            ProgramCounter += (ushort)(operands + 1);
         }
 
         //Set Carry - Set the carry flag bit to 1.
         private void SEC(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
+            SetStatusRegisterFlag('C', true);
 
+            ProgramCounter += (ushort)(operands + 1);
         }
 
         //Clear Interrupt Disable - Set the interrupt disable flag bit to 0.
         private void CLI(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
+            SetStatusRegisterFlag('I', false);
 
+            ProgramCounter += (ushort)(operands + 1);
         }
 
         //Set Interrupt Disable - Set the interrupt disable flag bit to 1.
         private void SEI(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
+            SetStatusRegisterFlag('I', true);
 
+            ProgramCounter += (ushort)(operands + 1);
         }
 
         //Clear Decimal - Set the decimal mode flag bit to 0.
         private void CLD(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
+            SetStatusRegisterFlag('D', false);
 
+            ProgramCounter += (ushort)(operands + 1);
         }
 
         //Set Decimal - Set the decimal mode flag bit to 1.
         private void SED(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
+            SetStatusRegisterFlag('D', true);
 
+            ProgramCounter += (ushort)(operands + 1);
         }
 
         //Clear Overflow - Set the overflow flag bit to 0.
         private void CLV(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
+            SetStatusRegisterFlag('V', false);
 
+            ProgramCounter += (ushort)(operands + 1);
         }
 
         //No Operation - Do nothing.
         private void NOP(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
         {
-
+            ProgramCounter += (ushort)(operands + 1);
         }
 
 
