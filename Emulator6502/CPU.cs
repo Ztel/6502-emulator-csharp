@@ -1,15 +1,15 @@
-﻿using System.Xml.Serialization;
-
-namespace Emulator6502
+﻿namespace Emulator6502
 {
     public class CPU
     {
+        public byte[] Memory { get; set; } = new byte[65536];
+
         ////////////////////////////////////////
         ///           CPU REGISTERS          ///
         ////////////////////////////////////////  
 
         public ushort ProgramCounter { get; set; }          //Program Counter   (16-bit)
-                                                            //Holds the memory address of the current instruction.
+                                                            //Holds the Memory address of the current instruction.
 
         public byte Accumulator { get; set; }               //Accumulator       (8-bit)
                                                             //Primary register for use with arithmetic and logic instructions.
@@ -41,107 +41,107 @@ namespace Emulator6502
         ///          ADDRESSING MODES        ///
         ////////////////////////////////////////
 
-        private delegate (ushort, int, bool) TranslateOperands(ref byte[] memory);  //Addressing Mode Methods
+        private delegate (ushort, int, bool) TranslateOperands();  //Addressing Mode Methods
                                                                                     //Returns the data byte/s, the number of
                                                                                     //operand bytes processed, and whether
                                                                                     //or not the returned data is a direct
-                                                                                    //value (as opposed to a memory address).
+                                                                                    //value (as opposed to a Memory address).
 
-        private (ushort, int, bool) Immediate(ref byte[] memory)
+        private (ushort, int, bool) Immediate()
         {
-            ushort value = memory[ProgramCounter + 1];
+            ushort value = Memory[ProgramCounter + 1];
 
             return (value, 1, true);
         }
 
-        private (ushort, int, bool) ZeroPage(ref byte[] memory)
+        private (ushort, int, bool) ZeroPage()
         {
-            ushort destinationAddress = memory[ProgramCounter + 1];
+            ushort destinationAddress = Memory[ProgramCounter + 1];
 
             return (destinationAddress, 1, false);
         }
 
-        private (ushort, int, bool) ZeroPageX(ref byte[] memory)
+        private (ushort, int, bool) ZeroPageX()
         {
-            ushort destinationAddress = (ushort)((memory[ProgramCounter + 1] + XRegister) % 256);
+            ushort destinationAddress = (ushort)((Memory[ProgramCounter + 1] + XRegister) % 256);
 
             return (destinationAddress, 1, false);
         }
 
-        private (ushort, int, bool) ZeroPageY(ref byte[] memory)
+        private (ushort, int, bool) ZeroPageY()
         {
-            ushort destinationAddress = (ushort)((memory[ProgramCounter + 1] + YRegister) % 256);
+            ushort destinationAddress = (ushort)((Memory[ProgramCounter + 1] + YRegister) % 256);
 
             return (destinationAddress, 1, false);
         }
 
-        private (ushort, int, bool) Absolute(ref byte[] memory)
+        private (ushort, int, bool) Absolute()
         {
-            ushort destinationAddress = (ushort)(memory[ProgramCounter + 2] * 256 + memory[ProgramCounter + 1]);
+            ushort destinationAddress = (ushort)(Memory[ProgramCounter + 2] * 256 + Memory[ProgramCounter + 1]);
 
             return (destinationAddress, 2, false);
         }
 
-        private (ushort, int, bool) AbsoluteX(ref byte[] memory)
+        private (ushort, int, bool) AbsoluteX()
         {
-            ushort destinationAddress = (ushort)(memory[ProgramCounter + 2] * 256 + memory[ProgramCounter + 1] + XRegister);
+            ushort destinationAddress = (ushort)(Memory[ProgramCounter + 2] * 256 + Memory[ProgramCounter + 1] + XRegister);
 
             return (destinationAddress, 2, false);
         }
 
-        private (ushort, int, bool) AbsoluteY(ref byte[] memory)
+        private (ushort, int, bool) AbsoluteY()
         {
-            ushort destinationAddress = (ushort)(memory[ProgramCounter + 2] * 256 + memory[ProgramCounter + 1] + YRegister);
+            ushort destinationAddress = (ushort)(Memory[ProgramCounter + 2] * 256 + Memory[ProgramCounter + 1] + YRegister);
 
             return (destinationAddress, 2, false);
         }
 
-        private (ushort, int, bool) Indirect(ref byte[] memory)
+        private (ushort, int, bool) Indirect()
         {
-            ushort sourceLocation = (ushort)(memory[ProgramCounter + 2] * 256 + memory[ProgramCounter + 1]);
+            ushort sourceLocation = (ushort)(Memory[ProgramCounter + 2] * 256 + Memory[ProgramCounter + 1]);
 
-            ushort destinationAddress = (ushort)(memory[sourceLocation + 1] * 256 + memory[sourceLocation]);
+            ushort destinationAddress = (ushort)(Memory[sourceLocation + 1] * 256 + Memory[sourceLocation]);
 
             return (destinationAddress, 2, false);
         }
 
-        private (ushort, int, bool) IndexedIndirect(ref byte[] memory)
+        private (ushort, int, bool) IndexedIndirect()
         {
-            ushort sourceLocation = (ushort)((memory[ProgramCounter + 1] + XRegister) % 256);
+            ushort sourceLocation = (ushort)((Memory[ProgramCounter + 1] + XRegister) % 256);
 
-            byte destinationLower = memory[sourceLocation];
-            byte destinationUpper = memory[sourceLocation + 1];
+            byte destinationLower = Memory[sourceLocation];
+            byte destinationUpper = Memory[sourceLocation + 1];
 
             ushort destinationAddress = (ushort)(destinationUpper * 256 + destinationLower);
 
             return (destinationAddress, 1, false);
         }
 
-        private (ushort, int, bool) IndirectIndexed(ref byte[] memory)
+        private (ushort, int, bool) IndirectIndexed()
         {
-            ushort sourceLocation = memory[ProgramCounter + 1];
+            ushort sourceLocation = Memory[ProgramCounter + 1];
 
-            byte destinationLower = memory[sourceLocation];
-            byte destinationUpper = memory[sourceLocation + 1];
+            byte destinationLower = Memory[sourceLocation];
+            byte destinationUpper = Memory[sourceLocation + 1];
 
             ushort destinationAddress = (ushort)(destinationUpper * 256 + destinationLower + YRegister);
 
             return (destinationAddress, 1, false);
         }
 
-        private (ushort, int, bool) WithAccumulator(ref byte[] memory)
+        private (ushort, int, bool) WithAccumulator()
         {
             return (Accumulator, 0, true);
         }
 
-        private (ushort, int, bool) Relative(ref byte[] memory)
+        private (ushort, int, bool) Relative()
         {
-            ushort destinationAddress = (ushort)(ProgramCounter + (sbyte)memory[ProgramCounter + 1] + 2);
+            ushort destinationAddress = (ushort)(ProgramCounter + (sbyte)Memory[ProgramCounter + 1] + 2);
 
             return (destinationAddress, 1, false);
         }
 
-        private (ushort, int, bool) Implicit(ref byte[] memory)
+        private (ushort, int, bool) Implicit()
         {
             return (0, 0, false);
         }
@@ -152,7 +152,7 @@ namespace Emulator6502
         ///          CPU INSTRUCTIONS        ///
         ////////////////////////////////////////
 
-        private delegate void PerformOperation(ref byte[] memory, ref ushort data, int operands, bool isDirectValue);   //Instruction Methods
+        private delegate void PerformOperation(ushort data, int operands, bool isDirectValue);   //Instruction Methods
 
         private (PerformOperation, TranslateOperands) TranslateOpcode(byte opcode) => opcode switch
         {
@@ -367,9 +367,9 @@ namespace Emulator6502
         };
 
         //Load A - Loads a value into the accumulator.
-        private void LDA(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        private void LDA(ushort data, int operands, bool isDirectValue)
         {
-            Accumulator = isDirectValue ? (byte)data : memory[data];
+            Accumulator = isDirectValue ? (byte)data : Memory[data];
 
             SetStatusRegisterFlag('Z', Accumulator == 0);
             SetStatusRegisterFlag('N', IsNegative(Accumulator));
@@ -377,18 +377,18 @@ namespace Emulator6502
             ProgramCounter += (ushort)(operands + 1);
         }
 
-        //Store A - Stores the value of the accumulator into memory.
-        private void STA(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        //Store A - Stores the value of the accumulator into Memory.
+        private void STA(ushort data, int operands, bool isDirectValue)
         {
-            Write(ref memory, data, Accumulator);
+            Write(data, Accumulator);
 
             ProgramCounter += (ushort)(operands + 1);
         }
 
         //Load X - Loads a value into the X register.
-        private void LDX(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        private void LDX(ushort data, int operands, bool isDirectValue)
         {
-            XRegister = isDirectValue ? (byte)data : memory[data];
+            XRegister = isDirectValue ? (byte)data : Memory[data];
 
             SetStatusRegisterFlag('Z', XRegister == 0);
             SetStatusRegisterFlag('N', IsNegative(XRegister));
@@ -396,18 +396,18 @@ namespace Emulator6502
             ProgramCounter += (ushort)(operands + 1);
         }
 
-        //Store X - Stores the value of the X register into memory.
-        private void STX(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        //Store X - Stores the value of the X register into Memory.
+        private void STX(ushort data, int operands, bool isDirectValue)
         {
-            Write(ref memory, data, XRegister);
+            Write(data, XRegister);
 
             ProgramCounter += (ushort)(operands + 1);
         }
 
         //Load Y - Loads a value into the Y register.
-        private void LDY(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        private void LDY(ushort data, int operands, bool isDirectValue)
         {
-            YRegister = isDirectValue ? (byte)data : memory[data];
+            YRegister = isDirectValue ? (byte)data : Memory[data];
 
             SetStatusRegisterFlag('Z', YRegister == 0);
             SetStatusRegisterFlag('N', IsNegative(YRegister));
@@ -415,16 +415,16 @@ namespace Emulator6502
             ProgramCounter += (ushort)(operands + 1);
         }
 
-        //Store Y - Stores the value of the Y register into memory.
-        private void STY(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        //Store Y - Stores the value of the Y register into Memory.
+        private void STY(ushort data, int operands, bool isDirectValue)
         {
-            Write(ref memory, data, YRegister);
+            Write(data, YRegister);
 
             ProgramCounter += (ushort)(operands + 1);
         }
 
         //Transfer A to X - Copy the value of the accumulator into the X register. 
-        private void TAX(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        private void TAX(ushort data, int operands, bool isDirectValue)
         {
             XRegister = Accumulator;
 
@@ -435,7 +435,7 @@ namespace Emulator6502
         }
 
         //Transfer X to A - Copy the value of the X register into the accumulator.
-        private void TXA(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        private void TXA(ushort data, int operands, bool isDirectValue)
         {
             Accumulator = XRegister;
 
@@ -446,7 +446,7 @@ namespace Emulator6502
         }
 
         //Transfer A to Y - Copy the value of the accumulator into the Y register.
-        private void TAY(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        private void TAY(ushort data, int operands, bool isDirectValue)
         {
             YRegister = Accumulator;
 
@@ -457,7 +457,7 @@ namespace Emulator6502
         }
 
         //Transfer Y to A - Copy the value of the Y register into the accumulator.
-        private void TYA(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        private void TYA(ushort data, int operands, bool isDirectValue)
         {
             Accumulator = YRegister;
 
@@ -467,10 +467,10 @@ namespace Emulator6502
             ProgramCounter += (ushort)(operands + 1);
         }
 
-        //Add with Carry - Add the carry flag and a memory value to the accumulator.
-        private void ADC(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        //Add with Carry - Add the carry flag and a Memory value to the accumulator.
+        private void ADC(ushort data, int operands, bool isDirectValue)
         {
-            byte value = (isDirectValue) ? (byte)data : memory[data];
+            byte value = (isDirectValue) ? (byte)data : Memory[data];
             int carry = GetStatusRegisterFlag('C');
             int result = Accumulator + value + carry;
 
@@ -485,10 +485,10 @@ namespace Emulator6502
             ProgramCounter += (ushort)(operands + 1);
         }
 
-        //Subtract with Carry - Subtract a memory value and the NOT of the carry flag from the accumulator.
-        private void SBC(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        //Subtract with Carry - Subtract a Memory value and the NOT of the carry flag from the accumulator.
+        private void SBC(ushort data, int operands, bool isDirectValue)
         {
-            byte value = (isDirectValue) ? (byte)data : memory[data];
+            byte value = (isDirectValue) ? (byte)data : Memory[data];
             int carry = GetStatusRegisterFlag('C');
             int result = Accumulator + ~value + carry;
 
@@ -503,30 +503,30 @@ namespace Emulator6502
             ProgramCounter += (ushort)(operands + 1);
         }
 
-        //Increment Memory - Add 1 to a value in memory.
-        private void INC(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        //Increment Memory - Add 1 to a value in Memory.
+        private void INC(ushort data, int operands, bool isDirectValue)
         {
-            Write(ref memory, data, (byte)(memory[data] + 1));
+            Write(data, (byte)(Memory[data] + 1));
 
-            SetStatusRegisterFlag('Z', memory[data] == 0);
-            SetStatusRegisterFlag('N', IsNegative(memory[data]));
+            SetStatusRegisterFlag('Z', Memory[data] == 0);
+            SetStatusRegisterFlag('N', IsNegative(Memory[data]));
 
             ProgramCounter += (ushort)(operands + 1);
         }
 
-        //Decrement Memory - Subtract 1 from a value in memory.
-        private void DEC(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        //Decrement Memory - Subtract 1 from a value in Memory.
+        private void DEC(ushort data, int operands, bool isDirectValue)
         {
-            Write(ref memory, data, (byte)(memory[data] - 1));
+            Write(data, (byte)(Memory[data] - 1));
 
-            SetStatusRegisterFlag('Z', memory[data] == 0);
-            SetStatusRegisterFlag('N', IsNegative(memory[data]));
+            SetStatusRegisterFlag('Z', Memory[data] == 0);
+            SetStatusRegisterFlag('N', IsNegative(Memory[data]));
 
             ProgramCounter += (ushort)(operands + 1);
         }
 
         //Increment X - Add 1 to the X register.
-        private void INX(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        private void INX(ushort data, int operands, bool isDirectValue)
         {
             XRegister++;
 
@@ -537,7 +537,7 @@ namespace Emulator6502
         }
 
         //Decrement X - Subtract 1 from the X register.
-        private void DEX(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        private void DEX(ushort data, int operands, bool isDirectValue)
         {
             XRegister--;
 
@@ -548,7 +548,7 @@ namespace Emulator6502
         }
 
         //Increment Y - Add 1 to the Y register.
-        private void INY(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        private void INY(ushort data, int operands, bool isDirectValue)
         {
             YRegister++;
 
@@ -559,7 +559,7 @@ namespace Emulator6502
         }
 
         //Decrement Y - Subtract 1 from the Y register.
-        private void DEY(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        private void DEY(ushort data, int operands, bool isDirectValue)
         {
             YRegister--;
 
@@ -570,9 +570,9 @@ namespace Emulator6502
         }
 
         //Arithmetic Shift Left - Shift all bits of a value one position to the left and fill the open bit with 0.
-        private void ASL(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        private void ASL(ushort data, int operands, bool isDirectValue)
         {
-            byte value = isDirectValue ? (byte)data : memory[data];
+            byte value = isDirectValue ? (byte)data : Memory[data];
 
             SetStatusRegisterFlag('C', value >> 7 == 1);
 
@@ -584,7 +584,7 @@ namespace Emulator6502
             }
             else
             {
-                Write(ref memory, data, value);
+                Write(data, value);
             }
 
             SetStatusRegisterFlag('Z', value == 0);
@@ -594,9 +594,9 @@ namespace Emulator6502
         }
 
         //Logical Shift Right - Shift all bits of a value one position to the right and fill the open bit with 0.
-        private void LSR(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        private void LSR(ushort data, int operands, bool isDirectValue)
         {
-            byte value = isDirectValue ? (byte)data : memory[data];
+            byte value = isDirectValue ? (byte)data : Memory[data];
 
             SetStatusRegisterFlag('C', (value & 0b00000001) == 1);
 
@@ -608,7 +608,7 @@ namespace Emulator6502
             }
             else
             {
-                Write(ref memory, data, value);
+                Write(data, value);
             }
 
             SetStatusRegisterFlag('Z', value == 0);
@@ -618,9 +618,9 @@ namespace Emulator6502
         }
 
         //Rotate Left - Shift all bits of a value one position to the left and fill the open bit with the carry flag.
-        private void ROL(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        private void ROL(ushort data, int operands, bool isDirectValue)
         {
-            byte value = isDirectValue ? (byte)data : memory[data];
+            byte value = isDirectValue ? (byte)data : Memory[data];
 
             bool carry = value >> 7 == 1;
 
@@ -635,7 +635,7 @@ namespace Emulator6502
             }
             else
             {
-                Write(ref memory, data, value);
+                Write(data, value);
             }
 
             SetStatusRegisterFlag('Z', value == 0);
@@ -645,9 +645,9 @@ namespace Emulator6502
         }
 
         //Rotate Right - Shift all bits of a value one position to the right and fill the open bit with the carry flag.
-        private void ROR(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        private void ROR(ushort data, int operands, bool isDirectValue)
         {
-            byte value = isDirectValue ? (byte)data : memory[data];
+            byte value = isDirectValue ? (byte)data : Memory[data];
 
             bool carry = (value & 0b00000001) == 1;
 
@@ -662,7 +662,7 @@ namespace Emulator6502
             }
             else
             {
-                Write(ref memory, data, value);
+                Write(data, value);
             }
 
             SetStatusRegisterFlag('Z', value == 0);
@@ -672,9 +672,9 @@ namespace Emulator6502
         }
 
         //Bitwise AND - Perform an AND between a value and the accumulator.
-        private void AND(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        private void AND(ushort data, int operands, bool isDirectValue)
         {
-            Accumulator = isDirectValue ? (byte)(Accumulator & data) : (byte)(Accumulator & memory[data]);
+            Accumulator = isDirectValue ? (byte)(Accumulator & data) : (byte)(Accumulator & Memory[data]);
 
             SetStatusRegisterFlag('Z', Accumulator == 0);
             SetStatusRegisterFlag('N', IsNegative(Accumulator));
@@ -683,9 +683,9 @@ namespace Emulator6502
         }
 
         //Bitwise OR - Perform an inclusive OR between a value and the accumulator.
-        private void ORA(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        private void ORA(ushort data, int operands, bool isDirectValue)
         {
-            Accumulator = isDirectValue ? (byte)(Accumulator | data) : (byte)(Accumulator | memory[data]);
+            Accumulator = isDirectValue ? (byte)(Accumulator | data) : (byte)(Accumulator | Memory[data]);
 
             SetStatusRegisterFlag('Z', Accumulator == 0);
             SetStatusRegisterFlag('N', IsNegative(Accumulator));
@@ -694,9 +694,9 @@ namespace Emulator6502
         }
 
         //Bitwise Exclusive OR - Perform an exclusive OR between a value and the accumulator.
-        private void EOR(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        private void EOR(ushort data, int operands, bool isDirectValue)
         {
-            Accumulator = isDirectValue ? (byte)(Accumulator ^ data) : (byte)(Accumulator ^ memory[data]);
+            Accumulator = isDirectValue ? (byte)(Accumulator ^ data) : (byte)(Accumulator ^ Memory[data]);
 
             SetStatusRegisterFlag('Z', Accumulator == 0);
             SetStatusRegisterFlag('N', IsNegative(Accumulator));
@@ -705,9 +705,9 @@ namespace Emulator6502
         }
 
         //Bit Test - Perform an AND without modifying the accumulator, only setting status register flags.
-        private void BIT(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        private void BIT(ushort data, int operands, bool isDirectValue)
         {
-            byte value = memory[data];
+            byte value = Memory[data];
 
             SetStatusRegisterFlag('Z', (Accumulator & value) == 0);
             SetStatusRegisterFlag('V', (value & 0b01000000) >> 6 == 1);
@@ -717,9 +717,9 @@ namespace Emulator6502
         }
 
         //Compare A - Compare the accumulator to a value.
-        private void CMP(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        private void CMP(ushort data, int operands, bool isDirectValue)
         {
-            byte value = isDirectValue ? (byte)data : memory[data];
+            byte value = isDirectValue ? (byte)data : Memory[data];
 
             SetStatusRegisterFlag('C', Accumulator >= value);
             SetStatusRegisterFlag('Z', Accumulator == value);
@@ -729,9 +729,9 @@ namespace Emulator6502
         }
 
         //Compare X - Compare the X register to a value.
-        private void CPX(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        private void CPX(ushort data, int operands, bool isDirectValue)
         {
-            byte value = isDirectValue ? (byte)data : memory[data];
+            byte value = isDirectValue ? (byte)data : Memory[data];
 
             SetStatusRegisterFlag('C', XRegister >= value);
             SetStatusRegisterFlag('Z', XRegister == value);
@@ -741,9 +741,9 @@ namespace Emulator6502
         }
 
         //Compare Y - Compare the Y register to a value.
-        private void CPY(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        private void CPY(ushort data, int operands, bool isDirectValue)
         {
-            byte value = isDirectValue ? (byte)data : memory[data];
+            byte value = isDirectValue ? (byte)data : Memory[data];
 
             SetStatusRegisterFlag('C', YRegister >= value);
             SetStatusRegisterFlag('Z', YRegister == value);
@@ -753,73 +753,73 @@ namespace Emulator6502
         }
 
         //Branch if Carry Clear - Branch to an offset location if the carry flag is clear.
-        private void BCC(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        private void BCC(ushort data, int operands, bool isDirectValue)
         {
             ProgramCounter = GetStatusRegisterFlag('C') == 0 ? data : (ushort)(ProgramCounter + operands + 1);
         }
 
         //Branch if Carry Set - Branch to an offset location if the carry flag is set.
-        private void BCS(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        private void BCS(ushort data, int operands, bool isDirectValue)
         {
             ProgramCounter = GetStatusRegisterFlag('C') == 1 ? data : (ushort)(ProgramCounter + operands + 1);
         }
 
         //Branch if Equal - Branch to an offset location if the zero flag is set.
-        private void BEQ(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        private void BEQ(ushort data, int operands, bool isDirectValue)
         {
             ProgramCounter = GetStatusRegisterFlag('Z') == 1 ? data : (ushort)(ProgramCounter + operands + 1);
         }
 
         //Branch if Not Equal - Branch to an offset location if the zero flag is clear.
-        private void BNE(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        private void BNE(ushort data, int operands, bool isDirectValue)
         {
             ProgramCounter = GetStatusRegisterFlag('Z') == 0 ? data : (ushort)(ProgramCounter + operands + 1);
         }
 
         //Branch if Plus - Branch to an offset location if the negative flag is clear.
-        private void BPL(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        private void BPL(ushort data, int operands, bool isDirectValue)
         {
             ProgramCounter = GetStatusRegisterFlag('N') == 0 ? data : (ushort)(ProgramCounter + operands + 1);
         }
 
         //Branch if Minus - Branch to an offset location if the negative flag is set.
-        private void BMI(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        private void BMI(ushort data, int operands, bool isDirectValue)
         {
             ProgramCounter = GetStatusRegisterFlag('N') == 1 ? data : (ushort)(ProgramCounter + operands + 1);
         }
 
         //Branch if Overflow Clear - Branch to an offset location if the overflow flag is clear.
-        private void BVC(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        private void BVC(ushort data, int operands, bool isDirectValue)
         {
             ProgramCounter = GetStatusRegisterFlag('V') == 0 ? data : (ushort)(ProgramCounter + operands + 1);
         }
 
         //Branch if Overflow Set - Branch to an offset location if the overflow flag is set.
-        private void BVS(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        private void BVS(ushort data, int operands, bool isDirectValue)
         {
             ProgramCounter = GetStatusRegisterFlag('V') == 1 ? data : (ushort)(ProgramCounter + operands + 1);
         }
 
         //Jump - Execute code from a new location.
-        private void JMP(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        private void JMP(ushort data, int operands, bool isDirectValue)
         {
             ProgramCounter = data;
         }
 
         //Jump to Subroutine - Push the program counter to the stack, then execute code from a new location.
-        private void JSR(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        private void JSR(ushort data, int operands, bool isDirectValue)
         {
-            StackPush(ref memory, (byte)((ProgramCounter + 2) >> 8));
-            StackPush(ref memory, (byte)((ProgramCounter + 2) & 0x00FF));
+            StackPush((byte)((ProgramCounter + 2) >> 8));
+            StackPush((byte)((ProgramCounter + 2) & 0x00FF));
 
             ProgramCounter = data;
         }
 
         //Return from Subroutine - Pull an address from the stack, then jump to that location plus 1.
-        private void RTS(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        private void RTS(ushort data, int operands, bool isDirectValue)
         {
-            byte destinationLower = StackPull(ref memory);
-            byte destinationUpper = StackPull(ref memory);
+            byte destinationLower = StackPull();
+            byte destinationUpper = StackPull();
 
             ushort destinationAddress = (ushort)(destinationUpper * 256 + destinationLower + 1);
 
@@ -827,16 +827,16 @@ namespace Emulator6502
         }
 
         //Break - Trigger an IRQ (Interrupt Request).
-        private void BRK(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        private void BRK(ushort data, int operands, bool isDirectValue)
         {
-            StackPush(ref memory, (byte)((ProgramCounter + 2) >> 8));
-            StackPush(ref memory, (byte)((ProgramCounter + 2) & 0x00FF));
-            StackPush(ref memory, (byte)(StatusRegister | 0b00110000));
+            StackPush((byte)((ProgramCounter + 2) >> 8));
+            StackPush((byte)((ProgramCounter + 2) & 0x00FF));
+            StackPush((byte)(StatusRegister | 0b00110000));
 
             SetStatusRegisterFlag('I', true);
 
-            byte destinationLower = memory[0xFFFE];
-            byte destinationUpper = memory[0xFFFF];
+            byte destinationLower = Memory[0xFFFE];
+            byte destinationUpper = Memory[0xFFFF];
 
             ushort destinationAddress = (ushort)(destinationUpper * 256 + destinationLower);
 
@@ -844,11 +844,11 @@ namespace Emulator6502
         }
 
         //Return from Interrupt - Pull CPU state from the stack, then resume execution using those values.
-        private void RTI(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        private void RTI(ushort data, int operands, bool isDirectValue)
         {
-            StatusRegister = (byte)(StackPull(ref memory) & 0b11001111);
-            byte destinationLower = StackPull(ref memory);
-            byte destinationUpper = StackPull(ref memory);
+            StatusRegister = (byte)(StackPull() & 0b11001111);
+            byte destinationLower = StackPull();
+            byte destinationUpper = StackPull();
 
             ushort destinationAddress = (ushort)(destinationUpper * 256 + destinationLower);
 
@@ -856,17 +856,17 @@ namespace Emulator6502
         }
 
         //Push A - Push the value of the accumulator to the stack.
-        private void PHA(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        private void PHA(ushort data, int operands, bool isDirectValue)
         {
-            StackPush(ref memory, Accumulator);
+            StackPush(Accumulator);
 
             ProgramCounter += (ushort)(operands + 1);
         }
 
         //Pull A - Pull from the stack and set the accumulator to that value.
-        private void PLA(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        private void PLA(ushort data, int operands, bool isDirectValue)
         {
-            Accumulator = StackPull(ref memory);
+            Accumulator = StackPull();
 
             SetStatusRegisterFlag('Z', Accumulator == 0);
             SetStatusRegisterFlag('N', IsNegative(Accumulator));
@@ -875,23 +875,23 @@ namespace Emulator6502
         }
 
         //Push Processor Status - Push the value of the status register to the stack.
-        private void PHP(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        private void PHP(ushort data, int operands, bool isDirectValue)
         {
-            StackPush(ref memory, (byte)(StatusRegister | 0b00110000));
+            StackPush((byte)(StatusRegister | 0b00110000));
 
             ProgramCounter += (ushort)(operands + 1);
         }
 
         //Pull Processor Status - Pull from the stack and set the status register to that value.
-        private void PLP(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        private void PLP(ushort data, int operands, bool isDirectValue)
         {
-            StatusRegister = (byte)((StackPull(ref memory) & 0b11001111) | (StatusRegister & 0b00110000));
+            StatusRegister = (byte)((StackPull() & 0b11001111) | (StatusRegister & 0b00110000));
 
             ProgramCounter += (ushort)(operands + 1);
         }
 
         //Transfer X to Stack Pointer - Copy the value of the X register to the stack pointer.
-        private void TXS(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        private void TXS(ushort data, int operands, bool isDirectValue)
         {
             StackPointer = XRegister;
 
@@ -899,7 +899,7 @@ namespace Emulator6502
         }
 
         //Transfer Stack Pointer to X - Copy the value of the stack pointer to the X register.
-        private void TSX(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        private void TSX(ushort data, int operands, bool isDirectValue)
         {
             XRegister = StackPointer;
 
@@ -910,7 +910,7 @@ namespace Emulator6502
         }
 
         //Clear Carry - Set the carry flag bit to 0.
-        private void CLC(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        private void CLC(ushort data, int operands, bool isDirectValue)
         {
             SetStatusRegisterFlag('C', false);
 
@@ -918,7 +918,7 @@ namespace Emulator6502
         }
 
         //Set Carry - Set the carry flag bit to 1.
-        private void SEC(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        private void SEC(ushort data, int operands, bool isDirectValue)
         {
             SetStatusRegisterFlag('C', true);
 
@@ -926,7 +926,7 @@ namespace Emulator6502
         }
 
         //Clear Interrupt Disable - Set the interrupt disable flag bit to 0.
-        private void CLI(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        private void CLI(ushort data, int operands, bool isDirectValue)
         {
             SetStatusRegisterFlag('I', false);
 
@@ -934,7 +934,7 @@ namespace Emulator6502
         }
 
         //Set Interrupt Disable - Set the interrupt disable flag bit to 1.
-        private void SEI(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        private void SEI(ushort data, int operands, bool isDirectValue)
         {
             SetStatusRegisterFlag('I', true);
 
@@ -942,7 +942,7 @@ namespace Emulator6502
         }
 
         //Clear Decimal - Set the decimal mode flag bit to 0.
-        private void CLD(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        private void CLD(ushort data, int operands, bool isDirectValue)
         {
             SetStatusRegisterFlag('D', false);
 
@@ -950,7 +950,7 @@ namespace Emulator6502
         }
 
         //Set Decimal - Set the decimal mode flag bit to 1.
-        private void SED(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        private void SED(ushort data, int operands, bool isDirectValue)
         {
             SetStatusRegisterFlag('D', true);
 
@@ -958,7 +958,7 @@ namespace Emulator6502
         }
 
         //Clear Overflow - Set the overflow flag bit to 0.
-        private void CLV(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        private void CLV(ushort data, int operands, bool isDirectValue)
         {
             SetStatusRegisterFlag('V', false);
 
@@ -966,7 +966,7 @@ namespace Emulator6502
         }
 
         //No Operation - Do nothing.
-        private void NOP(ref byte[] memory, ref ushort data, int operands, bool isDirectValue)
+        private void NOP(ushort data, int operands, bool isDirectValue)
         {
             ProgramCounter += (ushort)(operands + 1);
         }
@@ -977,25 +977,25 @@ namespace Emulator6502
         ///           CPU FUNCTIONS          ///
         ////////////////////////////////////////
 
-        public void Step(ref byte[] memory)
+        public void Step()
         {
-            (PerformOperation, TranslateOperands) instruction = TranslateOpcode(memory[ProgramCounter]);
+            (PerformOperation, TranslateOperands) instruction = TranslateOpcode(Memory[ProgramCounter]);
 
-            ExecuteInstruction(ref memory, instruction.Item1, instruction.Item2);
+            ExecuteInstruction(instruction.Item1, instruction.Item2);
         }
 
-        private void ExecuteInstruction(ref byte[] memory, PerformOperation operation, TranslateOperands operands)
+        private void ExecuteInstruction(PerformOperation operation, TranslateOperands operands)
         {
-            (ushort, int, bool) data = operands(ref memory); //Item1 is the data byte, Item2 is the number of operand bytes processed.
+            (ushort, int, bool) data = operands(); //Item1 is the data byte, Item2 is the number of operand bytes processed.
 
-            operation(ref memory, ref data.Item1, data.Item2, data.Item3);
+            operation(data.Item1, data.Item2, data.Item3);
         }
 
-        private void Write(ref byte[] memory, int index, byte value)
+        private void Write(int index, byte value)
         {
             if(index < 0x8000 || index > 0xFFFF)
             {
-                memory[index] = value;
+                Memory[index % 0xFFFF] = value;
             }
         }
 
@@ -1038,28 +1038,28 @@ namespace Emulator6502
             _ => throw new ArgumentException(String.Format("{0} is not a valid status register flag.", flag)),
         };
 
-        private void StackPush(ref byte[] memory, byte value)
+        private void StackPush(byte value)
         {
             ushort sourceAddress = (ushort)(0x0100 + StackPointer);
 
-            memory[sourceAddress] = value;
+            Memory[sourceAddress] = value;
 
             StackPointer--;
         }
 
-        private byte StackPull(ref byte[] memory)
+        private byte StackPull()
         {
             StackPointer++;
 
             ushort sourceAddress = (ushort)(0x0100 + StackPointer);
 
-            return memory[sourceAddress];
+            return Memory[sourceAddress];
         }
 
         //Checks if an unsigned byte is negative (the 7th bit is set).
         bool IsNegative(byte value)
         {
-            return (value & 0b10000000) == 0b10000000 ? true : false;
+            return (value & 0b10000000) == 0b10000000;
         }
     }
 }

@@ -66,15 +66,14 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xA9;
-            memory[0x8001] = 0xFF;
+            
+            cpu.Memory[0x8000] = 0xA9;
+            cpu.Memory[0x8001] = 0xFF;
 
             cpu.ProgramCounter = 0x8000;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0xFF, cpu.Accumulator);
@@ -87,16 +86,15 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xA5;
-            memory[0x8001] = 0x9B;
-            memory[0x009B] = 0xFF;
+           
+            cpu.Memory[0x8000] = 0xA5;
+            cpu.Memory[0x8001] = 0x9B;
+            cpu.Memory[0x009B] = 0xFF;
 
             cpu.ProgramCounter = 0x8000;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0xFF, cpu.Accumulator);
@@ -109,17 +107,16 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xB5;
-            memory[0x8001] = 0xFF;
-            memory[0x0000] = 0xFF;
+           
+            cpu.Memory[0x8000] = 0xB5;
+            cpu.Memory[0x8001] = 0xFF;
+            cpu.Memory[0x0000] = 0xFF;
 
             cpu.ProgramCounter = 0x8000;
             cpu.XRegister = 0x01;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0xFF, cpu.Accumulator);
@@ -132,17 +129,16 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xAD;
-            memory[0x8001] = 0x34;
-            memory[0x8002] = 0x12;
-            memory[0x1234] = 0xFF;
+            
+            cpu.Memory[0x8000] = 0xAD;
+            cpu.Memory[0x8001] = 0x34;
+            cpu.Memory[0x8002] = 0x12;
+            cpu.Memory[0x1234] = 0xFF;
 
             cpu.ProgramCounter = 0x8000;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0xFF, cpu.Accumulator);
@@ -155,18 +151,17 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xBD;
-            memory[0x8001] = 0x34;
-            memory[0x8002] = 0x12;
-            memory[0x1235] = 0xFF;
+            
+            cpu.Memory[0x8000] = 0xBD;
+            cpu.Memory[0x8001] = 0x34;
+            cpu.Memory[0x8002] = 0x12;
+            cpu.Memory[0x1235] = 0xFF;
 
             cpu.ProgramCounter = 0x8000;
             cpu.XRegister = 0x01;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0xFF, cpu.Accumulator);
@@ -179,18 +174,17 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xB9;
-            memory[0x8001] = 0x34;
-            memory[0x8002] = 0x12;
-            memory[0x1235] = 0xFF;
+            
+            cpu.Memory[0x8000] = 0xB9;
+            cpu.Memory[0x8001] = 0x34;
+            cpu.Memory[0x8002] = 0x12;
+            cpu.Memory[0x1235] = 0xFF;
 
             cpu.ProgramCounter = 0x8000;
             cpu.YRegister = 0x01;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0xFF, cpu.Accumulator);
@@ -203,19 +197,18 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xA1;
-            memory[0x8001] = 0x00;
-            memory[0x01] = 0x34;
-            memory[0x02] = 0x12;
-            memory[0x1234] = 0xFF;
+            
+            cpu.Memory[0x8000] = 0xA1;
+            cpu.Memory[0x8001] = 0x00;
+            cpu.Memory[0x01] = 0x34;
+            cpu.Memory[0x02] = 0x12;
+            cpu.Memory[0x1234] = 0xFF;
 
             cpu.ProgramCounter = 0x8000;
             cpu.XRegister = 0x01;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0xFF, cpu.Accumulator);
@@ -228,19 +221,18 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xB1;
-            memory[0x8001] = 0x00;
-            memory[0x00] = 0x34;
-            memory[0x01] = 0x12;
-            memory[0x1235] = 0xFF;
+            
+            cpu.Memory[0x8000] = 0xB1;
+            cpu.Memory[0x8001] = 0x00;
+            cpu.Memory[0x00] = 0x34;
+            cpu.Memory[0x01] = 0x12;
+            cpu.Memory[0x1235] = 0xFF;
 
             cpu.ProgramCounter = 0x8000;
             cpu.YRegister = 0x01;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0xFF, cpu.Accumulator);
@@ -253,19 +245,18 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x85;
-            memory[0x8001] = 0xAB;
+            
+            cpu.Memory[0x8000] = 0x85;
+            cpu.Memory[0x8001] = 0xAB;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0xFF;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
-            Assert.AreEqual(0xFF, memory[0x00AB]);
+            Assert.AreEqual(0xFF, cpu.Memory[0x00AB]);
         }
 
         [TestMethod]
@@ -273,20 +264,19 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x95;
-            memory[0x8001] = 0xAB;
+            
+            cpu.Memory[0x8000] = 0x95;
+            cpu.Memory[0x8001] = 0xAB;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0xFF;
             cpu.XRegister = 0x01;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
-            Assert.AreEqual(0xFF, memory[0x00AC]);
+            Assert.AreEqual(0xFF, cpu.Memory[0x00AC]);
         }
 
         [TestMethod]
@@ -294,20 +284,19 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x8D;
-            memory[0x8001] = 0x34;
-            memory[0x8002] = 0x12;
+            
+            cpu.Memory[0x8000] = 0x8D;
+            cpu.Memory[0x8001] = 0x34;
+            cpu.Memory[0x8002] = 0x12;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0xFF;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
-            Assert.AreEqual(0xFF, memory[0x1234]);
+            Assert.AreEqual(0xFF, cpu.Memory[0x1234]);
         }
 
         [TestMethod]
@@ -315,21 +304,20 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x9D;
-            memory[0x8001] = 0x34;
-            memory[0x8002] = 0x12;
+           
+            cpu.Memory[0x8000] = 0x9D;
+            cpu.Memory[0x8001] = 0x34;
+            cpu.Memory[0x8002] = 0x12;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0xFF;
             cpu.XRegister = 0x01;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
-            Assert.AreEqual(0xFF, memory[0x1235]);
+            Assert.AreEqual(0xFF, cpu.Memory[0x1235]);
         }
 
         [TestMethod]
@@ -337,21 +325,20 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x99;
-            memory[0x8001] = 0x34;
-            memory[0x8002] = 0x12;
+            
+            cpu.Memory[0x8000] = 0x99;
+            cpu.Memory[0x8001] = 0x34;
+            cpu.Memory[0x8002] = 0x12;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0xFF;
             cpu.YRegister = 0x01;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
-            Assert.AreEqual(0xFF, memory[0x1235]);
+            Assert.AreEqual(0xFF, cpu.Memory[0x1235]);
         }
 
         [TestMethod]
@@ -359,22 +346,21 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x81;
-            memory[0x8001] = 0xAB;
-            memory[0x00AC] = 0x34;
-            memory[0x00AD] = 0x12;
+            
+            cpu.Memory[0x8000] = 0x81;
+            cpu.Memory[0x8001] = 0xAB;
+            cpu.Memory[0x00AC] = 0x34;
+            cpu.Memory[0x00AD] = 0x12;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0xFF;
             cpu.XRegister = 0x01;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
-            Assert.AreEqual(0xFF, memory[0x1234]);
+            Assert.AreEqual(0xFF, cpu.Memory[0x1234]);
         }
 
         [TestMethod]
@@ -382,22 +368,21 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x91;
-            memory[0x8001] = 0xAB;
-            memory[0x00AB] = 0x34;
-            memory[0x00AC] = 0x12;
+            
+            cpu.Memory[0x8000] = 0x91;
+            cpu.Memory[0x8001] = 0xAB;
+            cpu.Memory[0x00AB] = 0x34;
+            cpu.Memory[0x00AC] = 0x12;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0xFF;
             cpu.YRegister = 0x01;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
-            Assert.AreEqual(0xFF, memory[0x1235]);
+            Assert.AreEqual(0xFF, cpu.Memory[0x1235]);
         }
 
         [TestMethod]
@@ -405,15 +390,14 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xA2;
-            memory[0x8001] = 0xFF;
+            
+            cpu.Memory[0x8000] = 0xA2;
+            cpu.Memory[0x8001] = 0xFF;
 
             cpu.ProgramCounter = 0x8000;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0xFF, cpu.XRegister);
@@ -426,16 +410,15 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xA6;
-            memory[0x8001] = 0x9B;
-            memory[0x009B] = 0xFF;
+            
+            cpu.Memory[0x8000] = 0xA6;
+            cpu.Memory[0x8001] = 0x9B;
+            cpu.Memory[0x009B] = 0xFF;
 
             cpu.ProgramCounter = 0x8000;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0xFF, cpu.XRegister);
@@ -448,17 +431,16 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xB6;
-            memory[0x8001] = 0xFF;
-            memory[0x0000] = 0xFF;
+            
+            cpu.Memory[0x8000] = 0xB6;
+            cpu.Memory[0x8001] = 0xFF;
+            cpu.Memory[0x0000] = 0xFF;
 
             cpu.ProgramCounter = 0x8000;
             cpu.YRegister = 0x01;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0xFF, cpu.XRegister);
@@ -471,17 +453,16 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xAE;
-            memory[0x8001] = 0x34;
-            memory[0x8002] = 0x12;
-            memory[0x1234] = 0xFF;
+            
+            cpu.Memory[0x8000] = 0xAE;
+            cpu.Memory[0x8001] = 0x34;
+            cpu.Memory[0x8002] = 0x12;
+            cpu.Memory[0x1234] = 0xFF;
 
             cpu.ProgramCounter = 0x8000;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0xFF, cpu.XRegister);
@@ -494,18 +475,17 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xBE;
-            memory[0x8001] = 0x34;
-            memory[0x8002] = 0x12;
-            memory[0x1235] = 0xFF;
+            
+            cpu.Memory[0x8000] = 0xBE;
+            cpu.Memory[0x8001] = 0x34;
+            cpu.Memory[0x8002] = 0x12;
+            cpu.Memory[0x1235] = 0xFF;
 
             cpu.ProgramCounter = 0x8000;
             cpu.YRegister = 0x01;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0xFF, cpu.XRegister);
@@ -518,19 +498,18 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x86;
-            memory[0x8001] = 0xAB;
+            
+            cpu.Memory[0x8000] = 0x86;
+            cpu.Memory[0x8001] = 0xAB;
 
             cpu.ProgramCounter = 0x8000;
             cpu.XRegister = 0xFF;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
-            Assert.AreEqual(0xFF, memory[0x00AB]);
+            Assert.AreEqual(0xFF, cpu.Memory[0x00AB]);
         }
 
         [TestMethod]
@@ -538,20 +517,19 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x96;
-            memory[0x8001] = 0xAB;
+            
+            cpu.Memory[0x8000] = 0x96;
+            cpu.Memory[0x8001] = 0xAB;
 
             cpu.ProgramCounter = 0x8000;
             cpu.XRegister = 0xFF;
             cpu.YRegister = 0x01;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
-            Assert.AreEqual(0xFF, memory[0x00AC]);
+            Assert.AreEqual(0xFF, cpu.Memory[0x00AC]);
         }
 
         [TestMethod]
@@ -559,20 +537,19 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x8E;
-            memory[0x8001] = 0x34;
-            memory[0x8002] = 0x12;
+           
+            cpu.Memory[0x8000] = 0x8E;
+            cpu.Memory[0x8001] = 0x34;
+            cpu.Memory[0x8002] = 0x12;
 
             cpu.ProgramCounter = 0x8000;
             cpu.XRegister = 0xFF;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
-            Assert.AreEqual(0xFF, memory[0x1234]);
+            Assert.AreEqual(0xFF, cpu.Memory[0x1234]);
         }
 
         [TestMethod]
@@ -580,15 +557,14 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xA0;
-            memory[0x8001] = 0xFF;
+            
+            cpu.Memory[0x8000] = 0xA0;
+            cpu.Memory[0x8001] = 0xFF;
 
             cpu.ProgramCounter = 0x8000;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0xFF, cpu.YRegister);
@@ -601,16 +577,15 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xA4;
-            memory[0x8001] = 0x9B;
-            memory[0x009B] = 0xFF;
+           
+            cpu.Memory[0x8000] = 0xA4;
+            cpu.Memory[0x8001] = 0x9B;
+            cpu.Memory[0x009B] = 0xFF;
 
             cpu.ProgramCounter = 0x8000;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0xFF, cpu.YRegister);
@@ -623,17 +598,16 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xB4;
-            memory[0x8001] = 0xFF;
-            memory[0x0000] = 0xFF;
+            
+            cpu.Memory[0x8000] = 0xB4;
+            cpu.Memory[0x8001] = 0xFF;
+            cpu.Memory[0x0000] = 0xFF;
 
             cpu.ProgramCounter = 0x8000;
             cpu.XRegister = 0x01;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0xFF, cpu.YRegister);
@@ -646,17 +620,16 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xAC;
-            memory[0x8001] = 0x34;
-            memory[0x8002] = 0x12;
-            memory[0x1234] = 0xFF;
+            
+            cpu.Memory[0x8000] = 0xAC;
+            cpu.Memory[0x8001] = 0x34;
+            cpu.Memory[0x8002] = 0x12;
+            cpu.Memory[0x1234] = 0xFF;
 
             cpu.ProgramCounter = 0x8000;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0xFF, cpu.YRegister);
@@ -669,18 +642,17 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xBC;
-            memory[0x8001] = 0x34;
-            memory[0x8002] = 0x12;
-            memory[0x1235] = 0xFF;
+            
+            cpu.Memory[0x8000] = 0xBC;
+            cpu.Memory[0x8001] = 0x34;
+            cpu.Memory[0x8002] = 0x12;
+            cpu.Memory[0x1235] = 0xFF;
 
             cpu.ProgramCounter = 0x8000;
             cpu.XRegister = 0x01;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0xFF, cpu.YRegister);
@@ -693,19 +665,18 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x84;
-            memory[0x8001] = 0xAB;
+           
+            cpu.Memory[0x8000] = 0x84;
+            cpu.Memory[0x8001] = 0xAB;
 
             cpu.ProgramCounter = 0x8000;
             cpu.YRegister = 0xFF;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
-            Assert.AreEqual(0xFF, memory[0x00AB]);
+            Assert.AreEqual(0xFF, cpu.Memory[0x00AB]);
         }
 
         [TestMethod]
@@ -713,20 +684,19 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x94;
-            memory[0x8001] = 0xAB;
+            
+            cpu.Memory[0x8000] = 0x94;
+            cpu.Memory[0x8001] = 0xAB;
 
             cpu.ProgramCounter = 0x8000;
             cpu.YRegister = 0xFF;
             cpu.XRegister = 0x01;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
-            Assert.AreEqual(0xFF, memory[0x00AC]);
+            Assert.AreEqual(0xFF, cpu.Memory[0x00AC]);
         }
 
         [TestMethod]
@@ -734,20 +704,19 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x8C;
-            memory[0x8001] = 0x34;
-            memory[0x8002] = 0x12;
+            
+            cpu.Memory[0x8000] = 0x8C;
+            cpu.Memory[0x8001] = 0x34;
+            cpu.Memory[0x8002] = 0x12;
 
             cpu.ProgramCounter = 0x8000;
             cpu.YRegister = 0xFF;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
-            Assert.AreEqual(0xFF, memory[0x1234]);
+            Assert.AreEqual(0xFF, cpu.Memory[0x1234]);
         }
 
         [TestMethod]
@@ -755,15 +724,14 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xAA;
+            
+            cpu.Memory[0x8000] = 0xAA;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0xFF;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0xFF, cpu.XRegister);
@@ -774,15 +742,14 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x8A;
+           
+            cpu.Memory[0x8000] = 0x8A;
 
             cpu.ProgramCounter = 0x8000;
             cpu.XRegister = 0xFF;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0xFF, cpu.Accumulator);
@@ -793,15 +760,14 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xA8;
+            
+            cpu.Memory[0x8000] = 0xA8;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0xFF;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0xFF, cpu.YRegister);
@@ -812,15 +778,14 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x98;
+            
+            cpu.Memory[0x8000] = 0x98;
 
             cpu.ProgramCounter = 0x8000;
             cpu.YRegister = 0xFF;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0xFF, cpu.Accumulator);
@@ -831,16 +796,15 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x69;
-            memory[0x8001] = 0b01111111;
+            
+            cpu.Memory[0x8000] = 0x69;
+            cpu.Memory[0x8001] = 0b01111111;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0x01;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0b10000000, cpu.Accumulator);
@@ -855,17 +819,16 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x65;
-            memory[0x8001] = 0xAB;
-            memory[0x00AB] = 0x08;
+            
+            cpu.Memory[0x8000] = 0x65;
+            cpu.Memory[0x8001] = 0xAB;
+            cpu.Memory[0x00AB] = 0x08;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0x08;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0x10, cpu.Accumulator);
@@ -880,18 +843,17 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x75;
-            memory[0x8001] = 0xAB;
-            memory[0x00AC] = 0xFF;
+            
+            cpu.Memory[0x8000] = 0x75;
+            cpu.Memory[0x8001] = 0xAB;
+            cpu.Memory[0x00AC] = 0xFF;
 
             cpu.ProgramCounter = 0x8000;
             cpu.XRegister = 0x01;
             cpu.Accumulator = 0xFF;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0xFE, cpu.Accumulator);
@@ -906,18 +868,17 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x6D;
-            memory[0x8001] = 0x34;
-            memory[0x8002] = 0x12;
-            memory[0x1234] = 0x1A;
+            
+            cpu.Memory[0x8000] = 0x6D;
+            cpu.Memory[0x8001] = 0x34;
+            cpu.Memory[0x8002] = 0x12;
+            cpu.Memory[0x1234] = 0x1A;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0x2B;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0x45, cpu.Accumulator);
@@ -932,19 +893,18 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x7D;
-            memory[0x8001] = 0x34;
-            memory[0x8002] = 0x12;
-            memory[0x1235] = 0x01;
+            
+            cpu.Memory[0x8000] = 0x7D;
+            cpu.Memory[0x8001] = 0x34;
+            cpu.Memory[0x8002] = 0x12;
+            cpu.Memory[0x1235] = 0x01;
 
             cpu.ProgramCounter = 0x8000;
             cpu.XRegister = 0x01;
             cpu.Accumulator = 0xFF;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0x00, cpu.Accumulator);
@@ -959,19 +919,18 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x79;
-            memory[0x8001] = 0x34;
-            memory[0x8002] = 0x12;
-            memory[0x1235] = 0x01;
+            
+            cpu.Memory[0x8000] = 0x79;
+            cpu.Memory[0x8001] = 0x34;
+            cpu.Memory[0x8002] = 0x12;
+            cpu.Memory[0x1235] = 0x01;
 
             cpu.ProgramCounter = 0x8000;
             cpu.YRegister = 0x01;
             cpu.Accumulator = 0xFF;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0x00, cpu.Accumulator);
@@ -986,20 +945,19 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x61;
-            memory[0x8001] = 0xCC;
-            memory[0x00CD] = 0x34;
-            memory[0x00CE] = 0x12;
-            memory[0x1234] = 0x02;
+            
+            cpu.Memory[0x8000] = 0x61;
+            cpu.Memory[0x8001] = 0xCC;
+            cpu.Memory[0x00CD] = 0x34;
+            cpu.Memory[0x00CE] = 0x12;
+            cpu.Memory[0x1234] = 0x02;
 
             cpu.ProgramCounter = 0x8000;
             cpu.XRegister = 0x01;
             cpu.Accumulator = 0x02;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0x04, cpu.Accumulator);
@@ -1014,20 +972,19 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x71;
-            memory[0x8001] = 0xCC;
-            memory[0x00CC] = 0x34;
-            memory[0x00CD] = 0x12;
-            memory[0x1235] = 0x02;
+            
+            cpu.Memory[0x8000] = 0x71;
+            cpu.Memory[0x8001] = 0xCC;
+            cpu.Memory[0x00CC] = 0x34;
+            cpu.Memory[0x00CD] = 0x12;
+            cpu.Memory[0x1235] = 0x02;
 
             cpu.ProgramCounter = 0x8000;
             cpu.YRegister = 0x01;
             cpu.Accumulator = 0x02;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0x04, cpu.Accumulator);
@@ -1042,17 +999,16 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xE9;
-            memory[0x8001] = 0x01;
+           
+            cpu.Memory[0x8000] = 0xE9;
+            cpu.Memory[0x8001] = 0x01;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0xFF;
             cpu.SetStatusRegisterFlag('C', true);
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0xFE, cpu.Accumulator);
@@ -1067,18 +1023,17 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xE5;
-            memory[0x8001] = 0xAB;
-            memory[0x00AB] = 0x08;
+            
+            cpu.Memory[0x8000] = 0xE5;
+            cpu.Memory[0x8001] = 0xAB;
+            cpu.Memory[0x00AB] = 0x08;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0x08;
             cpu.SetStatusRegisterFlag('C', true);
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0x00, cpu.Accumulator);
@@ -1093,18 +1048,17 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xF5;
-            memory[0x8001] = 0xAB;
-            memory[0x00AC] = 0xFF;
+            
+            cpu.Memory[0x8000] = 0xF5;
+            cpu.Memory[0x8001] = 0xAB;
+            cpu.Memory[0x00AC] = 0xFF;
 
             cpu.ProgramCounter = 0x8000;
             cpu.XRegister = 0x01;
             cpu.Accumulator = 0xFF;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0xFF, cpu.Accumulator);
@@ -1119,19 +1073,18 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xED;
-            memory[0x8001] = 0x34;
-            memory[0x8002] = 0x12;
-            memory[0x1234] = 0x1A;
+            
+            cpu.Memory[0x8000] = 0xED;
+            cpu.Memory[0x8001] = 0x34;
+            cpu.Memory[0x8002] = 0x12;
+            cpu.Memory[0x1234] = 0x1A;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0x2B;
             cpu.SetStatusRegisterFlag('C', true);
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0x11, cpu.Accumulator);
@@ -1146,12 +1099,11 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xFD;
-            memory[0x8001] = 0x34;
-            memory[0x8002] = 0x12;
-            memory[0x1235] = 0x03;
+            
+            cpu.Memory[0x8000] = 0xFD;
+            cpu.Memory[0x8001] = 0x34;
+            cpu.Memory[0x8002] = 0x12;
+            cpu.Memory[0x1235] = 0x03;
 
             cpu.ProgramCounter = 0x8000;
             cpu.XRegister = 0x01;
@@ -1159,7 +1111,7 @@ namespace Emulator6502UnitTests
             cpu.SetStatusRegisterFlag('C', true);
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0x0D, cpu.Accumulator);
@@ -1174,12 +1126,11 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xF9;
-            memory[0x8001] = 0x34;
-            memory[0x8002] = 0x12;
-            memory[0x1235] = 0xFF;
+           
+            cpu.Memory[0x8000] = 0xF9;
+            cpu.Memory[0x8001] = 0x34;
+            cpu.Memory[0x8002] = 0x12;
+            cpu.Memory[0x1235] = 0xFF;
 
             cpu.ProgramCounter = 0x8000;
             cpu.YRegister = 0x01;
@@ -1187,7 +1138,7 @@ namespace Emulator6502UnitTests
             cpu.SetStatusRegisterFlag('C', true);
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0x02, cpu.Accumulator);
@@ -1202,13 +1153,12 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xE1;
-            memory[0x8001] = 0xCC;
-            memory[0x00CD] = 0x34;
-            memory[0x00CE] = 0x12;
-            memory[0x1234] = 0x08;
+           
+            cpu.Memory[0x8000] = 0xE1;
+            cpu.Memory[0x8001] = 0xCC;
+            cpu.Memory[0x00CD] = 0x34;
+            cpu.Memory[0x00CE] = 0x12;
+            cpu.Memory[0x1234] = 0x08;
 
             cpu.ProgramCounter = 0x8000;
             cpu.XRegister = 0x01;
@@ -1216,7 +1166,7 @@ namespace Emulator6502UnitTests
             cpu.SetStatusRegisterFlag('C', true);
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0xFD, cpu.Accumulator);
@@ -1231,13 +1181,12 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xF1;
-            memory[0x8001] = 0xCC;
-            memory[0x00CC] = 0x34;
-            memory[0x00CD] = 0x12;
-            memory[0x1235] = 0x01;
+            
+            cpu.Memory[0x8000] = 0xF1;
+            cpu.Memory[0x8001] = 0xCC;
+            cpu.Memory[0x00CC] = 0x34;
+            cpu.Memory[0x00CD] = 0x12;
+            cpu.Memory[0x1235] = 0x01;
 
             cpu.ProgramCounter = 0x8000;
             cpu.YRegister = 0x01;
@@ -1245,7 +1194,7 @@ namespace Emulator6502UnitTests
             cpu.SetStatusRegisterFlag('C', true);
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0x7F, cpu.Accumulator);
@@ -1260,19 +1209,18 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xE6;
-            memory[0x8001] = 0xAB;
-            memory[0x00AB] = 0x08;
+            
+            cpu.Memory[0x8000] = 0xE6;
+            cpu.Memory[0x8001] = 0xAB;
+            cpu.Memory[0x00AB] = 0x08;
 
             cpu.ProgramCounter = 0x8000;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
-            Assert.AreEqual(0x09, memory[0x00AB]);
+            Assert.AreEqual(0x09, cpu.Memory[0x00AB]);
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('Z'));
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('N'));
         }
@@ -1282,20 +1230,19 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xF6;
-            memory[0x8001] = 0xAB;
-            memory[0x00AC] = 0xFF;
+            
+            cpu.Memory[0x8000] = 0xF6;
+            cpu.Memory[0x8001] = 0xAB;
+            cpu.Memory[0x00AC] = 0xFF;
 
             cpu.ProgramCounter = 0x8000;
             cpu.XRegister = 0x01;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
-            Assert.AreEqual(0x00, memory[0x00AC]);
+            Assert.AreEqual(0x00, cpu.Memory[0x00AC]);
             Assert.AreEqual(1, cpu.GetStatusRegisterFlag('Z'));
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('N'));
         }
@@ -1305,20 +1252,19 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xEE;
-            memory[0x8001] = 0x34;
-            memory[0x8002] = 0x12;
-            memory[0x1234] = 0x7F;
+           
+            cpu.Memory[0x8000] = 0xEE;
+            cpu.Memory[0x8001] = 0x34;
+            cpu.Memory[0x8002] = 0x12;
+            cpu.Memory[0x1234] = 0x7F;
 
             cpu.ProgramCounter = 0x8000;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
-            Assert.AreEqual(0x80, memory[0x1234]);
+            Assert.AreEqual(0x80, cpu.Memory[0x1234]);
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('Z'));
             Assert.AreEqual(1, cpu.GetStatusRegisterFlag('N'));
         }
@@ -1328,21 +1274,20 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xFE;
-            memory[0x8001] = 0x34;
-            memory[0x8002] = 0x12;
-            memory[0x1236] = 0xFE;
+            
+            cpu.Memory[0x8000] = 0xFE;
+            cpu.Memory[0x8001] = 0x34;
+            cpu.Memory[0x8002] = 0x12;
+            cpu.Memory[0x1236] = 0xFE;
 
             cpu.ProgramCounter = 0x8000;
             cpu.XRegister = 0x02;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
-            Assert.AreEqual(0xFF, memory[0x1236]);
+            Assert.AreEqual(0xFF, cpu.Memory[0x1236]);
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('Z'));
             Assert.AreEqual(1, cpu.GetStatusRegisterFlag('N'));
         }
@@ -1352,19 +1297,18 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xC6;
-            memory[0x8001] = 0xAB;
-            memory[0x00AB] = 0x09;
+            
+            cpu.Memory[0x8000] = 0xC6;
+            cpu.Memory[0x8001] = 0xAB;
+            cpu.Memory[0x00AB] = 0x09;
 
             cpu.ProgramCounter = 0x8000;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
-            Assert.AreEqual(0x08, memory[0x00AB]);
+            Assert.AreEqual(0x08, cpu.Memory[0x00AB]);
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('Z'));
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('N'));
         }
@@ -1374,20 +1318,19 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xD6;
-            memory[0x8001] = 0xAB;
-            memory[0x00AC] = 0x00;
+            
+            cpu.Memory[0x8000] = 0xD6;
+            cpu.Memory[0x8001] = 0xAB;
+            cpu.Memory[0x00AC] = 0x00;
 
             cpu.ProgramCounter = 0x8000;
             cpu.XRegister = 0x01;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
-            Assert.AreEqual(0xFF, memory[0x00AC]);
+            Assert.AreEqual(0xFF, cpu.Memory[0x00AC]);
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('Z'));
             Assert.AreEqual(1, cpu.GetStatusRegisterFlag('N'));
         }
@@ -1397,20 +1340,19 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xCE;
-            memory[0x8001] = 0x34;
-            memory[0x8002] = 0x12;
-            memory[0x1234] = 0x81;
+            
+            cpu.Memory[0x8000] = 0xCE;
+            cpu.Memory[0x8001] = 0x34;
+            cpu.Memory[0x8002] = 0x12;
+            cpu.Memory[0x1234] = 0x81;
 
             cpu.ProgramCounter = 0x8000;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
-            Assert.AreEqual(0x80, memory[0x1234]);
+            Assert.AreEqual(0x80, cpu.Memory[0x1234]);
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('Z'));
             Assert.AreEqual(1, cpu.GetStatusRegisterFlag('N'));
         }
@@ -1420,21 +1362,20 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xDE;
-            memory[0x8001] = 0x34;
-            memory[0x8002] = 0x12;
-            memory[0x1236] = 0xFF;
+            
+            cpu.Memory[0x8000] = 0xDE;
+            cpu.Memory[0x8001] = 0x34;
+            cpu.Memory[0x8002] = 0x12;
+            cpu.Memory[0x1236] = 0xFF;
 
             cpu.ProgramCounter = 0x8000;
             cpu.XRegister = 0x02;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
-            Assert.AreEqual(0xFE, memory[0x1236]);
+            Assert.AreEqual(0xFE, cpu.Memory[0x1236]);
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('Z'));
             Assert.AreEqual(1, cpu.GetStatusRegisterFlag('N'));
         }
@@ -1444,15 +1385,14 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xE8;
+            
+            cpu.Memory[0x8000] = 0xE8;
 
             cpu.ProgramCounter = 0x8000;
             cpu.XRegister = 0xFF;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0x00, cpu.XRegister);
@@ -1465,15 +1405,14 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xCA;
+            
+            cpu.Memory[0x8000] = 0xCA;
 
             cpu.ProgramCounter = 0x8000;
             cpu.XRegister = 0x0;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0xFF, cpu.XRegister);
@@ -1486,15 +1425,14 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xC8;
+            
+            cpu.Memory[0x8000] = 0xC8;
 
             cpu.ProgramCounter = 0x8000;
             cpu.YRegister = 0xFF;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0x00, cpu.YRegister);
@@ -1507,15 +1445,14 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x88;
+           
+            cpu.Memory[0x8000] = 0x88;
 
             cpu.ProgramCounter = 0x8000;
             cpu.YRegister = 0x0;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0xFF, cpu.YRegister);
@@ -1528,15 +1465,14 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x0A;
+            
+            cpu.Memory[0x8000] = 0x0A;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0b10101010;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0b01010100, cpu.Accumulator);
@@ -1550,19 +1486,18 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x06;
-            memory[0x8001] = 0xAB;
-            memory[0x00AB] = 0b01000000;
+            
+            cpu.Memory[0x8000] = 0x06;
+            cpu.Memory[0x8001] = 0xAB;
+            cpu.Memory[0x00AB] = 0b01000000;
 
             cpu.ProgramCounter = 0x8000;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
-            Assert.AreEqual(0b10000000, memory[0x00AB]);
+            Assert.AreEqual(0b10000000, cpu.Memory[0x00AB]);
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('C'));
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('Z'));
             Assert.AreEqual(1, cpu.GetStatusRegisterFlag('N'));
@@ -1573,20 +1508,19 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x16;
-            memory[0x8001] = 0xAB;
-            memory[0x00AA] = 0b00010000;
+            
+            cpu.Memory[0x8000] = 0x16;
+            cpu.Memory[0x8001] = 0xAB;
+            cpu.Memory[0x00AA] = 0b00010000;
 
             cpu.ProgramCounter = 0x8000;
             cpu.XRegister = 0xFF;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
-            Assert.AreEqual(0b00100000, memory[0x00AA]);
+            Assert.AreEqual(0b00100000, cpu.Memory[0x00AA]);
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('C'));
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('Z'));
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('N'));
@@ -1597,20 +1531,19 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x0E;
-            memory[0x8001] = 0x34;
-            memory[0x8002] = 0x12;
-            memory[0x1234] = 0b10000000;
+            
+            cpu.Memory[0x8000] = 0x0E;
+            cpu.Memory[0x8001] = 0x34;
+            cpu.Memory[0x8002] = 0x12;
+            cpu.Memory[0x1234] = 0b10000000;
 
             cpu.ProgramCounter = 0x8000;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
-            Assert.AreEqual(0x00, memory[0x1234]);
+            Assert.AreEqual(0x00, cpu.Memory[0x1234]);
             Assert.AreEqual(1, cpu.GetStatusRegisterFlag('C'));
             Assert.AreEqual(1, cpu.GetStatusRegisterFlag('Z'));
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('N'));
@@ -1621,21 +1554,20 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x1E;
-            memory[0x8001] = 0x34;
-            memory[0x8002] = 0x12;
-            memory[0x1235] = 0b11111111;
+            
+            cpu.Memory[0x8000] = 0x1E;
+            cpu.Memory[0x8001] = 0x34;
+            cpu.Memory[0x8002] = 0x12;
+            cpu.Memory[0x1235] = 0b11111111;
 
             cpu.ProgramCounter = 0x8000;
             cpu.XRegister = 0x01;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
-            Assert.AreEqual(0b11111110, memory[0x1235]);
+            Assert.AreEqual(0b11111110, cpu.Memory[0x1235]);
             Assert.AreEqual(1, cpu.GetStatusRegisterFlag('C'));
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('Z'));
             Assert.AreEqual(1, cpu.GetStatusRegisterFlag('N'));
@@ -1646,15 +1578,14 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x4A;
+           
+            cpu.Memory[0x8000] = 0x4A;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0b10101010;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0b01010101, cpu.Accumulator);
@@ -1668,19 +1599,18 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x46;
-            memory[0x8001] = 0xAB;
-            memory[0x00AB] = 0b00000001;
+           
+            cpu.Memory[0x8000] = 0x46;
+            cpu.Memory[0x8001] = 0xAB;
+            cpu.Memory[0x00AB] = 0b00000001;
 
             cpu.ProgramCounter = 0x8000;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
-            Assert.AreEqual(0x00, memory[0x00AB]);
+            Assert.AreEqual(0x00, cpu.Memory[0x00AB]);
             Assert.AreEqual(1, cpu.GetStatusRegisterFlag('C'));
             Assert.AreEqual(1, cpu.GetStatusRegisterFlag('Z'));
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('N'));
@@ -1691,20 +1621,19 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x56;
-            memory[0x8001] = 0xAB;
-            memory[0x00AA] = 0b00010000;
+            
+            cpu.Memory[0x8000] = 0x56;
+            cpu.Memory[0x8001] = 0xAB;
+            cpu.Memory[0x00AA] = 0b00010000;
 
             cpu.ProgramCounter = 0x8000;
             cpu.XRegister = 0xFF;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
-            Assert.AreEqual(0b00001000, memory[0x00AA]);
+            Assert.AreEqual(0b00001000, cpu.Memory[0x00AA]);
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('C'));
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('Z'));
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('N'));
@@ -1715,20 +1644,19 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x4E;
-            memory[0x8001] = 0x34;
-            memory[0x8002] = 0x12;
-            memory[0x1234] = 0b10000000;
+            
+            cpu.Memory[0x8000] = 0x4E;
+            cpu.Memory[0x8001] = 0x34;
+            cpu.Memory[0x8002] = 0x12;
+            cpu.Memory[0x1234] = 0b10000000;
 
             cpu.ProgramCounter = 0x8000;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
-            Assert.AreEqual(0b01000000, memory[0x1234]);
+            Assert.AreEqual(0b01000000, cpu.Memory[0x1234]);
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('C'));
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('Z'));
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('N'));
@@ -1739,21 +1667,20 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x5E;
-            memory[0x8001] = 0x34;
-            memory[0x8002] = 0x12;
-            memory[0x1235] = 0b11111111;
+            
+            cpu.Memory[0x8000] = 0x5E;
+            cpu.Memory[0x8001] = 0x34;
+            cpu.Memory[0x8002] = 0x12;
+            cpu.Memory[0x1235] = 0b11111111;
 
             cpu.ProgramCounter = 0x8000;
             cpu.XRegister = 0x01;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
-            Assert.AreEqual(0b01111111, memory[0x1235]);
+            Assert.AreEqual(0b01111111, cpu.Memory[0x1235]);
             Assert.AreEqual(1, cpu.GetStatusRegisterFlag('C'));
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('Z'));
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('N'));
@@ -1764,15 +1691,14 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x2A;
+            
+            cpu.Memory[0x8000] = 0x2A;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0b10110001;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0b01100010, cpu.Accumulator);
@@ -1786,19 +1712,18 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x26;
-            memory[0x8001] = 0xAB;
-            memory[0x00AB] = 0b00000001;
+            
+            cpu.Memory[0x8000] = 0x26;
+            cpu.Memory[0x8001] = 0xAB;
+            cpu.Memory[0x00AB] = 0b00000001;
 
             cpu.ProgramCounter = 0x8000;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
-            Assert.AreEqual(0b00000010, memory[0x00AB]);
+            Assert.AreEqual(0b00000010, cpu.Memory[0x00AB]);
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('C'));
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('Z'));
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('N'));
@@ -1809,20 +1734,19 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x36;
-            memory[0x8001] = 0xAB;
-            memory[0x00AA] = 0b00010000;
+            
+            cpu.Memory[0x8000] = 0x36;
+            cpu.Memory[0x8001] = 0xAB;
+            cpu.Memory[0x00AA] = 0b00010000;
 
             cpu.ProgramCounter = 0x8000;
             cpu.XRegister = 0xFF;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
-            Assert.AreEqual(0b00100000, memory[0x00AA]);
+            Assert.AreEqual(0b00100000, cpu.Memory[0x00AA]);
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('C'));
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('Z'));
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('N'));
@@ -1833,20 +1757,19 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x2E;
-            memory[0x8001] = 0x34;
-            memory[0x8002] = 0x12;
-            memory[0x1234] = 0b10000000;
+           
+            cpu.Memory[0x8000] = 0x2E;
+            cpu.Memory[0x8001] = 0x34;
+            cpu.Memory[0x8002] = 0x12;
+            cpu.Memory[0x1234] = 0b10000000;
 
             cpu.ProgramCounter = 0x8000;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
-            Assert.AreEqual(0b00000000, memory[0x1234]);
+            Assert.AreEqual(0b00000000, cpu.Memory[0x1234]);
             Assert.AreEqual(1, cpu.GetStatusRegisterFlag('C'));
             Assert.AreEqual(1, cpu.GetStatusRegisterFlag('Z'));
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('N'));
@@ -1857,22 +1780,21 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x3E;
-            memory[0x8001] = 0x34;
-            memory[0x8002] = 0x12;
-            memory[0x1235] = 0b00000000;
+           
+            cpu.Memory[0x8000] = 0x3E;
+            cpu.Memory[0x8001] = 0x34;
+            cpu.Memory[0x8002] = 0x12;
+            cpu.Memory[0x1235] = 0b00000000;
 
             cpu.ProgramCounter = 0x8000;
             cpu.XRegister = 0x01;
             cpu.SetStatusRegisterFlag('C', true);
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
-            Assert.AreEqual(0b00000001, memory[0x1235]);
+            Assert.AreEqual(0b00000001, cpu.Memory[0x1235]);
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('C'));
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('Z'));
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('N'));
@@ -1883,15 +1805,14 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x6A;
+         
+            cpu.Memory[0x8000] = 0x6A;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0b10110001;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0b01011000, cpu.Accumulator);
@@ -1905,19 +1826,18 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x66;
-            memory[0x8001] = 0xAB;
-            memory[0x00AB] = 0b00000001;
+            
+            cpu.Memory[0x8000] = 0x66;
+            cpu.Memory[0x8001] = 0xAB;
+            cpu.Memory[0x00AB] = 0b00000001;
 
             cpu.ProgramCounter = 0x8000;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
-            Assert.AreEqual(0b00000000, memory[0x00AB]);
+            Assert.AreEqual(0b00000000, cpu.Memory[0x00AB]);
             Assert.AreEqual(1, cpu.GetStatusRegisterFlag('C'));
             Assert.AreEqual(1, cpu.GetStatusRegisterFlag('Z'));
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('N'));
@@ -1928,20 +1848,19 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x76;
-            memory[0x8001] = 0xAB;
-            memory[0x00AA] = 0b00010000;
+            
+            cpu.Memory[0x8000] = 0x76;
+            cpu.Memory[0x8001] = 0xAB;
+            cpu.Memory[0x00AA] = 0b00010000;
 
             cpu.ProgramCounter = 0x8000;
             cpu.XRegister = 0xFF;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
-            Assert.AreEqual(0b00001000, memory[0x00AA]);
+            Assert.AreEqual(0b00001000, cpu.Memory[0x00AA]);
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('C'));
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('Z'));
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('N'));
@@ -1952,20 +1871,19 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x6E;
-            memory[0x8001] = 0x34;
-            memory[0x8002] = 0x12;
-            memory[0x1234] = 0b11111111;
+           
+            cpu.Memory[0x8000] = 0x6E;
+            cpu.Memory[0x8001] = 0x34;
+            cpu.Memory[0x8002] = 0x12;
+            cpu.Memory[0x1234] = 0b11111111;
 
             cpu.ProgramCounter = 0x8000;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
-            Assert.AreEqual(0b01111111, memory[0x1234]);
+            Assert.AreEqual(0b01111111, cpu.Memory[0x1234]);
             Assert.AreEqual(1, cpu.GetStatusRegisterFlag('C'));
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('Z'));
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('N'));
@@ -1976,22 +1894,21 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x7E;
-            memory[0x8001] = 0x34;
-            memory[0x8002] = 0x12;
-            memory[0x1235] = 0b00000000;
+           
+            cpu.Memory[0x8000] = 0x7E;
+            cpu.Memory[0x8001] = 0x34;
+            cpu.Memory[0x8002] = 0x12;
+            cpu.Memory[0x1235] = 0b00000000;
 
             cpu.ProgramCounter = 0x8000;
             cpu.XRegister = 0x01;
             cpu.SetStatusRegisterFlag('C', true);
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
-            Assert.AreEqual(0b10000000, memory[0x1235]);
+            Assert.AreEqual(0b10000000, cpu.Memory[0x1235]);
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('C'));
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('Z'));
             Assert.AreEqual(1, cpu.GetStatusRegisterFlag('N'));
@@ -2002,16 +1919,15 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x29;
-            memory[0x8001] = 0b10101010;
+            
+            cpu.Memory[0x8000] = 0x29;
+            cpu.Memory[0x8001] = 0b10101010;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0b11110000;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0b10100000, cpu.Accumulator);
@@ -2024,17 +1940,16 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x25;
-            memory[0x8001] = 0xAB;
-            memory[0x00AB] = 0b10101010;
+            
+            cpu.Memory[0x8000] = 0x25;
+            cpu.Memory[0x8001] = 0xAB;
+            cpu.Memory[0x00AB] = 0b10101010;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0b11110000;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0b10100000, cpu.Accumulator);
@@ -2047,18 +1962,17 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x35;
-            memory[0x8001] = 0xAB;
-            memory[0x00AC] = 0b10101010;
+            
+            cpu.Memory[0x8000] = 0x35;
+            cpu.Memory[0x8001] = 0xAB;
+            cpu.Memory[0x00AC] = 0b10101010;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0b11110000;
             cpu.XRegister = 0x01;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0b10100000, cpu.Accumulator);
@@ -2071,18 +1985,17 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x2D;
-            memory[0x8001] = 0x34;
-            memory[0x8002] = 0x12;
-            memory[0x1234] = 0b10101010;
+            
+            cpu.Memory[0x8000] = 0x2D;
+            cpu.Memory[0x8001] = 0x34;
+            cpu.Memory[0x8002] = 0x12;
+            cpu.Memory[0x1234] = 0b10101010;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0b11110000;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0b10100000, cpu.Accumulator);
@@ -2095,19 +2008,18 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x3D;
-            memory[0x8001] = 0x34;
-            memory[0x8002] = 0x12;
-            memory[0x1235] = 0b10101010;
+           
+            cpu.Memory[0x8000] = 0x3D;
+            cpu.Memory[0x8001] = 0x34;
+            cpu.Memory[0x8002] = 0x12;
+            cpu.Memory[0x1235] = 0b10101010;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0b11110000;
             cpu.XRegister = 0x01;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0b10100000, cpu.Accumulator);
@@ -2120,19 +2032,18 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x39;
-            memory[0x8001] = 0x34;
-            memory[0x8002] = 0x12;
-            memory[0x1235] = 0b10101010;
+           
+            cpu.Memory[0x8000] = 0x39;
+            cpu.Memory[0x8001] = 0x34;
+            cpu.Memory[0x8002] = 0x12;
+            cpu.Memory[0x1235] = 0b10101010;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0b00001111;
             cpu.YRegister = 0x01;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0b00001010, cpu.Accumulator);
@@ -2145,20 +2056,19 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x21;
-            memory[0x8001] = 0xCC;
-            memory[0x00CD] = 0x34;
-            memory[0x00CE] = 0x12;
-            memory[0x1234] = 0b00000001;
+            
+            cpu.Memory[0x8000] = 0x21;
+            cpu.Memory[0x8001] = 0xCC;
+            cpu.Memory[0x00CD] = 0x34;
+            cpu.Memory[0x00CE] = 0x12;
+            cpu.Memory[0x1234] = 0b00000001;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0b00001111;
             cpu.XRegister = 0x01;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0b00000001, cpu.Accumulator);
@@ -2171,20 +2081,19 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x31;
-            memory[0x8001] = 0xCD;
-            memory[0x00CD] = 0x34;
-            memory[0x00CE] = 0x12;
-            memory[0x1235] = 0b10101010;
+           
+            cpu.Memory[0x8000] = 0x31;
+            cpu.Memory[0x8001] = 0xCD;
+            cpu.Memory[0x00CD] = 0x34;
+            cpu.Memory[0x00CE] = 0x12;
+            cpu.Memory[0x1235] = 0b10101010;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0b00001111;
             cpu.YRegister = 0x01;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0b00001010, cpu.Accumulator);
@@ -2197,16 +2106,15 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x09;
-            memory[0x8001] = 0b10101010;
+            
+            cpu.Memory[0x8000] = 0x09;
+            cpu.Memory[0x8001] = 0b10101010;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0b11110000;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0b11111010, cpu.Accumulator);
@@ -2219,17 +2127,16 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x05;
-            memory[0x8001] = 0xAB;
-            memory[0x00AB] = 0b10101010;
+            
+            cpu.Memory[0x8000] = 0x05;
+            cpu.Memory[0x8001] = 0xAB;
+            cpu.Memory[0x00AB] = 0b10101010;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0b11110000;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0b11111010, cpu.Accumulator);
@@ -2242,18 +2149,17 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x15;
-            memory[0x8001] = 0xAB;
-            memory[0x00AC] = 0b10101010;
+            
+            cpu.Memory[0x8000] = 0x15;
+            cpu.Memory[0x8001] = 0xAB;
+            cpu.Memory[0x00AC] = 0b10101010;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0b11110000;
             cpu.XRegister = 0x01;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0b11111010, cpu.Accumulator);
@@ -2266,18 +2172,17 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x0D;
-            memory[0x8001] = 0x34;
-            memory[0x8002] = 0x12;
-            memory[0x1234] = 0b10101010;
+            
+            cpu.Memory[0x8000] = 0x0D;
+            cpu.Memory[0x8001] = 0x34;
+            cpu.Memory[0x8002] = 0x12;
+            cpu.Memory[0x1234] = 0b10101010;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0b11110000;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0b11111010, cpu.Accumulator);
@@ -2290,19 +2195,18 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x1D;
-            memory[0x8001] = 0x34;
-            memory[0x8002] = 0x12;
-            memory[0x1235] = 0b10101010;
+            
+            cpu.Memory[0x8000] = 0x1D;
+            cpu.Memory[0x8001] = 0x34;
+            cpu.Memory[0x8002] = 0x12;
+            cpu.Memory[0x1235] = 0b10101010;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0b11110000;
             cpu.XRegister = 0x01;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0b11111010, cpu.Accumulator);
@@ -2315,19 +2219,18 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x19;
-            memory[0x8001] = 0x34;
-            memory[0x8002] = 0x12;
-            memory[0x1235] = 0b10101010;
+            
+            cpu.Memory[0x8000] = 0x19;
+            cpu.Memory[0x8001] = 0x34;
+            cpu.Memory[0x8002] = 0x12;
+            cpu.Memory[0x1235] = 0b10101010;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0b00001111;
             cpu.YRegister = 0x01;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0b10101111, cpu.Accumulator);
@@ -2340,20 +2243,19 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x01;
-            memory[0x8001] = 0xCC;
-            memory[0x00CD] = 0x34;
-            memory[0x00CE] = 0x12;
-            memory[0x1234] = 0b00000001;
+           
+            cpu.Memory[0x8000] = 0x01;
+            cpu.Memory[0x8001] = 0xCC;
+            cpu.Memory[0x00CD] = 0x34;
+            cpu.Memory[0x00CE] = 0x12;
+            cpu.Memory[0x1234] = 0b00000001;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0b00001111;
             cpu.XRegister = 0x01;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0b00001111, cpu.Accumulator);
@@ -2366,20 +2268,19 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x11;
-            memory[0x8001] = 0xCD;
-            memory[0x00CD] = 0x34;
-            memory[0x00CE] = 0x12;
-            memory[0x1235] = 0b10101010;
+            
+            cpu.Memory[0x8000] = 0x11;
+            cpu.Memory[0x8001] = 0xCD;
+            cpu.Memory[0x00CD] = 0x34;
+            cpu.Memory[0x00CE] = 0x12;
+            cpu.Memory[0x1235] = 0b10101010;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0b00001111;
             cpu.YRegister = 0x01;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0b10101111, cpu.Accumulator);
@@ -2392,16 +2293,15 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x49;
-            memory[0x8001] = 0b10101010;
+            
+            cpu.Memory[0x8000] = 0x49;
+            cpu.Memory[0x8001] = 0b10101010;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0b11110000;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0b01011010, cpu.Accumulator);
@@ -2414,17 +2314,16 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x45;
-            memory[0x8001] = 0xAB;
-            memory[0x00AB] = 0b10101010;
+            
+            cpu.Memory[0x8000] = 0x45;
+            cpu.Memory[0x8001] = 0xAB;
+            cpu.Memory[0x00AB] = 0b10101010;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0b11110000;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0b01011010, cpu.Accumulator);
@@ -2437,18 +2336,17 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x55;
-            memory[0x8001] = 0xAB;
-            memory[0x00AC] = 0b10101010;
+            
+            cpu.Memory[0x8000] = 0x55;
+            cpu.Memory[0x8001] = 0xAB;
+            cpu.Memory[0x00AC] = 0b10101010;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0b11110000;
             cpu.XRegister = 0x01;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0b01011010, cpu.Accumulator);
@@ -2461,18 +2359,17 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x4D;
-            memory[0x8001] = 0x34;
-            memory[0x8002] = 0x12;
-            memory[0x1234] = 0b10101010;
+            
+            cpu.Memory[0x8000] = 0x4D;
+            cpu.Memory[0x8001] = 0x34;
+            cpu.Memory[0x8002] = 0x12;
+            cpu.Memory[0x1234] = 0b10101010;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0b11110000;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0b01011010, cpu.Accumulator);
@@ -2485,19 +2382,18 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x5D;
-            memory[0x8001] = 0x34;
-            memory[0x8002] = 0x12;
-            memory[0x1235] = 0b10101010;
+            
+            cpu.Memory[0x8000] = 0x5D;
+            cpu.Memory[0x8001] = 0x34;
+            cpu.Memory[0x8002] = 0x12;
+            cpu.Memory[0x1235] = 0b10101010;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0b11110000;
             cpu.XRegister = 0x01;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0b01011010, cpu.Accumulator);
@@ -2510,19 +2406,18 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x59;
-            memory[0x8001] = 0x34;
-            memory[0x8002] = 0x12;
-            memory[0x1235] = 0b10101010;
+            
+            cpu.Memory[0x8000] = 0x59;
+            cpu.Memory[0x8001] = 0x34;
+            cpu.Memory[0x8002] = 0x12;
+            cpu.Memory[0x1235] = 0b10101010;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0b00001111;
             cpu.YRegister = 0x01;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0b10100101, cpu.Accumulator);
@@ -2535,20 +2430,19 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x41;
-            memory[0x8001] = 0xCC;
-            memory[0x00CD] = 0x34;
-            memory[0x00CE] = 0x12;
-            memory[0x1234] = 0b00000001;
+           
+            cpu.Memory[0x8000] = 0x41;
+            cpu.Memory[0x8001] = 0xCC;
+            cpu.Memory[0x00CD] = 0x34;
+            cpu.Memory[0x00CE] = 0x12;
+            cpu.Memory[0x1234] = 0b00000001;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0b00001111;
             cpu.XRegister = 0x01;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0b00001110, cpu.Accumulator);
@@ -2561,20 +2455,19 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x51;
-            memory[0x8001] = 0xCD;
-            memory[0x00CD] = 0x34;
-            memory[0x00CE] = 0x12;
-            memory[0x1235] = 0b10101010;
+            
+            cpu.Memory[0x8000] = 0x51;
+            cpu.Memory[0x8001] = 0xCD;
+            cpu.Memory[0x00CD] = 0x34;
+            cpu.Memory[0x00CE] = 0x12;
+            cpu.Memory[0x1235] = 0b10101010;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0b00001111;
             cpu.YRegister = 0x01;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0b10100101, cpu.Accumulator);
@@ -2587,17 +2480,16 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x24;
-            memory[0x8001] = 0xCD;
-            memory[0x00CD] = 0b01010101;
+           
+            cpu.Memory[0x8000] = 0x24;
+            cpu.Memory[0x8001] = 0xCD;
+            cpu.Memory[0x00CD] = 0b01010101;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0b11110000;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('Z'));
@@ -2610,18 +2502,17 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x2C;
-            memory[0x8001] = 0x34;
-            memory[0x8002] = 0x12;
-            memory[0x1234] = 0b10101010;
+           
+            cpu.Memory[0x8000] = 0x2C;
+            cpu.Memory[0x8001] = 0x34;
+            cpu.Memory[0x8002] = 0x12;
+            cpu.Memory[0x1234] = 0b10101010;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0b00000000;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(1, cpu.GetStatusRegisterFlag('Z'));
@@ -2634,16 +2525,15 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xC9;
-            memory[0x8001] = 0x34;
+            
+            cpu.Memory[0x8000] = 0xC9;
+            cpu.Memory[0x8001] = 0x34;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0xFF;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(1, cpu.GetStatusRegisterFlag('C'));
@@ -2656,17 +2546,16 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xC5;
-            memory[0x8001] = 0xAB;
-            memory[0x00AB] = 0xFF;
+           
+            cpu.Memory[0x8000] = 0xC5;
+            cpu.Memory[0x8001] = 0xAB;
+            cpu.Memory[0x00AB] = 0xFF;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0x12;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('C'));
@@ -2679,18 +2568,17 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xD5;
-            memory[0x8001] = 0xAB;
-            memory[0x00AC] = 0xFF;
+            
+            cpu.Memory[0x8000] = 0xD5;
+            cpu.Memory[0x8001] = 0xAB;
+            cpu.Memory[0x00AC] = 0xFF;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0xFF;
             cpu.XRegister = 0x01;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(1, cpu.GetStatusRegisterFlag('C'));
@@ -2703,18 +2591,17 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xCD;
-            memory[0x8001] = 0x34;
-            memory[0x8002] = 0x12;
-            memory[0x1234] = 0xFF;
+            
+            cpu.Memory[0x8000] = 0xCD;
+            cpu.Memory[0x8001] = 0x34;
+            cpu.Memory[0x8002] = 0x12;
+            cpu.Memory[0x1234] = 0xFF;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0xFE;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('C'));
@@ -2727,19 +2614,18 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xDD;
-            memory[0x8001] = 0x34;
-            memory[0x8002] = 0x12;
-            memory[0x1235] = 0x04;
+            
+            cpu.Memory[0x8000] = 0xDD;
+            cpu.Memory[0x8001] = 0x34;
+            cpu.Memory[0x8002] = 0x12;
+            cpu.Memory[0x1235] = 0x04;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0x06;
             cpu.XRegister = 0x01;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(1, cpu.GetStatusRegisterFlag('C'));
@@ -2752,19 +2638,18 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xD9;
-            memory[0x8001] = 0x34;
-            memory[0x8002] = 0x12;
-            memory[0x1235] = 0x06;
+            
+            cpu.Memory[0x8000] = 0xD9;
+            cpu.Memory[0x8001] = 0x34;
+            cpu.Memory[0x8002] = 0x12;
+            cpu.Memory[0x1235] = 0x06;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0x04;
             cpu.YRegister = 0x01;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('C'));
@@ -2777,20 +2662,19 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xC1;
-            memory[0x8001] = 0xAB;
-            memory[0x00AC] = 0x34;
-            memory[0x00AD] = 0x12;
-            memory[0x1234] = 0x06;
+            
+            cpu.Memory[0x8000] = 0xC1;
+            cpu.Memory[0x8001] = 0xAB;
+            cpu.Memory[0x00AC] = 0x34;
+            cpu.Memory[0x00AD] = 0x12;
+            cpu.Memory[0x1234] = 0x06;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0x04;
             cpu.XRegister = 0x01;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('C'));
@@ -2803,20 +2687,19 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xD1;
-            memory[0x8001] = 0xAB;
-            memory[0x00AB] = 0x34;
-            memory[0x00AC] = 0x12;
-            memory[0x1235] = 0x06;
+           
+            cpu.Memory[0x8000] = 0xD1;
+            cpu.Memory[0x8001] = 0xAB;
+            cpu.Memory[0x00AB] = 0x34;
+            cpu.Memory[0x00AC] = 0x12;
+            cpu.Memory[0x1235] = 0x06;
 
             cpu.ProgramCounter = 0x8000;
             cpu.Accumulator = 0x04;
             cpu.YRegister = 0x01;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('C'));
@@ -2829,16 +2712,15 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xE0;
-            memory[0x8001] = 0x34;
+            
+            cpu.Memory[0x8000] = 0xE0;
+            cpu.Memory[0x8001] = 0x34;
 
             cpu.ProgramCounter = 0x8000;
             cpu.XRegister = 0xFF;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(1, cpu.GetStatusRegisterFlag('C'));
@@ -2851,17 +2733,16 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xE4;
-            memory[0x8001] = 0xAB;
-            memory[0x00AB] = 0xFF;
+            
+            cpu.Memory[0x8000] = 0xE4;
+            cpu.Memory[0x8001] = 0xAB;
+            cpu.Memory[0x00AB] = 0xFF;
 
             cpu.ProgramCounter = 0x8000;
             cpu.XRegister = 0x12;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('C'));
@@ -2874,18 +2755,17 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xEC;
-            memory[0x8001] = 0x34;
-            memory[0x8002] = 0x12;
-            memory[0x1234] = 0xFF;
+           
+            cpu.Memory[0x8000] = 0xEC;
+            cpu.Memory[0x8001] = 0x34;
+            cpu.Memory[0x8002] = 0x12;
+            cpu.Memory[0x1234] = 0xFF;
 
             cpu.ProgramCounter = 0x8000;
             cpu.XRegister = 0xFE;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('C'));
@@ -2898,16 +2778,15 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xC0;
-            memory[0x8001] = 0x34;
+           
+            cpu.Memory[0x8000] = 0xC0;
+            cpu.Memory[0x8001] = 0x34;
 
             cpu.ProgramCounter = 0x8000;
             cpu.YRegister = 0xFF;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(1, cpu.GetStatusRegisterFlag('C'));
@@ -2920,17 +2799,16 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xC4;
-            memory[0x8001] = 0xAB;
-            memory[0x00AB] = 0xFF;
+            
+            cpu.Memory[0x8000] = 0xC4;
+            cpu.Memory[0x8001] = 0xAB;
+            cpu.Memory[0x00AB] = 0xFF;
 
             cpu.ProgramCounter = 0x8000;
             cpu.YRegister = 0x12;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('C'));
@@ -2943,18 +2821,17 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xCC;
-            memory[0x8001] = 0x34;
-            memory[0x8002] = 0x12;
-            memory[0x1234] = 0xFF;
+           
+            cpu.Memory[0x8000] = 0xCC;
+            cpu.Memory[0x8001] = 0x34;
+            cpu.Memory[0x8002] = 0x12;
+            cpu.Memory[0x1234] = 0xFF;
 
             cpu.ProgramCounter = 0x8000;
             cpu.YRegister = 0xFE;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('C'));
@@ -2967,16 +2844,15 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x90;
-            memory[0x8001] = 0b10000000;
+            
+            cpu.Memory[0x8000] = 0x90;
+            cpu.Memory[0x8001] = 0b10000000;
 
             cpu.ProgramCounter = 0x8000;
             cpu.SetStatusRegisterFlag('C', false);
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0x7F82, cpu.ProgramCounter);
@@ -2987,16 +2863,15 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xB0;
-            memory[0x8001] = 0b01111111;
+           
+            cpu.Memory[0x8000] = 0xB0;
+            cpu.Memory[0x8001] = 0b01111111;
 
             cpu.ProgramCounter = 0x8000;
             cpu.SetStatusRegisterFlag('C', true);
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0x8081, cpu.ProgramCounter);
@@ -3007,16 +2882,15 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xF0;
-            memory[0x8001] = 0x02;
+            
+            cpu.Memory[0x8000] = 0xF0;
+            cpu.Memory[0x8001] = 0x02;
 
             cpu.ProgramCounter = 0x8000;
             cpu.SetStatusRegisterFlag('Z', true);
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0x8004, cpu.ProgramCounter);
@@ -3027,16 +2901,15 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xD0;
-            memory[0x8001] = 0xFC;
+            
+            cpu.Memory[0x8000] = 0xD0;
+            cpu.Memory[0x8001] = 0xFC;
 
             cpu.ProgramCounter = 0x8000;
             cpu.SetStatusRegisterFlag('Z', false);
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0x7FFE, cpu.ProgramCounter);
@@ -3047,16 +2920,15 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x10;
-            memory[0x8001] = 0xFC;
+            
+            cpu.Memory[0x8000] = 0x10;
+            cpu.Memory[0x8001] = 0xFC;
 
             cpu.ProgramCounter = 0x8000;
             cpu.SetStatusRegisterFlag('N', false);
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0x7FFE, cpu.ProgramCounter);
@@ -3067,16 +2939,15 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x30;
-            memory[0x8001] = 0xFC;
+            
+            cpu.Memory[0x8000] = 0x30;
+            cpu.Memory[0x8001] = 0xFC;
 
             cpu.ProgramCounter = 0x8000;
             cpu.SetStatusRegisterFlag('N', true);
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0x7FFE, cpu.ProgramCounter);
@@ -3087,16 +2958,15 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x50;
-            memory[0x8001] = 0xFC;
+            
+            cpu.Memory[0x8000] = 0x50;
+            cpu.Memory[0x8001] = 0xFC;
 
             cpu.ProgramCounter = 0x8000;
             cpu.SetStatusRegisterFlag('V', false);
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0x7FFE, cpu.ProgramCounter);
@@ -3107,16 +2977,15 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x70;
-            memory[0x8001] = 0xFC;
+            
+            cpu.Memory[0x8000] = 0x70;
+            cpu.Memory[0x8001] = 0xFC;
 
             cpu.ProgramCounter = 0x8000;
             cpu.SetStatusRegisterFlag('V', true);
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0x7FFE, cpu.ProgramCounter);
@@ -3127,16 +2996,15 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x4C;
-            memory[0x8001] = 0xCD;
-            memory[0x8002] = 0xAB;
+            
+            cpu.Memory[0x8000] = 0x4C;
+            cpu.Memory[0x8001] = 0xCD;
+            cpu.Memory[0x8002] = 0xAB;
 
             cpu.ProgramCounter = 0x8000;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0xABCD, cpu.ProgramCounter);
@@ -3147,18 +3015,17 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x6C;
-            memory[0x8001] = 0x34;
-            memory[0x8002] = 0x12;
-            memory[0x1234] = 0xCD;
-            memory[0x1235] = 0xAB;
+            
+            cpu.Memory[0x8000] = 0x6C;
+            cpu.Memory[0x8001] = 0x34;
+            cpu.Memory[0x8002] = 0x12;
+            cpu.Memory[0x1234] = 0xCD;
+            cpu.Memory[0x1235] = 0xAB;
 
             cpu.ProgramCounter = 0x8000;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0xABCD, cpu.ProgramCounter);
@@ -3169,23 +3036,22 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x20;
-            memory[0x8001] = 0x34;
-            memory[0x8002] = 0x12;
+            
+            cpu.Memory[0x8000] = 0x20;
+            cpu.Memory[0x8001] = 0x34;
+            cpu.Memory[0x8002] = 0x12;
 
             cpu.ProgramCounter = 0x8000;
             cpu.StackPointer = 0xFF;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0x1234, cpu.ProgramCounter);
             Assert.AreEqual(0xFD, cpu.StackPointer);
-            Assert.AreEqual(0x80, memory[0x01FF]);
-            Assert.AreEqual(0x02, memory[0x01FE]);
+            Assert.AreEqual(0x80, cpu.Memory[0x01FF]);
+            Assert.AreEqual(0x02, cpu.Memory[0x01FE]);
         }
 
         [TestMethod]
@@ -3193,17 +3059,16 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x60;
-            memory[0x01FE] = 0x02;
-            memory[0x01FF] = 0x80;
+            
+            cpu.Memory[0x8000] = 0x60;
+            cpu.Memory[0x01FE] = 0x02;
+            cpu.Memory[0x01FF] = 0x80;
 
             cpu.ProgramCounter = 0x8000;
             cpu.StackPointer = 0xFD;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0x8003, cpu.ProgramCounter);
@@ -3215,11 +3080,10 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x00;
-            memory[0xFFFE] = 0xFF;
-            memory[0xFFFF] = 0x80;
+            
+            cpu.Memory[0x8000] = 0x00;
+            cpu.Memory[0xFFFE] = 0xFF;
+            cpu.Memory[0xFFFF] = 0x80;
 
             cpu.ProgramCounter = 0x8000;
             cpu.StackPointer = 0xFF;
@@ -3227,15 +3091,15 @@ namespace Emulator6502UnitTests
             cpu.SetStatusRegisterFlag('C', true);
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0x80FF, cpu.ProgramCounter);
             Assert.AreEqual(0xFC, cpu.StackPointer);
-            Assert.AreEqual(0x80, memory[0x01FF]);
-            Assert.AreEqual(0x02, memory[0x01FE]);
+            Assert.AreEqual(0x80, cpu.Memory[0x01FF]);
+            Assert.AreEqual(0x02, cpu.Memory[0x01FE]);
             Assert.AreEqual(0b10000101, cpu.StatusRegister);
-            Assert.AreEqual(0b10110001, memory[0x01FD]);
+            Assert.AreEqual(0b10110001, cpu.Memory[0x01FD]);
         }
 
         [TestMethod]
@@ -3243,18 +3107,17 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x40;
-            memory[0x01FD] = 0b10110001;
-            memory[0x01FE] = 0xFF;
-            memory[0x01FF] = 0x80;
+            
+            cpu.Memory[0x8000] = 0x40;
+            cpu.Memory[0x01FD] = 0b10110001;
+            cpu.Memory[0x01FE] = 0xFF;
+            cpu.Memory[0x01FF] = 0x80;
 
             cpu.ProgramCounter = 0x8000;
             cpu.StackPointer = 0xFC;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0x80FF, cpu.ProgramCounter);
@@ -3267,19 +3130,18 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x48;
+            
+            cpu.Memory[0x8000] = 0x48;
 
             cpu.ProgramCounter = 0x8000;
             cpu.StackPointer = 0xFF;
             cpu.Accumulator = 0xFF;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
-            Assert.AreEqual(0xFF, memory[0x01FF]);
+            Assert.AreEqual(0xFF, cpu.Memory[0x01FF]);
             Assert.AreEqual(0xFE, cpu.StackPointer);
         }
 
@@ -3288,16 +3150,15 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x68;
-            memory[0x01FF] = 0xFF;
+            
+            cpu.Memory[0x8000] = 0x68;
+            cpu.Memory[0x01FF] = 0xFF;
 
             cpu.ProgramCounter = 0x8000;
             cpu.StackPointer = 0xFE;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0xFF, cpu.Accumulator);
@@ -3311,19 +3172,18 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x08;
+            
+            cpu.Memory[0x8000] = 0x08;
 
             cpu.ProgramCounter = 0x8000;
             cpu.StackPointer = 0xFF;
             cpu.SetStatusRegisterFlag('N', true);
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
-            Assert.AreEqual(0b10110000, memory[0x01FF]);
+            Assert.AreEqual(0b10110000, cpu.Memory[0x01FF]);
             Assert.AreEqual(0xFE, cpu.StackPointer);
         }
 
@@ -3332,17 +3192,16 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x28;
-            memory[0x01FF] = 0b10110000;
+            
+            cpu.Memory[0x8000] = 0x28;
+            cpu.Memory[0x01FF] = 0b10110000;
 
             cpu.ProgramCounter = 0x8000;
             cpu.StackPointer = 0xFE;
             cpu.SetStatusRegisterFlag('B', true);
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0b10010000, cpu.StatusRegister);
@@ -3354,15 +3213,14 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x9A;
+            
+            cpu.Memory[0x8000] = 0x9A;
 
             cpu.ProgramCounter = 0x8000;
             cpu.XRegister = 0xFF;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0xFF, cpu.StackPointer);
@@ -3373,15 +3231,14 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xBA;
+            
+            cpu.Memory[0x8000] = 0xBA;
 
             cpu.ProgramCounter = 0x8000;
             cpu.StackPointer = 0xFF;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0xFF, cpu.XRegister);
@@ -3394,15 +3251,14 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x18;
+            
+            cpu.Memory[0x8000] = 0x18;
 
             cpu.ProgramCounter = 0x8000;
             cpu.SetStatusRegisterFlag('C', true);
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('C'));
@@ -3413,15 +3269,14 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x38;
+            
+            cpu.Memory[0x8000] = 0x38;
 
             cpu.ProgramCounter = 0x8000;
             cpu.SetStatusRegisterFlag('C', false);
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(1, cpu.GetStatusRegisterFlag('C'));
@@ -3432,15 +3287,14 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x58;
+            
+            cpu.Memory[0x8000] = 0x58;
 
             cpu.ProgramCounter = 0x8000;
             cpu.SetStatusRegisterFlag('I', true);
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('I'));
@@ -3451,15 +3305,14 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0x78;
+            
+            cpu.Memory[0x8000] = 0x78;
 
             cpu.ProgramCounter = 0x8000;
             cpu.SetStatusRegisterFlag('I', false);
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(1, cpu.GetStatusRegisterFlag('I'));
@@ -3470,15 +3323,14 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xD8;
+            
+            cpu.Memory[0x8000] = 0xD8;
 
             cpu.ProgramCounter = 0x8000;
             cpu.SetStatusRegisterFlag('D', true);
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('D'));
@@ -3489,15 +3341,14 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xF8;
+            
+            cpu.Memory[0x8000] = 0xF8;
 
             cpu.ProgramCounter = 0x8000;
             cpu.SetStatusRegisterFlag('D', false);
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(1, cpu.GetStatusRegisterFlag('D'));
@@ -3508,15 +3359,14 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
-
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xB8;
+            
+            cpu.Memory[0x8000] = 0xB8;
 
             cpu.ProgramCounter = 0x8000;
             cpu.SetStatusRegisterFlag('V', true);
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0, cpu.GetStatusRegisterFlag('V'));
@@ -3527,14 +3377,13 @@ namespace Emulator6502UnitTests
         {
             //Arrange
             CPU cpu = new CPU();
+            
+            cpu.Memory[0x8000] = 0xEA;
 
-            byte[] memory = new byte[65536];
-            memory[0x8000] = 0xEA;
-
-            cpu.ProgramCounter = 0x8000;;
+            cpu.ProgramCounter = 0x8000;
 
             //Act
-            cpu.Step(ref memory);
+            cpu.Step();
 
             //Assert
             Assert.AreEqual(0x8001, cpu.ProgramCounter);
