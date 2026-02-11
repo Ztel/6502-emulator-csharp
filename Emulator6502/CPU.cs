@@ -42,10 +42,10 @@
         ////////////////////////////////////////
 
         private delegate (ushort, int, bool) TranslateOperands();  //Addressing Mode Methods
-                                                                                    //Returns the data byte/s, the number of
-                                                                                    //operand bytes processed, and whether
-                                                                                    //or not the returned data is a direct
-                                                                                    //value (as opposed to a Memory address).
+                                                                   //Returns the data byte/s, the number of
+                                                                   //operand bytes processed, and whether
+                                                                   //or not the returned data is a direct
+                                                                   //value (as opposed to a Memory address).
 
         private (ushort, int, bool) Immediate()
         {
@@ -363,7 +363,7 @@
 
             0xEA => (NOP, Implicit),
 
-            _ => throw new ArgumentException(String.Format("Attempted to parse invalid opcode {0} at index {1}.", opcode, ProgramCounter))
+            _ => throw new ArgumentException(String.Format("Attempted to parse invalid opcode {0} at index ${1}.", opcode.ToString("X2"), ProgramCounter.ToString("X4")))
         };
 
         //Load A - Loads a value into the accumulator.
