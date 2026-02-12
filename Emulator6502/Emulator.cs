@@ -3,9 +3,17 @@
     public class Emulator
     {
         public CPU Cpu { get; set; } = new CPU();
+        public Display Screen { get; set; } = new Display();
+
+        private string displayString = "";
+
+        private int stepsPerFrame = 3200;
+        private int stepsUntilNewFrame;
 
         public bool stepMode = false;
         private bool executeProgram = false;
+
+
 
         public void LoadRom(string romFilePath)
         {
@@ -25,20 +33,35 @@
 
         public void StartProgram()
         {
-            ushort resetVector = (ushort)(Cpu.Memory[0xFFFD] * 256 + Cpu.Memory[0xFFFC]);
-
-            Cpu.ProgramCounter = resetVector;
             executeProgram = true;
+            Console.CursorVisible = false;
 
+            Cpu.Reset();
             RunProgram();
+        }
+
+        public void HaltProgram()
+        {
+            executeProgram = false;
+            Console.CursorVisible = true;
         }
 
         private void RunProgram()
         {
             while (executeProgram)
             {
-                Console.WriteLine("PC: $" + Cpu.ProgramCounter.ToString("X4") + "       A: $" + Cpu.Accumulator.ToString("X2") + "   X: $" + Cpu.XRegister.ToString("X2") + "   Y: $" + Cpu.YRegister.ToString("X2"));
                 Cpu.Step();
+                stepsUntilNewFrame--;
+
+                Console.SetCursorPosition(0, 0);
+                Console.Write("PC: $" + Cpu.ProgramCounter.ToString("X4") + "       A: $" + Cpu.Accumulator.ToString("X2") + "   X: $" + Cpu.XRegister.ToString("X2") + "   Y: $" + Cpu.YRegister.ToString("X2"));
+
+                if (stepsUntilNewFrame <= 0)
+                {
+                    UpdateScreen();
+
+                    stepsUntilNewFrame = stepsPerFrame;
+                }
 
                 if(stepMode)
                 {
@@ -47,9 +70,17 @@
             }
         }
 
-        public void HaltProgram()
+        private void UpdateScreen()
         {
-            executeProgram = false;
+            Console.SetCursorPosition(0, 0);
+            Console.WriteLine("PC: $" + Cpu.ProgramCounter.ToString("X4") + "       A: $" + Cpu.Accumulator.ToString("X2") + "   X: $" + Cpu.XRegister.ToString("X2") + "   Y: $" + Cpu.YRegister.ToString("X2"));
+
+            Screen.ReadDisplayBuffers(Cpu.Memory);
+            displayString = Screen.RenderDisplay();
+
+            Console.WriteLine(displayString);
+
+            Cpu.NMI();
         }
     }
 }
