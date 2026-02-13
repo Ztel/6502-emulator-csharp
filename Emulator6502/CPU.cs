@@ -999,6 +999,32 @@
             }
         }
 
+        public void IRQ()
+        {
+            if(GetStatusRegisterFlag('I') == 0)
+            {
+                ExecuteInstruction(BRK, Implicit);
+            }
+        }
+
+        public void Reset()
+        {
+            ushort resetVector = (ushort)(Memory[0xFFFD] * 256 + Memory[0xFFFC]);
+
+            ProgramCounter = resetVector;
+        }
+
+        public void NMI()
+        {
+            StackPush((byte)((ProgramCounter) >> 8));
+            StackPush((byte)((ProgramCounter) & 0x00FF));
+            StackPush((byte)((StatusRegister | 0b00100000) & 11101111));
+
+            ushort nmiVector = (ushort)(Memory[0xFFFB] * 256 + Memory[0xFFFA]);
+
+            ProgramCounter = nmiVector;
+        }
+
         //Returns the current value of a specific flag bit within the status register.
         //Valid inputs are chars N, V, B, D, I, Z, C
         public int GetStatusRegisterFlag(char flag)
