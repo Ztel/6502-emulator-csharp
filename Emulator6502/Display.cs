@@ -4,12 +4,11 @@ namespace Emulator6502
 {
     public class Display
     {
-        ushort backgroundBufferAddress = 0x2000;
-        ushort spriteBufferAddress = 0x2100;
+        readonly ushort backgroundBufferAddress = 0x2000;
+        readonly ushort spriteBufferAddress = 0x2100;
 
         byte[] displayBuffer = new byte[256];
         byte[] spriteBuffer = new byte[256];
-
 
 
         public void ReadDisplayBuffers(byte[] memory)
@@ -38,7 +37,7 @@ namespace Emulator6502
         }
 
         //Converts the display buffer into a 16x16 grid string (plus a border) to be printed to the console.
-        public string RenderDisplay()
+        public void RenderDisplay()
         {
             StringBuilder displayBuilder = new StringBuilder();
 
@@ -63,7 +62,43 @@ namespace Emulator6502
 
             displayBuilder.AppendLine(DateTime.Now.ToLongTimeString());
 
-            return displayBuilder.ToString();
+            Console.WriteLine(displayBuilder.ToString());
+        }
+
+        public void RenderUI(CPU cpu)
+        {
+            StringBuilder uiBuilder = new StringBuilder();
+
+            uiBuilder.AppendLine(String.Format("                                           Program Counter:  ${0}         Accumulator:  ${1}\n", 
+                cpu.ProgramCounter.ToString("X4"), 
+                cpu.Accumulator.ToString("X2")));
+            uiBuilder.AppendLine(String.Format("                                           X Register:       ${0}           Y Register:   ${1}\n",
+                cpu.XRegister.ToString("X2"), 
+                cpu.YRegister.ToString("X2")));
+            uiBuilder.AppendLine(String.Format("                                           Stack Pointer:    ${0}\n",
+                cpu.StackPointer.ToString("X2")));
+            uiBuilder.AppendLine("                                           Status Register:");
+            uiBuilder.AppendLine("                                           ┌───┬───┬───┬───┬───┬───┬───┬───┐");
+            uiBuilder.AppendLine(String.Format("                                           │ {0} │ {1} │ 0 │ {2} │ {3} │ {4} │ {5} │ {6} │", 
+                cpu.GetStatusRegisterFlag('N'),
+                cpu.GetStatusRegisterFlag('V'),
+                cpu.GetStatusRegisterFlag('B'),
+                cpu.GetStatusRegisterFlag('D'),
+                cpu.GetStatusRegisterFlag('I'),
+                cpu.GetStatusRegisterFlag('Z'),
+                cpu.GetStatusRegisterFlag('C')));
+            uiBuilder.AppendLine("                                           └───┴───┴───┴───┴───┴───┴───┴───┘");
+            uiBuilder.AppendLine("                                             │   │   │   │   │   │   │   └─ C - Carry");
+            uiBuilder.AppendLine("                                             │   │   │   │   │   │   └───── Z - Zero");
+            uiBuilder.AppendLine("                                             │   │   │   │   │   └───────── I - Interrupt Disable");
+            uiBuilder.AppendLine("                                             │   │   │   │   └───────────── D - Decimal Mode");
+            uiBuilder.AppendLine("                                             │   │   │   └───────────────── B - Break");
+            uiBuilder.AppendLine("                                             │   │   └───────────────────── [ Not Used ]");
+            uiBuilder.AppendLine("                                             │   └───────────────────────── V - Overflow");
+            uiBuilder.AppendLine("                                             └───────────────────────────── N - Negative");
+
+            Console.SetCursorPosition(0, 1);
+            Console.WriteLine(uiBuilder.ToString());
         }
     }
 }

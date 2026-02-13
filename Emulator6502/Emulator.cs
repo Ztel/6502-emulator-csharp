@@ -5,9 +5,9 @@
         public CPU Cpu { get; set; } = new CPU();
         public Display Screen { get; set; } = new Display();
 
-        private string displayString = "";
+        public string programName = "";
 
-        private int stepsPerFrame = 3200;
+        private int stepsPerFrame = 250000;
         private int stepsUntilNewFrame;
 
         public bool stepMode = false;
@@ -18,6 +18,7 @@
         public void LoadRom(string romFilePath)
         {
             byte[] rom = File.ReadAllBytes(romFilePath);
+            programName = Path.GetFileName(romFilePath).ToLower();
 
             if (rom.Length != 8192 && rom.Length != 16384 && rom.Length != 32768)
             {
@@ -34,6 +35,7 @@
         public void StartProgram()
         {
             executeProgram = true;
+            Console.SetWindowSize(100, 25);
             Console.CursorVisible = false;
 
             Cpu.Reset();
@@ -53,9 +55,6 @@
                 Cpu.Step();
                 stepsUntilNewFrame--;
 
-                Console.SetCursorPosition(0, 0);
-                Console.Write("PC: $" + Cpu.ProgramCounter.ToString("X4") + "       A: $" + Cpu.Accumulator.ToString("X2") + "   X: $" + Cpu.XRegister.ToString("X2") + "   Y: $" + Cpu.YRegister.ToString("X2"));
-
                 if (stepsUntilNewFrame <= 0)
                 {
                     UpdateScreen();
@@ -72,13 +71,15 @@
 
         private void UpdateScreen()
         {
+            Screen.RenderUI(Cpu);
+
             Console.SetCursorPosition(0, 0);
-            Console.WriteLine("PC: $" + Cpu.ProgramCounter.ToString("X4") + "       A: $" + Cpu.Accumulator.ToString("X2") + "   X: $" + Cpu.XRegister.ToString("X2") + "   Y: $" + Cpu.YRegister.ToString("X2"));
+            Console.WriteLine("running '" + programName + "'");
 
             Screen.ReadDisplayBuffers(Cpu.Memory);
-            displayString = Screen.RenderDisplay();
+            Screen.RenderDisplay();
 
-            Console.WriteLine(displayString);
+            Console.WriteLine("\n    ESC: return to command line      SPACE: pause/play program      ENTER: step program forward");
 
             Cpu.NMI();
         }
