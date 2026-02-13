@@ -7,11 +7,11 @@
 
         public string programName = "";
 
-        private int stepsPerFrame = 250000;
-        private int stepsUntilNewFrame;
+        public int fps = 30;
+        private long lastFrameTime;
 
         public bool stepMode = false;
-        private bool executeProgram = false;
+        private bool runningProgram = false;
 
 
 
@@ -34,9 +34,8 @@
 
         public void StartProgram()
         {
-            executeProgram = true;
-            Console.SetWindowSize(100, 25);
-            Console.CursorVisible = false;
+            runningProgram = true;
+            Console.SetWindowSize(102, 25);
 
             Cpu.Reset();
             RunProgram();
@@ -44,27 +43,27 @@
 
         public void HaltProgram()
         {
-            executeProgram = false;
+            runningProgram = false;
             Console.CursorVisible = true;
         }
 
         private void RunProgram()
         {
-            while (executeProgram)
+            while (runningProgram)
             {
                 Cpu.Step();
-                stepsUntilNewFrame--;
 
-                if (stepsUntilNewFrame <= 0)
+                //Update the screen at the set framerate.
+                if ((DateTimeOffset.Now.ToUnixTimeMilliseconds() - lastFrameTime) > 1000.0/fps)
                 {
                     UpdateScreen();
 
-                    stepsUntilNewFrame = stepsPerFrame;
+                    lastFrameTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
                 }
 
                 if(stepMode)
                 {
-                    executeProgram = false;
+                    runningProgram = false;
                 }
             }
         }
@@ -79,7 +78,7 @@
             Screen.ReadDisplayBuffers(Cpu.Memory);
             Screen.RenderDisplay();
 
-            Console.WriteLine("\n    ESC: return to command line      SPACE: pause/play program      ENTER: step program forward");
+            Console.WriteLine(DateTime.Now.ToLongTimeString() + "\n\n\nESC: return to command line   SPACE: pause/play program   SHIFT: step instruction  ENTER: step frame");
 
             Cpu.NMI();
         }

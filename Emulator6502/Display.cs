@@ -60,9 +60,8 @@ namespace Emulator6502
 
             displayBuilder.AppendLine("╚═════════════════════════════════╝");
 
-            displayBuilder.AppendLine(DateTime.Now.ToLongTimeString());
-
-            Console.WriteLine(displayBuilder.ToString());
+            Console.CursorVisible = false;
+            Console.Write(displayBuilder.ToString());
         }
 
         public void RenderUI(CPU cpu)
