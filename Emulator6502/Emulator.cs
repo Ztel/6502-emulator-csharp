@@ -1,4 +1,6 @@
-﻿namespace Emulator6502
+﻿using System.Text;
+
+namespace Emulator6502
 {
     public class Emulator
     {
@@ -8,10 +10,9 @@
         public string programName = "";
 
         public int fps = 30;
-        private long lastFrameTime;
 
-        public bool stepMode = false;
-        private bool runningProgram = false;
+        public bool programActive = false;
+        public bool programPaused = true;
 
 
 
@@ -34,53 +35,64 @@
 
         public void StartProgram()
         {
-            runningProgram = true;
+            Console.OutputEncoding = Encoding.UTF8;
+
+            programActive = true;
+            programPaused = false;
             Console.SetWindowSize(102, 25);
 
             Cpu.Reset();
-            RunProgram();
         }
 
-        public void HaltProgram()
+        public void ExitProgram()
         {
-            runningProgram = false;
+            programActive = false;
             Console.CursorVisible = true;
         }
 
-        private void RunProgram()
+        public void PauseProgram()
         {
-            while (runningProgram)
-            {
-                Cpu.Step();
+            programPaused = true;
 
-                //Update the screen at the set framerate.
-                if ((DateTimeOffset.Now.ToUnixTimeMilliseconds() - lastFrameTime) > 1000.0/fps)
-                {
-                    UpdateScreen();
-
-                    lastFrameTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                }
-
-                if(stepMode)
-                {
-                    runningProgram = false;
-                }
-            }
+            UpdateScreen(false);
         }
 
-        private void UpdateScreen()
+        public void StepFrame()
+        {
+            long lastFrameTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+
+            //Update the screen at the set framerate.
+            while ((DateTimeOffset.Now.ToUnixTimeMilliseconds() - lastFrameTime) < 1000.0 / fps)
+            {
+                Cpu.Step();
+            }
+
+            UpdateScreen(true);
+        }
+
+        public void StepInstruction()
+        {
+            Cpu.Step();
+            UpdateScreen(false);
+        }
+
+        private void UpdateScreen(bool triggerNMI)
         {
             Screen.RenderUI(Cpu);
 
             Console.SetCursorPosition(0, 0);
-            Console.WriteLine("running '" + programName + "'");
+            string statusHeader = programPaused ? programName + ": ▌▌ paused" : programName + ": ► running";
+            Console.WriteLine(statusHeader);
 
             Screen.ReadDisplayBuffers(Cpu.Memory);
             Screen.RenderDisplay();
 
-            Console.WriteLine(DateTime.Now.ToLongTimeString() + "\n\n\nESC: return to command line   SPACE: pause/play program   SHIFT: step instruction  ENTER: step frame");
+            Console.WriteLine(DateTime.Now.ToLongTimeString() + "\n\n\nESC: return to command line   SPACE: pause/play program   ENTER: step frame   BKSP: step instruction");
 
-            Cpu.NMI();
+            if(triggerNMI)
+            {
+                Cpu.NMI();
+            }
         }
     }
 }

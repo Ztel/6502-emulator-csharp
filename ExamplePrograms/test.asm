@@ -1,6 +1,8 @@
 .ORG $8000
 
 reset:
+  LDX #$FF
+  TXS
   ;put sprite data in sprite buffer
   LDX #$00
 draw_sprites_loop:
@@ -24,9 +26,9 @@ draw_bg_loop:
   STA $2000,Y
   INX
   INY
-  CPX $0040
+  CPX $40
   BNE draw_bg_loop
-  INC $0040
+  INC $40
   RTI
 
 background:

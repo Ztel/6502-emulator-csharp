@@ -68,14 +68,14 @@ namespace Emulator6502
         {
             StringBuilder uiBuilder = new StringBuilder();
 
-            uiBuilder.AppendLine(String.Format("                                           Program Counter:  ${0}         Accumulator:  ${1}\n", 
+            uiBuilder.AppendLine(String.Format("                                           Program Counter:  ${0}        Accumulator:    ${1}\n", 
                 cpu.ProgramCounter.ToString("X4"), 
                 cpu.Accumulator.ToString("X2")));
-            uiBuilder.AppendLine(String.Format("                                           X Register:       ${0}           Y Register:   ${1}\n",
+            uiBuilder.AppendLine(String.Format("                                           X Register:       ${0}          Stack Pointer:  ${1}\n",
                 cpu.XRegister.ToString("X2"), 
-                cpu.YRegister.ToString("X2")));
-            uiBuilder.AppendLine(String.Format("                                           Stack Pointer:    ${0}\n",
                 cpu.StackPointer.ToString("X2")));
+            uiBuilder.AppendLine(String.Format("                                           Y Register:       ${0}\n",
+                cpu.YRegister.ToString("X2")));
             uiBuilder.AppendLine("                                           Status Register:");
             uiBuilder.AppendLine("                                           ┌───┬───┬───┬───┬───┬───┬───┬───┐");
             uiBuilder.AppendLine(String.Format("                                           │ {0} │ {1} │ 0 │ {2} │ {3} │ {4} │ {5} │ {6} │", 
