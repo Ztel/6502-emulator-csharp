@@ -7,9 +7,9 @@ namespace Emulator6502
         public CPU Cpu { get; set; } = new CPU();
         public Display Screen { get; set; } = new Display();
 
-        public string programName = "";
+        private string programName = "";
 
-        public int fps = 30;
+        private int fps = 30;
 
         public bool programActive = false;
         public bool programPaused = true;
@@ -33,13 +33,16 @@ namespace Emulator6502
             }
         }
 
-        public void StartProgram()
+        public void StartProgram(int framerate)
         {
             Console.OutputEncoding = Encoding.UTF8;
+            Console.SetWindowSize(102, 25);
+            Console.Clear();
 
             programActive = true;
             programPaused = false;
-            Console.SetWindowSize(102, 25);
+
+            fps = framerate;
 
             Cpu.Reset();
         }
@@ -48,6 +51,7 @@ namespace Emulator6502
         {
             programActive = false;
             Console.CursorVisible = true;
+            Console.Clear();
         }
 
         public void PauseProgram()
