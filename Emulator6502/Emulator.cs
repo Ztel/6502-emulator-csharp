@@ -9,15 +9,16 @@ namespace Emulator6502
 
         private string programName = "";
 
-        private int fps = 30;
+        private int fps;
 
         public bool programActive = false;
         public bool programPaused = true;
-
+        private bool drawDebug = true;
 
 
         public void LoadRom(string romFilePath)
         {
+            Cpu = new CPU();
             byte[] rom = File.ReadAllBytes(romFilePath);
             programName = Path.GetFileName(romFilePath).ToLower();
 
@@ -33,23 +34,25 @@ namespace Emulator6502
             }
         }
 
-        public void StartProgram(int framerate)
+        public void StartProgram(int framerate, bool hideDebug, bool startPaused)
         {
             Console.OutputEncoding = Encoding.UTF8;
             Console.SetWindowSize(102, 25);
             Console.Clear();
 
             programActive = true;
-            programPaused = false;
-
+            programPaused = startPaused;
+            drawDebug = !hideDebug;
             fps = framerate;
 
             Cpu.Reset();
+            UpdateScreen(false);
         }
 
         public void ExitProgram()
         {
             programActive = false;
+            programPaused = true;
             Console.CursorVisible = true;
             Console.Clear();
         }
@@ -82,7 +85,10 @@ namespace Emulator6502
 
         private void UpdateScreen(bool triggerNMI)
         {
-            Screen.RenderUI(Cpu);
+            if (drawDebug)
+            {
+                Screen.RenderUI(Cpu);
+            }
 
             Console.SetCursorPosition(0, 0);
             string statusHeader = programPaused ? programName + ": ▌▌ paused" : programName + ": ► running";

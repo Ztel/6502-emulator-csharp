@@ -36,7 +36,7 @@
                     Console.WriteLine("--------------------------------------------------------------------------");
                     Console.WriteLine("   ARGS:\n      <FILE>   relative or absolute path to rom binary file\n");
                     Console.WriteLine("   FLAGS:\n      -n, --no-debug   hide CPU debug UI\n      -p, --pause      start program paused\n");
-                    Console.WriteLine("   OPTIONS:\n      -f, --fps <FRAMERATE>   target framerate (default 30)");
+                    Console.WriteLine("   OPTIONS:\n      -f, --fps <FRAMERATE>   target framerate (default 15)");
                     Console.WriteLine("---------------------------------------------------------------------------\n\n");
 
                     try
@@ -66,11 +66,22 @@
                 throw new ArgumentException(string.Format("\"{0}\" is not a valid command.", command[0]));
             }
 
-            //Optional -fps parameter. Defaults to 30.
-            int targetFPS = 30;
+            bool hideDebug = command.Contains("-n") || command.Contains("--no-debug");
+            bool startPaused = command.Contains("-p") || command.Contains("--pause");
+
+            //Optional -fps parameter. Defaults to 15.
+            int targetFPS = 15;
+
+            for (int i = 0; i < command.Length - 1; i++)
+            {
+                if (command[i] == "-f" || command[i] == "--fps")
+                {
+                    targetFPS = int.Parse(command[i + 1]);
+                }
+            }
 
             emulator.LoadRom(command[1]);
-            emulator.StartProgram(targetFPS);
+            emulator.StartProgram(targetFPS, hideDebug, startPaused);
         }
 
         static void HandleEmulatorInput()
