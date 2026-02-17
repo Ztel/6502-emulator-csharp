@@ -12,7 +12,7 @@
                 {
                     try
                     {
-                        HandleEmulatorInput();
+                        emulator.HandleEmulatorInput();
 
                         if (!emulator.programPaused)
                         {
@@ -82,45 +82,6 @@
 
             emulator.LoadRom(command[1]);
             emulator.StartProgram(targetFPS, hideDebug, startPaused);
-        }
-
-        static void HandleEmulatorInput()
-        {
-            if (Console.KeyAvailable)
-            {
-                ConsoleKeyInfo key = Console.ReadKey(true);
-
-                switch(key.Key)
-                {
-                    case ConsoleKey.Escape:
-                        emulator.ExitProgram();
-                        break;
-
-                    case ConsoleKey.Spacebar:
-                        if (emulator.programPaused)
-                        {
-                            emulator.programPaused = false;
-                        }
-                        else
-                        {
-                            emulator.PauseProgram();
-                        }
-                        break;
-
-                    case ConsoleKey.Enter:
-                        emulator.PauseProgram();
-                        emulator.StepFrame();
-                        break;
-
-                    case ConsoleKey.Backspace:
-                        emulator.PauseProgram();
-                        emulator.StepInstruction();
-                        break;
-
-                    default:
-                        break;
-                }
-            }
         }
     }
 }

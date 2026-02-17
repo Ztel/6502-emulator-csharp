@@ -4,12 +4,12 @@ namespace Emulator6502
 {
     public class Emulator
     {
-        public CPU Cpu { get; set; } = new CPU();
-        public Display Screen { get; set; } = new Display();
+        private CPU Cpu { get; set; } = new CPU();
+        private Display Screen { get; set; } = new Display();
 
         private string programName = "";
 
-        private int fps;
+        private int Fps { get; set => field = (value > 0) ? value : 0; }
 
         public bool programActive = false;
         public bool programPaused = true;
@@ -43,7 +43,7 @@ namespace Emulator6502
             programActive = true;
             programPaused = startPaused;
             drawDebug = !hideDebug;
-            fps = framerate;
+            Fps = framerate;
 
             Cpu.Reset();
             UpdateScreen(false);
@@ -69,7 +69,7 @@ namespace Emulator6502
             long lastFrameTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
 
             //Update the screen at the set framerate.
-            while ((DateTimeOffset.Now.ToUnixTimeMilliseconds() - lastFrameTime) < 1000.0 / fps)
+            while ((DateTimeOffset.Now.ToUnixTimeMilliseconds() - lastFrameTime) < 1000.0 / Fps)
             {
                 Cpu.Step();
             }
@@ -102,6 +102,45 @@ namespace Emulator6502
             if(triggerNMI)
             {
                 Cpu.NMI();
+            }
+        }
+
+        public void HandleEmulatorInput()
+        {
+            if (Console.KeyAvailable)
+            {
+                ConsoleKeyInfo key = Console.ReadKey(true);
+
+                switch (key.Key)
+                {
+                    case ConsoleKey.Escape:
+                        ExitProgram();
+                        break;
+
+                    case ConsoleKey.Spacebar:
+                        if (programPaused)
+                        {
+                            programPaused = false;
+                        }
+                        else
+                        {
+                            PauseProgram();
+                        }
+                        break;
+
+                    case ConsoleKey.Enter:
+                        PauseProgram();
+                        StepFrame();
+                        break;
+
+                    case ConsoleKey.Backspace:
+                        PauseProgram();
+                        StepInstruction();
+                        break;
+
+                    default:
+                        break;
+                }
             }
         }
     }
