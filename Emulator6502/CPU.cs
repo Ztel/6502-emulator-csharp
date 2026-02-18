@@ -42,10 +42,10 @@
         ////////////////////////////////////////
 
         private delegate (ushort, int, bool) TranslateOperands();  //Addressing Mode Methods
-                                                                                    //Returns the data byte/s, the number of
-                                                                                    //operand bytes processed, and whether
-                                                                                    //or not the returned data is a direct
-                                                                                    //value (as opposed to a Memory address).
+                                                                   //Returns the data byte/s, the number of
+                                                                   //operand bytes processed, and whether
+                                                                   //or not the returned data is a direct
+                                                                   //value (as opposed to a Memory address).
 
         private (ushort, int, bool) Immediate()
         {
@@ -363,7 +363,7 @@
 
             0xEA => (NOP, Implicit),
 
-            _ => throw new ArgumentException(String.Format("Attempted to parse invalid opcode {0} at index {1}.", opcode, ProgramCounter))
+            _ => throw new ArgumentException(String.Format("Attempted to parse invalid opcode {0} at index ${1}.", opcode.ToString("X2"), ProgramCounter.ToString("X4")))
         };
 
         //Load A - Loads a value into the accumulator.
@@ -986,7 +986,10 @@
 
         private void ExecuteInstruction(PerformOperation operation, TranslateOperands operands)
         {
-            (ushort, int, bool) data = operands(); //Item1 is the data byte, Item2 is the number of operand bytes processed.
+            (ushort, int, bool) data = operands(); //Item1 is the data byte, Item2 is the number of operand bytes processed, Item3 is a boolean isDirectValue.
+
+            //Generate human-readable assembly for debugging purposes.
+            Disassembler.GenerateAssembly(this, operation.Method.Name, operands.Method.Name, data.Item1);
 
             operation(data.Item1, data.Item2, data.Item3);
         }
@@ -997,6 +1000,32 @@
             {
                 Memory[index % 0xFFFF] = value;
             }
+        }
+
+        public void IRQ()
+        {
+            if(GetStatusRegisterFlag('I') == 0)
+            {
+                ExecuteInstruction(BRK, Implicit);
+            }
+        }
+
+        public void Reset()
+        {
+            ushort resetVector = (ushort)(Memory[0xFFFD] * 256 + Memory[0xFFFC]);
+
+            ProgramCounter = resetVector;
+        }
+
+        public void NMI()
+        {
+            StackPush((byte)((ProgramCounter) >> 8));
+            StackPush((byte)((ProgramCounter) & 0x00FF));
+            StackPush((byte)((StatusRegister | 0b00100000) & 11101111));
+
+            ushort nmiVector = (ushort)(Memory[0xFFFB] * 256 + Memory[0xFFFA]);
+
+            ProgramCounter = nmiVector;
         }
 
         //Returns the current value of a specific flag bit within the status register.
