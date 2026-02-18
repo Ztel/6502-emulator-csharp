@@ -3,7 +3,7 @@
 reset:
   LDX #$FF
   TXS
-  ;put sprite data in sprite buffer
+  ;put sprite data in the sprite buffer
   LDX #$00
 draw_sprites_loop:
   LDA sprites,X
@@ -18,17 +18,16 @@ main_loop:
 
 nmi:
   ;draw background data starting from an offset
-  ;the offset shifts each frame to create motion
-  LDX $40
+  LDX $00
   LDY #$00
 draw_bg_loop: 
   LDA background,X
   STA $2000,Y
   INX
   INY
-  CPX $40
-  BNE draw_bg_loop
-  INC $40
+  CPX $00
+  BNE draw_bg_loop 
+  INC $00 ;shift the background offset by 1 each frame to create motion
   RTI
 
 background:
