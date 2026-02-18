@@ -986,7 +986,10 @@
 
         private void ExecuteInstruction(PerformOperation operation, TranslateOperands operands)
         {
-            (ushort, int, bool) data = operands(); //Item1 is the data byte, Item2 is the number of operand bytes processed.
+            (ushort, int, bool) data = operands(); //Item1 is the data byte, Item2 is the number of operand bytes processed, Item3 is a boolean isDirectValue.
+
+            //Generate human-readable assembly for debugging purposes.
+            Disassembler.GenerateAssembly(this, operation.Method.Name, operands.Method.Name, data.Item1);
 
             operation(data.Item1, data.Item2, data.Item3);
         }

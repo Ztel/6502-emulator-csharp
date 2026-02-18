@@ -99,6 +99,9 @@ namespace Emulator6502
             Screen.ReadDisplayBuffers(Cpu.Memory);
             Screen.RenderDisplay();
 
+            Console.Write(new String(' ', Console.WindowWidth));
+            Console.WriteLine("\r" + Disassembler.currentInstruction);
+
             Console.WriteLine(DateTime.Now.ToLongTimeString() + "\n\n\nESC: return to command line   SPACE: pause/play program   ENTER: step frame   BKSP: step instruction");
 
             if(triggerNMI)
