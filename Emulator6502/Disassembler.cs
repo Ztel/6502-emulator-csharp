@@ -1,4 +1,6 @@
-﻿namespace Emulator6502
+﻿using System;
+
+namespace Emulator6502
 {
     internal class Disassembler
     {

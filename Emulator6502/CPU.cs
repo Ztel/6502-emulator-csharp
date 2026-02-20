@@ -1,4 +1,6 @@
-﻿namespace Emulator6502
+﻿using System;
+
+namespace Emulator6502
 {
     public class CPU
     {
