@@ -11,6 +11,8 @@ namespace Emulator6502
         byte[] displayBuffer = new byte[256];
         byte[] spriteBuffer = new byte[256];
 
+        public string renderedDisplay = "";
+
 
         public void ReadDisplayBuffers(byte[] memory)
         {
@@ -37,32 +39,28 @@ namespace Emulator6502
             }
         }
 
-        //Converts the display buffer into a 16x16 grid string (plus a border) to be printed to the console.
+        //Converts the display buffer into a 16x16 grid string to be printed to the console.
         public void RenderDisplay()
         {
             StringBuilder displayBuilder = new StringBuilder();
 
-            displayBuilder.AppendLine("╔═════════════════════════════════╗");
-
             for (int i = 0; i < 16; i++)
             {
-                displayBuilder.Append("║ ");
-
                 for (int a = 0; a < 16; a++)
                 {
                     //Replace ASCII control characters with spaces.
                     char character = (displayBuffer[(i * 16) + a] > 31) ? (char)displayBuffer[(i * 16) + a] : (char)0x20;
-                    
-                    displayBuilder.Append(character + " ");
+
+                    displayBuilder.Append(character + ((a < 15) ? " " : ""));
                 }
 
-                displayBuilder.AppendLine("║");
+                if (i < 15) 
+                {
+                    displayBuilder.Append("\n");
+                }
             }
 
-            displayBuilder.AppendLine("╚═════════════════════════════════╝");
-
-            Console.CursorVisible = false;
-            Console.Write(displayBuilder.ToString());
+            renderedDisplay = displayBuilder.ToString();
         }
 
         public void RenderUI(CPU cpu)
@@ -97,8 +95,8 @@ namespace Emulator6502
             uiBuilder.AppendLine("                                             │   └───────────────────────── V - Overflow");
             uiBuilder.AppendLine("                                             └───────────────────────────── N - Negative");
 
-            Console.SetCursorPosition(0, 1);
-            Console.WriteLine(uiBuilder.ToString());
+            //Console.SetCursorPosition(0, 1);
+            //Console.WriteLine(uiBuilder.ToString());
         }
     }
 }

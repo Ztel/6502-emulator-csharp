@@ -25,7 +25,7 @@ namespace Emulator6502
         public byte StackPointer { get; set; }              //Stack Pointer     (8-bit)
                                                             //Used as the low byte to access the 'top' of the stack, between $0100 and $01FF. 
 
-        public byte StatusRegister { get; private set; }    //Status Register   (8-bit)
+        public byte StatusRegister { get; set; }            //Status Register   (8-bit)
                                                             //Holds 7 flags indicating CPU status and results of previous instructions.
                                                             //From bit 7 to bit 0 they are:
                                                             //  N - Negative

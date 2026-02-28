@@ -1,34 +1,53 @@
 ﻿using System;
+using System.ComponentModel;
 using System.IO;
+using System.Reflection.Emit;
 using System.Text;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace Emulator6502
 {
     public class Emulator
     {
-        private CPU Cpu { get; set; } = new CPU();
-        private Display Screen { get; set; } = new Display();
+        public CPU Cpu { get; set; } = new CPU();
+        public Display Screen { get; set; } = new Display();
 
-        private string programName = "";
+        private MainWindow mainWindow;
+
+        public string ProgramName { get; set; }
+        public string ProgramPath { get; set; }
 
         private int Fps { get; set => field = (value > 0) ? value : 0; }
+        private int stepsPerFrame = 10000; 
 
-        public bool programActive = false;
+        public bool programActive = false; 
         public bool programPaused = true;
-        private bool drawDebug = true;
 
         private ushort inputAddress = 0x4000;
+
+        public Emulator(MainWindow window) 
+        {
+            mainWindow = window;
+        }
 
 
         public void LoadRom(string romFilePath)
         {
             Cpu = new CPU();
             byte[] rom = File.ReadAllBytes(romFilePath);
-            programName = Path.GetFileName(romFilePath).ToLower();
+            ProgramName = Path.GetFileName(romFilePath).ToLower();
+            ProgramPath = romFilePath;
+            string programExtension = Path.GetExtension(romFilePath);
+
+            if (programExtension != ".bin")
+            {
+                throw new ArgumentException(String.Format("{0} files are not supported. Please select a .bin file.", programExtension));
+            }
 
             if (rom.Length != 8192 && rom.Length != 16384 && rom.Length != 32768)
             {
-                throw new ArgumentException(string.Format("File '{0}' is an unsupported size ({1} bytes).\nSupported file sizes are 8KB (8192 bytes), 16KB (16284 bytes), and 32KB (32768 bytes).", romFilePath, rom.Length));
+                throw new ArgumentException(string.Format("'{0}' is an unsupported size ({1} bytes).\nSupported file sizes are 8KB (8192 bytes), 16KB (16284 bytes), and 32KB (32768 bytes).", romFilePath, rom.Length));
             }
 
             //Mirror copies of ROM if it is 8KB or 16KB to place the vectors at the correct location in memory.
@@ -38,15 +57,14 @@ namespace Emulator6502
             }
         }
 
-        public void StartProgram(int framerate, bool hideDebug, bool startPaused)
+        public void StartProgram(int framerate, bool startPaused)
         {
-            Console.OutputEncoding = Encoding.UTF8;
-            Console.SetWindowSize(102, 25);
-            Console.Clear();
+            //Console.OutputEncoding = Encoding.UTF8;
+            //Console.SetWindowSize(102, 25);
+            //Console.Clear();
 
             programActive = true;
             programPaused = startPaused;
-            drawDebug = !hideDebug;
             Fps = framerate;
 
             Cpu.Reset();
@@ -57,8 +75,8 @@ namespace Emulator6502
         {
             programActive = false;
             programPaused = true;
-            Console.CursorVisible = true;
-            Console.Clear();
+            //Console.CursorVisible = true;
+            //Console.Clear();
         }
 
         public void PauseProgram()
@@ -71,12 +89,16 @@ namespace Emulator6502
         public void StepFrame()
         {
             long lastFrameTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+            int stepsThisFrame = 0;
 
-            //Update the screen at the set framerate.
-            while ((DateTimeOffset.Now.ToUnixTimeMilliseconds() - lastFrameTime) < 1000.0 / Fps)
+            while (stepsThisFrame < stepsPerFrame)
             {
                 Cpu.Step();
+                stepsThisFrame++;
             }
+
+            //If there is spare time left in the frame, idle.
+            while ((DateTimeOffset.Now.ToUnixTimeMilliseconds() - lastFrameTime) < 1000.0 / Fps) { }
 
             UpdateScreen(true);
         }
@@ -89,24 +111,27 @@ namespace Emulator6502
 
         private void UpdateScreen(bool triggerNMI)
         {
-            if (drawDebug)
-            {
-                Screen.RenderUI(Cpu);
-            }
+            //if (drawDebug)
+            //{
+            //    Screen.RenderUI(Cpu);
+            //}
 
-            Console.SetCursorPosition(0, 0);
-            string statusHeader = programPaused ? programName + ": ▌▌ paused" : programName + ": ► running";
-            Console.WriteLine(statusHeader);
+            //Console.SetCursorPosition(0, 0);
+            //string statusHeader = programPaused ? programName + ": ▌▌ paused" : programName + ": ► running";
+            //Console.WriteLine(statusHeader);
 
             Screen.ReadDisplayBuffers(Cpu.Memory);
             Screen.RenderDisplay();
 
-            Console.Write(new String(' ', Console.WindowWidth));
-            Console.WriteLine("\r" + Disassembler.currentInstruction);
+            //Console.Write(new String(' ', Console.WindowWidth));
+            //Console.WriteLine("\r" + Disassembler.currentInstruction);
 
-            Console.WriteLine(DateTime.Now.ToLongTimeString() + "\n\n\nESC: return to command line   SPACE: pause/play program   ENTER: step frame   BKSP: step instruction");
+            //Console.WriteLine(DateTime.Now.ToLongTimeString() + "\n\n\nESC: return to command line   SPACE: pause/play program   ENTER: step frame   BKSP: step instruction");
 
-            if(triggerNMI)
+            //Execute UI update on the main thread.
+            Application.Current.Dispatcher.Invoke(() => { mainWindow.UpdateDisplay(Screen.renderedDisplay); });
+
+            if (triggerNMI)
             {
                 Cpu.NMI();
             }

@@ -5,8 +5,54 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Emulator6502"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Emulator6502" Height="370" Width="300" ResizeMode="CanMinimize" Icon="/6502.png">
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height= "20"/>
+            <RowDefinition/>
+            <RowDefinition Height= "20"/>
+        </Grid.RowDefinitions>
+
+        <Menu Background="#FFFFFFFF">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Load ROM" x:Name="btnLoadRom" Click="btnLoadRom_Click"/>
+                <MenuItem Header="_Eject ROM" x:Name="btnEjectRom" Click="btnEjectRom_Click"/>
+                <MenuItem Header="_Quit" x:Name="btnQuit" Click="btnQuit_Click"/>
+            </MenuItem>
+            <MenuItem Header="_Emulation">
+                <MenuItem Header="Create _Savestate" x:Name="btnCreateSavestate">
+                    <MenuItem Header="Slot _0" x:Name="btnSaveSlot0" Click="btnSaveSlot_Click"/>
+                    <MenuItem Header="Slot _1" x:Name="btnSaveSlot1" Click="btnSaveSlot_Click"/>
+                    <MenuItem Header="Slot _2" x:Name="btnSaveSlot2" Click="btnSaveSlot_Click"/>
+                    <MenuItem Header="Slot _3" x:Name="btnSaveSlot3" Click="btnSaveSlot_Click"/>
+                </MenuItem>
+                <MenuItem Header="_Load Savestate" x:Name="btnLoadSavestate">
+                    <MenuItem Header="Slot _0" x:Name="btnLoadSlot0" Click="btnLoadSlot_Click"/>
+                    <MenuItem Header="Slot _1" x:Name="btnLoadSlot1" Click="btnLoadSlot_Click"/>
+                    <MenuItem Header="Slot _2" x:Name="btnLoadSlot2" Click="btnLoadSlot_Click"/>
+                    <MenuItem Header="Slot _3" x:Name="btnLoadSlot3" Click="btnLoadSlot_Click"/>
+                </MenuItem>
+                <MenuItem Header="_Reset" x:Name="btnReset" Click="btnReset_Click"/>
+                <MenuItem Header="_Pause" x:Name="btnPause" Click="btnPause_Click"/>
+                <MenuItem Header="Step _Frame" x:Name="btnStepFrame" Click="btnStepFrame_Click"/>
+                <MenuItem Header="Step _Instruction" x:Name="btnStepInstruction" Click="btnStepInstruction_Click"/>
+            </MenuItem>
+            <MenuItem Header="_Debug">
+                <MenuItem Header="Open _Debug Window"/>
+            </MenuItem>
+            <MenuItem Header="_Config">
+                <MenuItem Header="Set ROM Path"/>
+            </MenuItem>
+        </Menu>
+
+        <Rectangle Grid.Row="1" Fill="Black"/>
+
+        <TextBlock Grid.Row="1" x:Name="tbDisplayGrid" HorizontalAlignment="Center" VerticalAlignment= "Center" FontFamily="Consolas" 
+                   Height="290" Width="300" xml:space="preserve" Foreground="#FFD4D4D4" 
+                   FontSize="16" TextAlignment="Center" LineStackingStrategy="BlockLineHeight" LineHeight="18"/>
+
+        <TextBlock Grid.Row="3" x:Name="tbRomStatus" HorizontalAlignment="Left" VerticalAlignment="Center" 
+                   Height="15" Width="300" xml:space="preserve" Foreground="#FF000000" 
+                   FontSize="12" TextAlignment="Left"> No ROM loaded.</TextBlock>
     </Grid>
 </Window>
