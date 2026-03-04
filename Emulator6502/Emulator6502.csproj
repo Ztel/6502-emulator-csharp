@@ -6,18 +6,22 @@
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
     <LangVersion>preview</LangVersion>
     <StartupObject>Emulator6502.App</StartupObject>
+    <ApplicationIcon>6502.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Program.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="6502.png" />
+    <None Remove="6502.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="6502.ico" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="6502.png" />
+    <Resource Include="6502.ico" />
   </ItemGroup>
 </Project>

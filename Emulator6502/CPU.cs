@@ -992,19 +992,16 @@ namespace Emulator6502
 
         public void Step()
         {
-            (PerformOperation, TranslateOperands) instruction = TranslateOpcode(Memory[ProgramCounter]);
+            (PerformOperation operation, TranslateOperands addressingMode) instruction = TranslateOpcode(Memory[ProgramCounter]);
 
-            ExecuteInstruction(instruction.Item1, instruction.Item2);
+            ExecuteInstruction(instruction.operation, instruction.addressingMode);
         }
 
-        private void ExecuteInstruction(PerformOperation operation, TranslateOperands operands)
+        private void ExecuteInstruction(PerformOperation operation, TranslateOperands addressingMode)
         {
-            (ushort, bool) data = operands(); //Item1 is the data byte, Item2 is the number of operand bytes processed, Item3 is a boolean isDirectValue.
+            (ushort dataByte, bool isDirectValue) data = addressingMode(); 
 
-            //Generate human-readable assembly for debugging purposes.
-            Disassembler.GenerateAssembly(this, operation.Method.Name, operands.Method.Name, data.Item1);
-
-            operation(data.Item1, data.Item2);
+            operation(data.dataByte, data.isDirectValue);
         }
 
         private void Write(int index, byte value)
@@ -1025,6 +1022,8 @@ namespace Emulator6502
 
         public void Reset()
         {
+            SetStatusRegisterFlag('I', true);
+
             ushort resetVector = (ushort)(Memory[0xFFFD] * 256 + Memory[0xFFFC]);
 
             ProgramCounter = resetVector;

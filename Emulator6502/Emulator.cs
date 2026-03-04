@@ -1,36 +1,32 @@
 ﻿using System;
-using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
-using System.Reflection.Emit;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
 
 namespace Emulator6502
 {
-    public class Emulator
+    public class Emulator(MainWindow window)
     {
         public CPU Cpu { get; set; } = new CPU();
         public Display Screen { get; set; } = new Display();
 
-        private MainWindow mainWindow;
+        private readonly MainWindow mainWindow = window;
 
         public string ProgramName { get; set; }
         public string ProgramPath { get; set; }
 
         private int Fps { get; set => field = (value > 0) ? value : 0; }
-        private int stepsPerFrame = 10000; 
+        private const int stepsPerFrame = 10000;
+        private long lastFrameTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
 
         public bool programActive = false; 
-        public bool programPaused = true;
+        public bool programPaused = false;
 
-        private ushort inputAddress = 0x4000;
+        private const ushort inputAddress = 0x4000;
 
-        public Emulator(MainWindow window) 
-        {
-            mainWindow = window;
-        }
-
+        private long fpsTrackerStartTime;
+        private int frameCount = 0;
+        private long realFPS;
 
         public void LoadRom(string romFilePath)
         {
@@ -55,40 +51,36 @@ namespace Emulator6502
             {
                 Cpu.Memory[i + 0x8000] = rom[i % rom.Length];
             }
+
+            Disassembler.DisassembleRom(Cpu);
         }
 
         public void StartProgram(int framerate, bool startPaused)
         {
-            //Console.OutputEncoding = Encoding.UTF8;
-            //Console.SetWindowSize(102, 25);
-            //Console.Clear();
-
             programActive = true;
             programPaused = startPaused;
             Fps = framerate;
+            fpsTrackerStartTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
 
             Cpu.Reset();
-            UpdateScreen(false);
+            UpdateScreen(triggerNMI: false);
         }
 
         public void ExitProgram()
         {
             programActive = false;
-            programPaused = true;
-            //Console.CursorVisible = true;
-            //Console.Clear();
+            //programPaused = true;
         }
 
         public void PauseProgram()
         {
             programPaused = true;
 
-            UpdateScreen(false);
+            UpdateScreen(triggerNMI: false);
         }
 
         public void StepFrame()
         {
-            long lastFrameTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
             int stepsThisFrame = 0;
 
             while (stepsThisFrame < stepsPerFrame)
@@ -100,36 +92,35 @@ namespace Emulator6502
             //If there is spare time left in the frame, idle.
             while ((DateTimeOffset.Now.ToUnixTimeMilliseconds() - lastFrameTime) < 1000.0 / Fps) { }
 
-            UpdateScreen(true);
+            UpdateScreen(triggerNMI: true);
+
+            lastFrameTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+
+            //Track actual FPS (in 2-second periods) for benchmarking performance.
+            frameCount++;
+            if ((DateTimeOffset.Now.ToUnixTimeMilliseconds() - fpsTrackerStartTime) / 1000 > 2)
+            {
+                realFPS = frameCount / ((DateTimeOffset.Now.ToUnixTimeMilliseconds() - fpsTrackerStartTime) / 1000);
+                Debug.WriteLine("FPS: " + realFPS);
+
+                fpsTrackerStartTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                frameCount = 0;
+            }
         }
 
         public void StepInstruction()
         {
             Cpu.Step();
-            UpdateScreen(false);
+            UpdateScreen(triggerNMI: false);
         }
 
         private void UpdateScreen(bool triggerNMI)
         {
-            //if (drawDebug)
-            //{
-            //    Screen.RenderUI(Cpu);
-            //}
-
-            //Console.SetCursorPosition(0, 0);
-            //string statusHeader = programPaused ? programName + ": ▌▌ paused" : programName + ": ► running";
-            //Console.WriteLine(statusHeader);
-
             Screen.ReadDisplayBuffers(Cpu.Memory);
             Screen.RenderDisplay();
 
-            //Console.Write(new String(' ', Console.WindowWidth));
-            //Console.WriteLine("\r" + Disassembler.currentInstruction);
-
-            //Console.WriteLine(DateTime.Now.ToLongTimeString() + "\n\n\nESC: return to command line   SPACE: pause/play program   ENTER: step frame   BKSP: step instruction");
-
             //Execute UI update on the main thread.
-            Application.Current.Dispatcher.Invoke(() => { mainWindow.UpdateDisplay(Screen.renderedDisplay); });
+            Application.Current?.Dispatcher.Invoke(() => { mainWindow.UpdateDisplay(Screen.renderedDisplay); });
 
             if (triggerNMI)
             {

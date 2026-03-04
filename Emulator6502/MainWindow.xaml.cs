@@ -1,29 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Xml.Linq;
 
 namespace Emulator6502
 {
     public partial class MainWindow : Window
     {
-        private Emulator emulator;
+        public Emulator emulator;
+
         private Thread emulatorThread;
-        private int targetFPS = 15;
+        private int targetFPS = 60;
         private bool startPaused = false;
+
+        private DebugWindow debugWindow;
+        private MemoryViewerWindow memoryViewerWindow;
 
 
         public MainWindow()
@@ -36,6 +27,9 @@ namespace Emulator6502
             emulatorThread = new Thread(EmulatorLoop);
             emulatorThread.IsBackground = true;
             emulatorThread.Start();
+
+            debugWindow = new DebugWindow(this);
+            memoryViewerWindow = new MemoryViewerWindow(this);
         }
 
         private void EmulatorLoop()
@@ -52,7 +46,7 @@ namespace Emulator6502
             }
         }
 
-        private void Step(bool stepWholeFrame)
+        private void Step(bool stepWholeFrame, bool forceUIUpdate = false)
         {
             if (emulator.programActive)
             {
@@ -66,22 +60,27 @@ namespace Emulator6502
                     {
                         emulator.StepInstruction();
                     }
+
+                    Application.Current?.Dispatcher.Invoke(() => { debugWindow?.UpdateDebugWindow(forceUpdate: forceUIUpdate); }); //Invoke the UpdateDebugWindow method on the UI thread.
+                    Application.Current?.Dispatcher.Invoke(() => { memoryViewerWindow?.UpdateMemoryViewer(forceUpdate: forceUIUpdate); }); //Invoke the UpdateMemoryViewer method on the UI thread.
                 }
                 catch (Exception ex)
                 {
                     emulator.ExitProgram();
-                    Application.Current.Dispatcher.Invoke(() => { TogglePause(true); }); //Invoke the TogglePause method on the correct thread.
+                    Application.Current?.Dispatcher.Invoke(() => { TogglePause(true); }); //Invoke the TogglePause method on the UI thread.
 
                     MessageBox.Show(ex.Message, "Emulator Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }
 
-        public bool LoadRom(string path)
+        private bool LoadRom(string path)
         {
             try
             {
                 emulator.LoadRom(path);
+                debugWindow.UpdateDisassembly();
+                memoryViewerWindow.UpdateMemoryViewer();
             }
             catch (Exception ex)
             {
@@ -98,9 +97,11 @@ namespace Emulator6502
 
         private void StartProgram()
         {
+            bool wasPaused = emulator.programPaused;
+
             ToggleRuntimeButtons(true);
-            emulator.StartProgram(targetFPS, startPaused);
-            TogglePause(startPaused);
+            emulator.StartProgram(targetFPS, startPaused || wasPaused);
+            TogglePause(startPaused || wasPaused);
         }
 
         public void UpdateDisplay(string displayString)
@@ -120,11 +121,13 @@ namespace Emulator6502
             btnPause.IsEnabled = enabled;
             btnStepInstruction.IsEnabled = enabled; 
             btnStepFrame.IsEnabled = enabled;
+
+            debugWindow?.ToggleRuntimeButtons(enabled);
         }
 
-        private void TogglePause(bool pause)
+        private void TogglePause(bool shouldPause)
         {
-            if (pause)
+            if (shouldPause)
             {
                 if (emulator.programActive)
                 {
@@ -139,14 +142,18 @@ namespace Emulator6502
                 tbRomStatus.Text = string.Format(" {0}: ▶︎ running", emulator.ProgramName);
                 btnPause.IsChecked = false;
             }
+
+            debugWindow.UpdateUIPauseStatus();
+            debugWindow.UpdateDebugWindow(forceUpdate: true);
+            memoryViewerWindow.UpdateMemoryViewer(forceUpdate: true);
         }
 
-        public void btnLoadRom_Click(object sender, RoutedEventArgs e)
+        private void BtnLoadRom_Click(object sender, RoutedEventArgs e)
         {
-            Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
+            Microsoft.Win32.OpenFileDialog openFileDialog = new();
 
             openFileDialog.Filter = "Binary ROM files (*.bin)|*.bin|All files (*.*)|*.*";
-            openFileDialog.Title = "Please pick a ROM source file...";
+            openFileDialog.Title = "Please pick a ROM file...";
 
             if (openFileDialog.ShowDialog() == true)
             {
@@ -157,7 +164,7 @@ namespace Emulator6502
             }
         }
 
-        public void btnEjectRom_Click(object sender, RoutedEventArgs e)
+        private void BtnEjectRom_Click(object sender, RoutedEventArgs e)
         {
             emulator.ExitProgram();
             tbDisplayGrid.Text = "";
@@ -165,49 +172,43 @@ namespace Emulator6502
             ToggleRuntimeButtons(false);
         }
 
-        public void btnQuit_Click(object sender, RoutedEventArgs e)
+        private void BtnQuit_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
         }
 
-        private void btnReset_Click(object sender, RoutedEventArgs e)
+        public void BtnReset_Click(object sender, RoutedEventArgs e)
         {
-            tbDisplayGrid.Text = "";
-            emulator.ExitProgram();
-            LoadRom(emulator.ProgramPath);
-            StartProgram();
+            if (emulator.programActive)
+            {
+                tbDisplayGrid.Text = "";
+                emulator.ExitProgram();
+                LoadRom(emulator.ProgramPath);
+                StartProgram();
+                debugWindow.UpdateDisassembly();
+                debugWindow.UpdateDebugWindow(forceUpdate: true);
+                memoryViewerWindow.UpdateMemoryViewer(forceUpdate: true);
+            }
         }
 
-        public void btnPause_Click(object sender, RoutedEventArgs e)
+        public void BtnPause_Click(object sender, RoutedEventArgs e)
         {
             TogglePause(!emulator.programPaused);
         }
 
-        private void btnStepFrame_Click(object sender, RoutedEventArgs e)
+        public void BtnStepFrame_Click(object sender, RoutedEventArgs e)
         {
-            if(emulator.programPaused)
-            {
-                Step(stepWholeFrame: true);
-            }
-            else
-            {
-                TogglePause(true);
-            }            
+            TogglePause(true);
+            Step(stepWholeFrame: true, forceUIUpdate: true);
         }
 
-        private void btnStepInstruction_Click(object sender, RoutedEventArgs e)
+        public void BtnStepInstruction_Click(object sender, RoutedEventArgs e)
         {
-            if (emulator.programPaused)
-            {
-                Step(stepWholeFrame: false);
-            }
-            else
-            {
-                TogglePause(true);
-            }
+            TogglePause(true);
+            Step(stepWholeFrame: false, forceUIUpdate: true);
         }
 
-        private void btnSaveSlot_Click(object sender, RoutedEventArgs e)
+        private void BtnSaveSlot_Click(object sender, RoutedEventArgs e)
         {
             bool wasPaused = emulator.programPaused;
             TogglePause(true);
@@ -252,7 +253,7 @@ namespace Emulator6502
             tbRomStatus.Text = string.Format(" {0}: Saved state to slot {1}.", emulator.ProgramName, slotNumber);
         }
 
-        private void btnLoadSlot_Click(object sender, RoutedEventArgs e)
+        private void BtnLoadSlot_Click(object sender, RoutedEventArgs e)
         {
             bool wasPaused = emulator.programPaused;
             TogglePause(true);
@@ -313,6 +314,23 @@ namespace Emulator6502
             tbRomStatus.Text = string.Format(" {0}: Loaded state from slot {1}.", emulator.ProgramName, slotNumber);
             emulator.Screen.RenderDisplay();
             UpdateDisplay(emulator.Screen.renderedDisplay);
+        }
+
+        private void BtnOpenDebugWindow_Click(object sender, RoutedEventArgs e)
+        {
+            debugWindow.Close();
+            debugWindow = new DebugWindow(this);
+            debugWindow.Owner = this;
+            debugWindow?.ToggleRuntimeButtons(emulator.programActive);
+            debugWindow.Show();
+        }
+
+        private void BtnOpenMemoryViewer_Click(object sender, RoutedEventArgs e)
+        {
+            memoryViewerWindow.Close();
+            memoryViewerWindow = new MemoryViewerWindow(this);
+            memoryViewerWindow.Owner = this;
+            memoryViewerWindow.Show();
         }
     }
 }

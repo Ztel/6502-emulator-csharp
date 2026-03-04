@@ -94,9 +94,6 @@ namespace Emulator6502
             uiBuilder.AppendLine("                                             │   │   └───────────────────── [ Not Used ]");
             uiBuilder.AppendLine("                                             │   └───────────────────────── V - Overflow");
             uiBuilder.AppendLine("                                             └───────────────────────────── N - Negative");
-
-            //Console.SetCursorPosition(0, 1);
-            //Console.WriteLine(uiBuilder.ToString());
         }
     }
 }

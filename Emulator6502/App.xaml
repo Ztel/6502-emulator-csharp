@@ -4,6 +4,8 @@
              xmlns:local="clr-namespace:Emulator6502"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <ResourceDictionary>
+            <BitmapImage x:Key="AppIcon" UriSource="6502.ico"/>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>
