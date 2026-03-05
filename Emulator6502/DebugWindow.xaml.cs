@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Threading;
 using System.Windows;
 
 namespace Emulator6502
@@ -50,6 +51,8 @@ namespace Emulator6502
                     stackItems.Add(new StackEntry(0x0100 + i, 0));
                 }
             }
+
+            lbStack.ScrollIntoView(lbStack.Items[lbStack.Items.Count - 1]);
         }
 
         public DebugWindow(MainWindow mainWindow)
@@ -62,6 +65,26 @@ namespace Emulator6502
 
             InitializeStackList();
             UpdateUIPauseStatus();
+        }
+
+        public void UpdateDebugWindow()
+        {
+            CPU cpu = mainWindow.emulator.Cpu;
+
+            for (int i = 0; i < 256; i++)
+            {
+                stackItems[i].Value = cpu.Memory[0x0100 + i];
+            }
+
+            Application.Current?.Dispatcher.Invoke(() => { UpdateDebugUIControls(); }); //Invoke the UpdateDebugUIControls method on the UI thread.
+        }
+
+        public void ToggleRuntimeButtons(bool enabled)
+        {
+            btnReset.IsEnabled = enabled;
+            btnPause.IsEnabled = enabled;
+            btnStepFrame.IsEnabled = enabled;
+            btnStepInstruction.IsEnabled = enabled;
         }
 
         public void UpdateUIPauseStatus()
@@ -84,22 +107,9 @@ namespace Emulator6502
             cbZero.IsEnabled = isPaused;
         }
 
-        public void UpdateDebugWindow()
+        private void UpdateDebugUIControls()
         {
             CPU cpu = mainWindow.emulator.Cpu;
-
-            if (mainWindow.emulator.programPaused && Disassembler.disassembly != null)
-            {
-                if (Disassembler.disassembly.ContainsKey(cpu.ProgramCounter) /*&& lbDisassembly.Items.Contains(new KeyValuePair<ushort, Tuple<string, string>>(cpu.ProgramCounter, Disassembler.disassembly[cpu.ProgramCounter]))*/)
-                {
-                    lbDisassembly.SelectedItem = new KeyValuePair<ushort, Tuple<string, string>>(cpu.ProgramCounter, Disassembler.disassembly[cpu.ProgramCounter]);
-                    lbDisassembly.ScrollIntoView(lbDisassembly.SelectedItem);
-                }
-                else
-                {
-                    lbDisassembly.SelectedItem = null;
-                }
-            }
 
             tbProgramCounter.Text = string.Format("{0:X4}", cpu.ProgramCounter);
             tbAccumulator.Text = string.Format("{0:X2}", cpu.Accumulator);
@@ -115,26 +125,26 @@ namespace Emulator6502
             cbNegative.IsChecked = cpu.GetStatusRegisterFlag('N') == 1;
             cbOverflow.IsChecked = cpu.GetStatusRegisterFlag('V') == 1;
             cbZero.IsChecked = cpu.GetStatusRegisterFlag('Z') == 1;
+        }
 
-            for (int i = 0; i < 256; i++)
-            {
-                stackItems[i].Value = cpu.Memory[0x0100 + i];
-            }
+        public void ScrollSelectionsIntoView()
+        {
+            CPU cpu = mainWindow.emulator.Cpu;
 
             lbStack.SelectedIndex = cpu.StackPointer;
 
-            if (mainWindow.emulator.programPaused)
-            {
-                lbStack.ScrollIntoView(lbStack.SelectedItem);
-            }
-        }
+            //lbStack.ScrollIntoView(lbStack.SelectedItem);
 
-        public void ToggleRuntimeButtons(bool enabled)
-        {
-            btnReset.IsEnabled = enabled;
-            btnPause.IsEnabled = enabled;
-            btnStepFrame.IsEnabled = enabled;
-            btnStepInstruction.IsEnabled = enabled;
+            if (Disassembler.disassembly != null && Disassembler.disassembly.ContainsKey(cpu.ProgramCounter))
+            {
+                lbDisassembly.SelectedItem = new KeyValuePair<ushort, Tuple<string, string>>(cpu.ProgramCounter, Disassembler.disassembly[cpu.ProgramCounter]);
+            }
+            else
+            {
+                lbDisassembly.SelectedItem = null;
+            }
+
+            lbDisassembly.ScrollIntoView(lbDisassembly.SelectedItem);
         }
 
         private void BtnReset_Click(object sender, RoutedEventArgs e)

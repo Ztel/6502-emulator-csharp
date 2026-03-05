@@ -50,8 +50,8 @@
         <!-- ASCII Display -->
         <Rectangle Grid.Row="1" Fill="Black"/>
 
-        <TextBlock Grid.Row="1" x:Name="tbDisplayGrid" HorizontalAlignment="Center" VerticalAlignment= "Center" FontFamily="Consolas" 
-                   Height="300" Width="320" xml:space="preserve" Foreground="#FFD4D4D4" 
+        <TextBlock Grid.Row="1" x:Name="tbDisplayGrid" Text="{Binding RenderedDisplay}"  HorizontalAlignment="Center" VerticalAlignment= "Center" 
+                   FontFamily="Consolas" Height="300" Width="320" xml:space="preserve" Foreground="#FFD4D4D4" 
                    FontSize="18" TextAlignment="Center" LineStackingStrategy="BlockLineHeight" LineHeight="18.5"/>
 
         <!-- Footer -->

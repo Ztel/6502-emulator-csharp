@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Text;
+using System.Threading;
 using System.Windows;
 
 namespace Emulator6502
@@ -16,18 +17,18 @@ namespace Emulator6502
             get => content;
             set
             {
-                if (this.content != value)
+                if (content != value)
                 {
-                    this.content = value;
+                    content = value;
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Content)));
                 }
             }
         }
 
-        public MemoryRow(int address, string content)
+        public MemoryRow(int address, string value)
         {
             Address = address;
-            this.content = content;
+            content = value;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

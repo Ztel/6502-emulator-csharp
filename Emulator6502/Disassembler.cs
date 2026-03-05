@@ -7,6 +7,7 @@ namespace Emulator6502
     internal class Disassembler
     {
         public static Dictionary<ushort, Tuple<string, string>> disassembly; //Have to use the old Tuple<T,T> syntax to generate class properties to be bound to the UI.
+        //public static ObservableCollection
 
         private static CPU cpu;
 

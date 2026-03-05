@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Emulator6502"
         mc:Ignorable="d"
         ResizeMode="CanResize"
-        Title="Debug" Height="600" Width="560" MinHeight="390" MinWidth="560">
+        Title="Debug" Height="590" Width="560" MinHeight="390" MinWidth="560">
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="3*"/>

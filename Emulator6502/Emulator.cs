@@ -119,9 +119,6 @@ namespace Emulator6502
             Screen.ReadDisplayBuffers(Cpu.Memory);
             Screen.RenderDisplay();
 
-            //Execute UI update on the main thread.
-            Application.Current?.Dispatcher.Invoke(() => { mainWindow.UpdateDisplay(Screen.renderedDisplay); });
-
             if (triggerNMI)
             {
                 Cpu.NMI();
