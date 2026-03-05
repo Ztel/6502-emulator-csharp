@@ -5,11 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Emulator6502"
         mc:Ignorable="d"
-        Title="Memory Viewer" Height="340" Width="700" MinHeight="160" MinWidth="450">
+        Title="Memory Viewer" Height="340" Width="670" MinHeight="160" MinWidth="430">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="1*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         
         <TextBlock Text="         00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F    Decoded Text" Grid.Row="0" FontSize="12" FontFamily="Consolas" FontWeight="Bold" Margin="10,5,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
@@ -18,11 +19,13 @@
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding Item1, StringFormat=X4}"/>
-                        <TextBlock Text="{Binding Item2}"/>
+                        <TextBlock Text="{Binding Address, StringFormat=X4}"/>
+                        <TextBlock Text="{Binding Content}"/>
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
+
+        <Button Grid.Row="2" Content="Jump to Address..." Click="BtnJumpToAddress_Click" Background="#FFF0F0F0" Width="120" Margin="10,5,5,5" HorizontalAlignment="Left"/>
     </Grid>
 </Window>

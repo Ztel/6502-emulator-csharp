@@ -108,8 +108,8 @@
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{Binding Item1, StringFormat=X4}" Width="40" Foreground="Gray"/>
-                                    <TextBlock Text="{Binding Item2, StringFormat=X2}"/>
+                                    <TextBlock Text="{Binding Address, StringFormat=X4}" Width="40" Foreground="Gray"/>
+                                    <TextBlock Text="{Binding Value, StringFormat=X2}"/>
                                 </StackPanel>
                             </DataTemplate>
                         </ListBox.ItemTemplate>

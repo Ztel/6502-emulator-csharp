@@ -1,58 +1,71 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Text;
-using System.Threading;
 using System.Windows;
 
 namespace Emulator6502
 {
+    public class MemoryRow : INotifyPropertyChanged
+    {
+        public int Address { get; }
+
+        private string content;
+        public string Content
+        {
+            get => content;
+            set
+            {
+                if (this.content != value)
+                {
+                    this.content = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Content)));
+                }
+            }
+        }
+
+        public MemoryRow(int address, string content)
+        {
+            Address = address;
+            this.content = content;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+    }
+
     public partial class MemoryViewerWindow : Window
     {
         readonly MainWindow mainWindow;
-        const int UIUpdatesPerSecond = 10;
-        long lastUIUpdateTime;
+        private JumpToAddressWindow jumpToAddressWindow;
 
-        public ObservableCollection<Tuple<int, string>> MemoryGrid { get; set; } = []; //Have to use the old Tuple<T,T> syntax to generate class properties to be bound to the UI.
-
+        ObservableCollection<MemoryRow> memoryRows = [];
 
         public MemoryViewerWindow(MainWindow mainWindow)
         {
             InitializeComponent();
 
             this.mainWindow = mainWindow;
+            jumpToAddressWindow = new JumpToAddressWindow(this);
 
             InitializeMemoryGrid();
-            lbMemory.ItemsSource = MemoryGrid;
+            UpdateMemoryViewer();
         }
 
         private void InitializeMemoryGrid()
         {
-            byte[] memory = mainWindow.emulator.Cpu.Memory;
+            lbMemory.ItemsSource = memoryRows;
 
-            for (int i = 0; i < 4096; i++)
+            if (memoryRows.Count == 0)
             {
-                if (MemoryGrid.Count < 4096)
+                for (int i = 0; i < 4096; i++)
                 {
-                    MemoryGrid.Add(new Tuple<int, string>(i * 16, ""));
-                }
-                else
-                {
-                    MemoryGrid[i] = new Tuple<int, string>(i * 16, "");
+                    memoryRows.Add(new MemoryRow(i * 16, ""));
                 }
             }
         }
 
-        public void UpdateMemoryViewer(bool forceUpdate = false)
+        public void UpdateMemoryViewer()
         {
-            long currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-
-            if (forceUpdate == false && currentTime - lastUIUpdateTime < (1000 / UIUpdatesPerSecond))
-            {
-                return; //Return early if it's not time to update the UI yet.
-            }
-
             byte[] memory = mainWindow.emulator.Cpu.Memory;
 
             StringBuilder rowBuilder = new();
@@ -88,10 +101,33 @@ namespace Emulator6502
                     rowBuilder.Append(' ');
                 }
 
-                MemoryGrid[i] = new Tuple<int, string>(i * 16, rowBuilder.ToString());
+                memoryRows[i].Content = rowBuilder.ToString();
             }
+        }
 
-            lastUIUpdateTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+        public void JumpToAddress(int address)
+        {
+            int rowIndex = address / 16;
+
+            if (rowIndex >= 0 && rowIndex < memoryRows.Count)
+            {
+                lbMemory.SelectedIndex = rowIndex;
+                lbMemory.ScrollIntoView(lbMemory.SelectedItem);
+                jumpToAddressWindow.Close();
+            }
+            else
+            {
+                MessageBox.Show(String.Format("Address {0} not within range (0000-FFFF).", address.ToString("X2")), "Address Not Found", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        private void BtnJumpToAddress_Click(object sender, RoutedEventArgs e)
+        {
+            jumpToAddressWindow.Close();
+            jumpToAddressWindow = new JumpToAddressWindow(this);
+            jumpToAddressWindow.Owner = this;
+            jumpToAddressWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            jumpToAddressWindow.Show();
         }
     }
 }

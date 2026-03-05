@@ -10,7 +10,7 @@ namespace Emulator6502
         public Emulator emulator;
 
         private Thread emulatorThread;
-        private int targetFPS = 60;
+        private int targetFPS = 30;
         private bool startPaused = false;
 
         private DebugWindow debugWindow;
@@ -23,8 +23,11 @@ namespace Emulator6502
 
             ToggleRuntimeButtons(false);
 
+            Thread.CurrentThread.Name = "Main UI Thread";
+
             emulator = new Emulator(this);
             emulatorThread = new Thread(EmulatorLoop);
+            emulatorThread.Name = "Emulation Thread";
             emulatorThread.IsBackground = true;
             emulatorThread.Start();
 
@@ -61,8 +64,8 @@ namespace Emulator6502
                         emulator.StepInstruction();
                     }
 
-                    Application.Current?.Dispatcher.Invoke(() => { debugWindow?.UpdateDebugWindow(forceUpdate: forceUIUpdate); }); //Invoke the UpdateDebugWindow method on the UI thread.
-                    Application.Current?.Dispatcher.Invoke(() => { memoryViewerWindow?.UpdateMemoryViewer(forceUpdate: forceUIUpdate); }); //Invoke the UpdateMemoryViewer method on the UI thread.
+                    Application.Current?.Dispatcher.Invoke(() => { debugWindow?.UpdateDebugWindow(); }); //Invoke the UpdateDebugWindow method on the UI thread.
+                    Application.Current?.Dispatcher.Invoke(() => { memoryViewerWindow?.UpdateMemoryViewer(); }); //Invoke the UpdateMemoryViewer method on the UI thread.
                 }
                 catch (Exception ex)
                 {
@@ -79,7 +82,6 @@ namespace Emulator6502
             try
             {
                 emulator.LoadRom(path);
-                debugWindow.UpdateDisassembly();
                 memoryViewerWindow.UpdateMemoryViewer();
             }
             catch (Exception ex)
@@ -144,8 +146,8 @@ namespace Emulator6502
             }
 
             debugWindow.UpdateUIPauseStatus();
-            debugWindow.UpdateDebugWindow(forceUpdate: true);
-            memoryViewerWindow.UpdateMemoryViewer(forceUpdate: true);
+            debugWindow.UpdateDebugWindow();
+            memoryViewerWindow.UpdateMemoryViewer();
         }
 
         private void BtnLoadRom_Click(object sender, RoutedEventArgs e)
@@ -185,9 +187,8 @@ namespace Emulator6502
                 emulator.ExitProgram();
                 LoadRom(emulator.ProgramPath);
                 StartProgram();
-                debugWindow.UpdateDisassembly();
-                debugWindow.UpdateDebugWindow(forceUpdate: true);
-                memoryViewerWindow.UpdateMemoryViewer(forceUpdate: true);
+                debugWindow.UpdateDebugWindow();
+                memoryViewerWindow.UpdateMemoryViewer();
             }
         }
 

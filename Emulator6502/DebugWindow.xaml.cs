@@ -1,19 +1,56 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Threading;
+using System.ComponentModel;
 using System.Windows;
 
 namespace Emulator6502
 {
+    public class StackEntry : INotifyPropertyChanged
+    {
+        public int Address { get; }
+
+        private byte _value;
+        public byte Value
+        {
+            get => _value;
+            set
+            {
+                if (_value != value)
+                {
+                    _value = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Value)));
+                }
+            }
+        }
+
+        public StackEntry(int address, byte value)
+        {
+            Address = address;
+            _value = value;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+    }
+
     public partial class DebugWindow : Window
     {
         readonly MainWindow mainWindow;
-        const int UIUpdatesPerSecond = 10;
-        long lastUIUpdateTime;
 
-        public ObservableCollection<Tuple<int, byte>> Stack { get; set; } = []; //Have to use the old Tuple<T,T> syntax to generate class properties to be bound to the UI.
+        ObservableCollection<StackEntry> stackItems = [];
+
+        private void InitializeStackList()
+        {
+            lbStack.ItemsSource = stackItems;
+
+            if (stackItems.Count == 0)
+            {
+                for (int i = 0; i < 256; i++)
+                {
+                    stackItems.Add(new StackEntry(0x0100 + i, 0));
+                }
+            }
+        }
 
         public DebugWindow(MainWindow mainWindow)
         {
@@ -21,19 +58,10 @@ namespace Emulator6502
 
             this.mainWindow = mainWindow;
 
-            InitializeStackList();
-            lbStack.ItemsSource = Stack;
-
-            UpdateDisassembly();
-            UpdateUIPauseStatus();
-        }
-
-        public void UpdateDisassembly()
-        {
             lbDisassembly.ItemsSource = Disassembler.disassembly;
-            //lbDisassembly.UpdateLayout();
 
             InitializeStackList();
+            UpdateUIPauseStatus();
         }
 
         public void UpdateUIPauseStatus()
@@ -56,15 +84,13 @@ namespace Emulator6502
             cbZero.IsEnabled = isPaused;
         }
 
-        public void UpdateDebugWindow(bool forceUpdate = false)
+        public void UpdateDebugWindow()
         {
-            long currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-
             CPU cpu = mainWindow.emulator.Cpu;
 
             if (mainWindow.emulator.programPaused && Disassembler.disassembly != null)
             {
-                if(Disassembler.disassembly.ContainsKey(cpu.ProgramCounter) /*&& lbDisassembly.Items.Contains(new KeyValuePair<ushort, Tuple<string, string>>(cpu.ProgramCounter, Disassembler.disassembly[cpu.ProgramCounter]))*/)
+                if (Disassembler.disassembly.ContainsKey(cpu.ProgramCounter) /*&& lbDisassembly.Items.Contains(new KeyValuePair<ushort, Tuple<string, string>>(cpu.ProgramCounter, Disassembler.disassembly[cpu.ProgramCounter]))*/)
                 {
                     lbDisassembly.SelectedItem = new KeyValuePair<ushort, Tuple<string, string>>(cpu.ProgramCounter, Disassembler.disassembly[cpu.ProgramCounter]);
                     lbDisassembly.ScrollIntoView(lbDisassembly.SelectedItem);
@@ -74,7 +100,7 @@ namespace Emulator6502
                     lbDisassembly.SelectedItem = null;
                 }
             }
-            
+
             tbProgramCounter.Text = string.Format("{0:X4}", cpu.ProgramCounter);
             tbAccumulator.Text = string.Format("{0:X2}", cpu.Accumulator);
             tbXRegister.Text = string.Format("{0:X2}", cpu.XRegister);
@@ -90,25 +116,17 @@ namespace Emulator6502
             cbOverflow.IsChecked = cpu.GetStatusRegisterFlag('V') == 1;
             cbZero.IsChecked = cpu.GetStatusRegisterFlag('Z') == 1;
 
-            /*if (forceUpdate == false && currentTime - lastUIUpdateTime < (1000 / UIUpdatesPerSecond))
-            {
-                return; //Return early if it's not time to update the stack UI yet.
-            }*/
-
             for (int i = 0; i < 256; i++)
             {
-                Stack[i] = new Tuple<int, byte>(0x0100 + i, cpu.Memory[0x0100 + i]);
+                stackItems[i].Value = cpu.Memory[0x0100 + i];
             }
 
-            //lbStack.SelectedIndex = cpu.StackPointer; //Possible cause of an exception, below is potential fix
-            lbStack.SelectedItem = lbStack.Items.Contains(Stack[cpu.StackPointer]) ? Stack[cpu.StackPointer] : null;
+            lbStack.SelectedIndex = cpu.StackPointer;
 
             if (mainWindow.emulator.programPaused)
             {
-                lbStack.ScrollIntoView(lbStack.Items[lbStack.SelectedIndex]);
+                lbStack.ScrollIntoView(lbStack.SelectedItem);
             }
-
-            lastUIUpdateTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
         }
 
         public void ToggleRuntimeButtons(bool enabled)
@@ -117,23 +135,6 @@ namespace Emulator6502
             btnPause.IsEnabled = enabled;
             btnStepFrame.IsEnabled = enabled;
             btnStepInstruction.IsEnabled = enabled;
-        }
-
-        private void InitializeStackList()
-        {
-            lbStack.ItemStringFormat = "X2";
-
-            for (int i = 0; i < 256; i++)
-            {
-                if (Stack.Count != 256)
-                {
-                    Stack.Add(new Tuple<int, byte>(0x0100 + i, 0));
-                }
-                else
-                {
-                    Stack[i] = new Tuple<int, byte>(0x0100 + i, 0);
-                }
-            }
         }
 
         private void BtnReset_Click(object sender, RoutedEventArgs e)
