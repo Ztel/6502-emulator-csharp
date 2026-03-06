@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         ResizeMode="CanResize"
         Title="Debug" Height="590" Width="560" MinHeight="390" MinWidth="560">
-    <Grid Margin="10">
+    <Grid x:Name="gWindowGrid" Focusable="True" FocusVisualStyle="{x:Null}" Background="Transparent" MouseDown="GWindowGrid_MouseDown" Margin="10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="3*"/>
             <ColumnDefinition Width="1*"/>
@@ -40,22 +40,22 @@
                 <UniformGrid Columns="2" Margin="10,5,0,0">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Program Counter:" VerticalAlignment="Center" Height="25" HorizontalAlignment="Left"/>
-                        <TextBox Width="50" HorizontalAlignment="Left" Margin="9,5,0,8" x:Name="tbProgramCounter"/>
+                        <TextBox Width="50" MaxLength="4" LostFocus="Tb_Submit" KeyDown="Tb_KeyDown" HorizontalAlignment="Left" Margin="9,5,0,8" x:Name="tbProgramCounter"/>
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="X Register:" VerticalAlignment="Center" Height="25" HorizontalAlignment="Center"/>
-                        <TextBox Width="50" HorizontalAlignment="Left" Margin="10,5,0,8" x:Name="tbXRegister"/>
+                        <TextBox Width="50" MaxLength="2" LostFocus="Tb_Submit" KeyDown="Tb_KeyDown" HorizontalAlignment="Left" Margin="10,5,0,8" x:Name="tbXRegister"/>
                     </StackPanel>
                     
                     <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="Accumulator:" VerticalAlignment="Center" Height="25" HorizontalAlignment="Left"/>
-                        <TextBox Width="50" HorizontalAlignment="Left" Margin="33,5,0,8" x:Name="tbAccumulator"/>
+                        <TextBlock Text="Accumulator:" VerticalAlignment="Center" Height="25" HorizontalAlignment="Left"/>
+                        <TextBox Width="50" MaxLength="2" LostFocus="Tb_Submit" KeyDown="Tb_KeyDown" HorizontalAlignment="Left" Margin="33,5,0,8" x:Name="tbAccumulator"/>
                     </StackPanel>
                     
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Y Register:" VerticalAlignment="Center" Height="25" HorizontalAlignment="Center"/>
-                        <TextBox Width="50" HorizontalAlignment="Left" Margin="10,5,0,8" x:Name="tbYRegister"/>
+                        <TextBox Width="50" MaxLength="2" LostFocus="Tb_Submit" KeyDown="Tb_KeyDown" HorizontalAlignment="Left" Margin="10,5,0,8" x:Name="tbYRegister"/>
                     </StackPanel>
                 </UniformGrid>
             </GroupBox>
@@ -67,18 +67,18 @@
                     <!-- Status Register -->
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                         <TextBlock Text="Status Register:" VerticalAlignment="Center"/>
-                        <TextBox Height="20" Width="50" Margin="5,0,0,0" x:Name="tbStatusRegister"/>
+                        <TextBox Height="20" MaxLength="2" LostFocus="Tb_Submit" KeyDown="Tb_KeyDown" Width="50" Margin="5,0,0,0" x:Name="tbStatusRegister"/>
                     </StackPanel>
 
                     <UniformGrid Columns="4">
-                        <CheckBox Content="Carry" x:Name="cbCarry" Margin="5"/>
-                        <CheckBox Content="Zero" x:Name="cbZero" Margin="5"/>
-                        <CheckBox Content="Interrupt" x:Name="cbInterrupt" Margin="5"/>
-                        <CheckBox Content="Decimal" x:Name="cbDecimal" Margin="5"/>
-                        <CheckBox Content="Break" x:Name="cbBreak" Margin="5"/>
+                        <CheckBox Content="Carry" x:Name="cbCarry" Click="CbFlag_Click" Margin="5"/>
+                        <CheckBox Content="Zero" x:Name="cbZero" Click="CbFlag_Click" Margin="5"/>
+                        <CheckBox Content="Interrupt" x:Name="cbInterrupt" Click="CbFlag_Click" Margin="5"/>
+                        <CheckBox Content="Decimal" x:Name="cbDecimal" Click="CbFlag_Click" Margin="5"/>
+                        <CheckBox Content="Break" x:Name="cbBreak" Click="CbFlag_Click" Margin="5"/>
                         <CheckBox Content="[Reserved]" IsEnabled="False" Foreground="Gray" Margin="5"/>
-                        <CheckBox Content="Overflow" x:Name="cbOverflow" Margin="5"/>
-                        <CheckBox Content="Negative" x:Name="cbNegative" Margin="5"/>
+                        <CheckBox Content="Overflow" x:Name="cbOverflow" Click="CbFlag_Click" Margin="5"/>
+                        <CheckBox Content="Negative" x:Name="cbNegative" Click="CbFlag_Click" Margin="5"/>
                     </UniformGrid>
                 </StackPanel>
             </GroupBox>
@@ -101,7 +101,7 @@
 
                     <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
                         <TextBlock Text="Stack Pointer:" VerticalAlignment="Center"/>
-                        <TextBox Width="50" Margin="5,0,0,0" x:Name="tbStackPointer"/>
+                        <TextBox Width="50" MaxLength="2" LostFocus="Tb_Submit" KeyDown="Tb_KeyDown" Margin="5,0,0,0" x:Name="tbStackPointer"/>
                     </StackPanel>
 
                     <ListBox Grid.Row="1" x:Name="lbStack" FontFamily="Consolas" IsEnabled="True" ScrollViewer.CanContentScroll="True" VirtualizingStackPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">

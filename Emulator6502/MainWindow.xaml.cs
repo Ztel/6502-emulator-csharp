@@ -11,18 +11,17 @@ namespace Emulator6502
 
         private Thread emulatorThread;
         private Thread uiLogicThread;
-        private int targetFPS = 60;
-        private bool startPaused = false;
 
         private DebugWindow debugWindow;
         private MemoryViewerWindow memoryViewerWindow;
+        private ChangeTargetFramerateWindow changeTargetFramerateWindow;
+
+        public bool defaultStartPaused = false;
 
 
         public MainWindow()
         {
             InitializeComponent();
-
-            ToggleRuntimeButtons(false);
 
             Thread.CurrentThread.Name = "Main UI Thread";
 
@@ -41,8 +40,12 @@ namespace Emulator6502
 
             debugWindow = new DebugWindow(this);
             memoryViewerWindow = new MemoryViewerWindow(this);
+            changeTargetFramerateWindow = new ChangeTargetFramerateWindow(this);
 
             tbDisplayGrid.DataContext = emulator.Screen;
+
+            InitializeFPS();
+            ToggleRuntimeButtons(false);
         }
 
         private void EmulatorLoop()
@@ -110,16 +113,15 @@ namespace Emulator6502
                 return false;
             }
 
+            debugWindow?.RefreshDisassemblyList();
             return true;
         }
 
-        private void StartProgram()
+        private void StartProgram(bool forceStartPaused = false)
         {
-            bool wasPaused = emulator.programPaused;
-
             ToggleRuntimeButtons(true);
-            emulator.StartProgram(targetFPS, startPaused || wasPaused);
-            TogglePause(startPaused || wasPaused);
+            emulator.StartProgram(forceStartPaused || defaultStartPaused);
+            TogglePause(forceStartPaused || defaultStartPaused);
         }
 
         private void ToggleRuntimeButtons(bool enabled)
@@ -145,6 +147,9 @@ namespace Emulator6502
                 }
                 tbRomStatus.Text = string.Format(" {0}: ▌ ▌ paused", emulator.ProgramName);
                 btnPause.IsChecked = true;
+                Thread.Sleep(1000/emulator.Fps + 20);
+                debugWindow?.UpdateListBoxSelections();
+                debugWindow?.ScrollSelectionsIntoView();
             }
             else
             {
@@ -154,6 +159,17 @@ namespace Emulator6502
             }
 
             debugWindow.UpdateUIPauseStatus();
+        }
+
+        private void InitializeFPS()
+        {
+            string path = "EmulatorData\\Settings\\framerate.ini";
+            int fps;
+
+            if (File.Exists(path) && int.TryParse(File.ReadAllText(path), out fps))
+            {
+                emulator.Fps = fps;
+            }
         }
 
         private void BtnLoadRom_Click(object sender, RoutedEventArgs e)
@@ -188,9 +204,13 @@ namespace Emulator6502
         {
             if (emulator.programActive)
             {
+                bool wasPaused = emulator.programPaused;
+
+                TogglePause(true);
                 emulator.ExitProgram();
+                Thread.Sleep(20);
                 LoadRom(emulator.ProgramPath);
-                StartProgram();
+                StartProgram(forceStartPaused: wasPaused);
             }
         }
 
@@ -201,18 +221,24 @@ namespace Emulator6502
 
         public void BtnStepFrame_Click(object sender, RoutedEventArgs e)
         {
-            TogglePause(true);
-            Thread.Sleep(20); //Give CPU thread time to halt before stepping.
+            if (!emulator.programPaused)
+            {
+                TogglePause(true);
+            }
             Step(stepWholeFrame: true, forceUIUpdate: true);
-            debugWindow.ScrollSelectionsIntoView();
+            debugWindow?.UpdateListBoxSelections();
+            debugWindow?.ScrollSelectionsIntoView();
         }
 
         public void BtnStepInstruction_Click(object sender, RoutedEventArgs e)
         {
-            TogglePause(true);
-            Thread.Sleep(20); //Give CPU thread time to halt before stepping.
+            if (!emulator.programPaused)
+            {
+                TogglePause(true);
+            }
             Step(stepWholeFrame: false, forceUIUpdate: true);
-            debugWindow.ScrollSelectionsIntoView();
+            debugWindow?.UpdateListBoxSelections();
+            debugWindow?.ScrollSelectionsIntoView();
         }
 
         private void BtnSaveSlot_Click(object sender, RoutedEventArgs e)
@@ -337,6 +363,15 @@ namespace Emulator6502
             memoryViewerWindow = new MemoryViewerWindow(this);
             memoryViewerWindow.Owner = this;
             memoryViewerWindow.Show();
+        }
+
+        private void BtnChangeTargetFrameRate_Click(object sender, RoutedEventArgs e)
+        {
+            changeTargetFramerateWindow.Close();
+            changeTargetFramerateWindow = new ChangeTargetFramerateWindow(this);
+            changeTargetFramerateWindow.Owner = this;
+            changeTargetFramerateWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            changeTargetFramerateWindow.ShowDialog();
         }
     }
 }

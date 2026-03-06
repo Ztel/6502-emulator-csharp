@@ -9,7 +9,7 @@
         Title="Input Address..." Height="125" Width="220">
     <Grid>
         <StackPanel Margin="10,10,10,0">
-            <TextBlock Text="Enter Address (Hex):" Margin="0,0,0,5"/>
+            <TextBlock Text="Enter address (hex):" Margin="0,0,0,5"/>
             <TextBox x:Name="tbAddress" KeyDown="TbAddress_KeyDown" MaxLength="4" Margin="0,0,0,10"/>
             <Button Content="Find" Width="80" HorizontalAlignment="Center" Click="BtnFind_Click"/>
         </StackPanel>

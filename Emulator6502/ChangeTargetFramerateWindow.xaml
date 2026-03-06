@@ -1,0 +1,22 @@
+﻿<Window x:Class="Emulator6502.ChangeTargetFramerateWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Emulator6502"
+        mc:Ignorable="d"
+        ResizeMode="NoResize"
+        Title="Change FPS..." Height="150" Width="220">
+    <Grid>
+        <StackPanel Margin="10,10,10,0">
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                <TextBlock Text="Current target: " VerticalAlignment="Center"/>
+                <TextBlock x:Name="tbCurrentTarget" VerticalAlignment="Center" FontWeight="Bold"/>
+                <TextBlock Text=" FPS" VerticalAlignment="Center"/>
+            </StackPanel>
+            <TextBlock Text="Enter new framerate:" Margin="0,0,0,5"/>
+            <TextBox x:Name="tbFramerate" KeyDown="TbFramerate_KeyDown" MaxLength="4" Margin="0,0,0,10"/>
+            <Button Content="OK" Width="80" HorizontalAlignment="Center" Click="BtnOK_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

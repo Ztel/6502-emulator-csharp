@@ -43,7 +43,7 @@
                 <MenuItem Header="Open _Memory Viewer" x:Name="btnOpenMemoryViewer" Click="BtnOpenMemoryViewer_Click"/>
             </MenuItem>
             <MenuItem Header="_Config">
-                <MenuItem Header="Set ROM Path"/>
+                <MenuItem Header="Change Target Framerate" x:Name="btnChangeTargetFrameRate" Click="BtnChangeTargetFrameRate_Click"/>
             </MenuItem>
         </Menu>
 

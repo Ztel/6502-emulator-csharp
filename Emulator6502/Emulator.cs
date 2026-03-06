@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using System.Windows;
 
 namespace Emulator6502
@@ -15,7 +16,8 @@ namespace Emulator6502
         public string ProgramName { get; set; }
         public string ProgramPath { get; set; }
 
-        private int Fps { get; set => field = (value > 0) ? value : 0; }
+        //Prevent unreasonable framerates by clamping between 1 and 999.
+        public int Fps { get; set => field = Math.Clamp(value, 1, 999); } = 30;
         private const int stepsPerFrame = 10000;
         private long lastFrameTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
 
@@ -55,21 +57,25 @@ namespace Emulator6502
             Disassembler.DisassembleRom(Cpu);
         }
 
-        public void StartProgram(int framerate, bool startPaused)
+        public void StartProgram(bool startPaused)
         {
             programActive = true;
-            programPaused = startPaused;
-            Fps = framerate;
+            programPaused = true;
+
+            Thread.Sleep(100);
             fpsTrackerStartTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
 
             Cpu.Reset();
+            Thread.Sleep(100);
+            programPaused = startPaused;
             UpdateScreen(triggerNMI: false);
         }
 
         public void ExitProgram()
         {
             programActive = false;
-            //programPaused = true;
+            Thread.Sleep(1000 / Fps + 10); //Give one frame for the CPU thread to halt before clearing the screen.
+            Screen.RenderedDisplay = "";
         }
 
         public void PauseProgram()
