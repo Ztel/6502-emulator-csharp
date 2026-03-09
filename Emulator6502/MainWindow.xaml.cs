@@ -102,7 +102,7 @@ namespace Emulator6502
         {
             try
             {
-                emulator.LoadRom(path);
+              emulator.LoadRom(path);
             }
             catch (Exception ex)
             {

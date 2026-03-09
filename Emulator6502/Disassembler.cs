@@ -26,11 +26,12 @@ namespace Emulator6502
                 string assemblyInstruction = "";
                 string hexInstruction = "";
 
-                assemblyInstruction = DisassembleInstruction(instruction.operation, (ushort)i, instruction.addressingMode);
+                //Only attempt to disassemble the instruction if it does not cause the memory to index out of bounds by going above 65535.
+                assemblyInstruction = (i + instructionLength < cpu.Memory.Length) ? DisassembleInstruction(instruction.operation, (ushort)i, instruction.addressingMode) : "???";
 
                 for (int a = 0; a < instructionLength; a++)
                 {
-                    hexInstruction += cpu.Memory[i + a].ToString("X2") + " ";
+                    hexInstruction += (i + a < cpu.Memory.Length) ? (cpu.Memory[i + a].ToString("X2") + " ") : "";
                 }
 
                 disassembly.Add((ushort)i, new Tuple<string, string>(hexInstruction, assemblyInstruction));
