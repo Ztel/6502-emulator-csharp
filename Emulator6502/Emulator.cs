@@ -6,7 +6,7 @@ using System.Windows;
 
 namespace Emulator6502
 {
-    public class Emulator(MainWindow window)
+    public class Emulator()
     {
         public CPU Cpu { get; set; } = new CPU();
         public Display Screen { get; set; } = new Display();

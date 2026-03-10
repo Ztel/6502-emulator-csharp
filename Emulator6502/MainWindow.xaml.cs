@@ -25,7 +25,7 @@ namespace Emulator6502
 
             Thread.CurrentThread.Name = "Main UI Thread";
 
-            emulator = new Emulator(this);
+            emulator = new Emulator();
             emulatorThread = new Thread(EmulatorLoop);
             emulatorThread.Name = "Emulation Thread";
             emulatorThread.IsBackground = true;
