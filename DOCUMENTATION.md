@@ -87,7 +87,7 @@ irq:
 .WORD reset
 .WORD irq
 ```
-The assembly code can also be found in the template.asm file.
+The assembly code can also be found in the [template.asm file](ExamplePrograms/Assembly/template.asm).
 
 Currently this program will not visibly do much. However, that can be changed by writing code targeting the graphics buffers.
 
@@ -223,7 +223,7 @@ background:
 .WORD reset
 .WORD irq
 ```
-The assembly code can also be found in the helloworld.asm file.
+The assembly code can also be found in the [helloworld.asm file](ExamplePrograms/Assembly/helloworld.asm).
 
 ## Assembling
 
