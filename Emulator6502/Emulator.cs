@@ -11,8 +11,6 @@ namespace Emulator6502
         public CPU Cpu { get; set; } = new CPU();
         public Display Screen { get; set; } = new Display();
 
-        private readonly MainWindow mainWindow = window;
-
         public string ProgramName { get; set; }
         public string ProgramPath { get; set; }
 
