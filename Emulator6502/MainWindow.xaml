@@ -5,6 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Emulator6502"
         mc:Ignorable="d"
+        KeyDown="Window_KeyDown"
+        KeyUp="Window_KeyUp"
+        LostKeyboardFocus="Window_LostFocus"
         Title="Emulator6502" Height="380" Width="330" ResizeMode="CanMinimize">
     <Grid>
         <Grid.RowDefinitions>

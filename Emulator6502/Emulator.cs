@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
-using System.Windows;
+using System.Windows.Input;
 
 namespace Emulator6502
 {
@@ -129,70 +129,25 @@ namespace Emulator6502
             }
         }
 
-        public void HandleEmulatorInput()
+        public void KeyChanged(Key key, bool keyIsPressed)
         {
-            //Initialize memory-mapped inputs to 0
-            for (int i = 0; i < 0xFF; i++)
+            byte keyValue = (byte)(keyIsPressed ? 1 : 0);
+
+            _ = key switch
+            {
+                Key.Up => Cpu.Memory[inputAddress] = keyValue,
+                Key.Down => Cpu.Memory[inputAddress + 1] = keyValue,
+                Key.Left => Cpu.Memory[inputAddress + 2] = keyValue,
+                Key.Right => Cpu.Memory[inputAddress + 3] = keyValue,
+                _ => Cpu.Memory[inputAddress + (byte)key] = keyValue
+            };
+        }
+
+        public void ClearKeyboardInput()
+        {
+            for(int i = 0; i < 256; i++)
             {
                 Cpu.Memory[inputAddress + i] = 0;
-            }
-
-            while (Console.KeyAvailable)
-            {
-                ConsoleKeyInfo key = Console.ReadKey(true);
-
-                switch (key.Key)
-                {
-                    case ConsoleKey.Escape:
-                        ExitProgram();
-                        break;
-
-                    case ConsoleKey.Spacebar:
-                        if (programPaused)
-                        {
-                            programPaused = false;
-                        }
-                        else
-                        {
-                            PauseProgram();
-                        }
-                        break;
-
-                    case ConsoleKey.Enter:
-                        PauseProgram();
-                        StepFrame();
-                        break;
-
-                    case ConsoleKey.Backspace:
-                        PauseProgram();
-                        StepInstruction();
-                        break;
-
-                    //Memory-mapped program input
-                    case ConsoleKey.UpArrow:
-                        Cpu.Memory[inputAddress] |= 0b00001000;
-                        break;
-
-                    case ConsoleKey.DownArrow:
-                        Cpu.Memory[inputAddress] |= 0b00000100;
-                        break;
-
-                    case ConsoleKey.LeftArrow:
-                        Cpu.Memory[inputAddress] |= 0b00000010;
-                        break;
-
-                    case ConsoleKey.RightArrow:
-                        Cpu.Memory[inputAddress] |= 0b00000001;
-                        break;
-
-                    default:
-                        //Store keyboard inputs at the input start address + an offset of the ASCII code of the key pressed
-                        if ((int)key.Key > 0 && (int)key.Key <= 0xFF)
-                        {
-                            Cpu.Memory[inputAddress + (byte)key.Key] = 1;
-                        }                        
-                        break;
-                }
             }
         }
     }

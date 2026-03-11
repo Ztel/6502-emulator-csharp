@@ -373,5 +373,20 @@ namespace Emulator6502
             changeTargetFramerateWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             changeTargetFramerateWindow.ShowDialog();
         }
+
+        private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            emulator.KeyChanged(e.Key, keyIsPressed: true);
+        }
+
+        private void Window_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            emulator.KeyChanged(e.Key, keyIsPressed: false);
+        }
+
+        private void Window_LostFocus(object sender, RoutedEventArgs e)
+        {
+            emulator.ClearKeyboardInput();
+        }
     }
 }
