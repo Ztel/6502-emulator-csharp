@@ -52,6 +52,11 @@ namespace Emulator6502
 
             InitializeStackList();
             UpdateUIPauseStatus();
+
+            if (mainWindow.emulator.programPaused)
+            {
+                ScrollSelectionsIntoView();
+            }
         }
 
         private void InitializeStackList()
@@ -119,7 +124,7 @@ namespace Emulator6502
                 stackItems[i].Value = cpu.Memory[0x0100 + i];
             }
 
-            Application.Current?.Dispatcher.Invoke(() => { UpdateDebugUIControls(); }); //Invoke the UpdateDebugUIControls method on the UI thread.
+            Application.Current?.Dispatcher.Invoke(UpdateDebugUIControls); //Invoke the UpdateDebugUIControls method on the UI thread.
         }
 
         public void ToggleRuntimeButtons(bool enabled)

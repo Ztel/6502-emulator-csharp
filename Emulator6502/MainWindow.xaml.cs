@@ -79,8 +79,8 @@ namespace Emulator6502
                 }
                 catch (Exception ex)
                 {
-                    emulator.ExitProgram();
-                    Application.Current?.Dispatcher.Invoke(() => { TogglePause(true); }); //Invoke the TogglePause method on the main UI thread.
+                    //emulator.ExitProgram();
+                    Application.Current?.Dispatcher.Invoke(EjectRom); //Invoke the EjectRom method on the main UI thread.
 
                     MessageBox.Show(ex.Message, "Emulator Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
@@ -102,7 +102,7 @@ namespace Emulator6502
         {
             try
             {
-              emulator.LoadRom(path);
+                emulator.LoadRom(path);
             }
             catch (Exception ex)
             {
@@ -122,6 +122,13 @@ namespace Emulator6502
             ToggleRuntimeButtons(true);
             emulator.StartProgram(forceStartPaused || defaultStartPaused);
             TogglePause(forceStartPaused || defaultStartPaused);
+        }
+
+        private void EjectRom()
+        {
+            emulator.ExitProgram();
+            tbRomStatus.Text = " No ROM loaded.";
+            ToggleRuntimeButtons(false);
         }
 
         private void ToggleRuntimeButtons(bool enabled)
@@ -181,6 +188,8 @@ namespace Emulator6502
 
             if (openFileDialog.ShowDialog() == true)
             {
+                TogglePause(true);
+                Thread.Sleep(1000 / emulator.Fps + 100); //Allow the CPU thread 1 frame to halt before attempting to load the new ROM.
                 if (LoadRom(openFileDialog.FileName))
                 {
                     StartProgram();
@@ -190,9 +199,7 @@ namespace Emulator6502
 
         private void BtnEjectRom_Click(object sender, RoutedEventArgs e)
         {
-            emulator.ExitProgram();
-            tbRomStatus.Text = " No ROM loaded.";
-            ToggleRuntimeButtons(false);
+            EjectRom();
         }
 
         private void BtnQuit_Click(object sender, RoutedEventArgs e)
