@@ -1,32 +1,49 @@
-﻿using System.Text;
+﻿using System;
+using System.Diagnostics;
+using System.IO;
+using System.Threading;
+using System.Windows.Input;
 
 namespace Emulator6502
 {
-    public class Emulator
+    public class Emulator()
     {
-        private CPU Cpu { get; set; } = new CPU();
-        private Display Screen { get; set; } = new Display();
+        public CPU Cpu { get; set; } = new CPU();
+        public Display Screen { get; set; } = new Display();
 
-        private string programName = "";
+        public string ProgramName { get; set; }
+        public string ProgramPath { get; set; }
 
-        private int Fps { get; set => field = (value > 0) ? value : 0; }
+        //Prevent unreasonable framerates by clamping between 1 and 999.
+        public int Fps { get; set => field = Math.Clamp(value, 1, 999); } = 30;
+        private const int stepsPerFrame = 10000;
+        private long lastFrameTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
 
-        public bool programActive = false;
-        public bool programPaused = true;
-        private bool drawDebug = true;
+        public bool programActive = false; 
+        public bool programPaused = false;
 
-        private ushort inputAddress = 0x4000;
+        private const ushort inputAddress = 0x4000;
 
+        private long fpsTrackerStartTime;
+        private int frameCount = 0;
+        private long realFPS;
 
         public void LoadRom(string romFilePath)
         {
             Cpu = new CPU();
             byte[] rom = File.ReadAllBytes(romFilePath);
-            programName = Path.GetFileName(romFilePath).ToLower();
+            ProgramName = Path.GetFileName(romFilePath).ToLower();
+            ProgramPath = romFilePath;
+            string programExtension = Path.GetExtension(romFilePath);
+
+            if (programExtension != ".bin")
+            {
+                throw new ArgumentException(String.Format("{0} files are not supported. Please select a .bin file.", programExtension));
+            }
 
             if (rom.Length != 8192 && rom.Length != 16384 && rom.Length != 32768)
             {
-                throw new ArgumentException(string.Format("File '{0}' is an unsupported size ({1} bytes).\nSupported file sizes are 8KB (8192 bytes), 16KB (16284 bytes), and 32KB (32768 bytes).", romFilePath, rom.Length));
+                throw new ArgumentException(string.Format("'{0}' is an unsupported size ({1} bytes).\nSupported file sizes are 8KB (8192 bytes), 16KB (16284 bytes), and 32KB (32768 bytes).", romFilePath, rom.Length));
             }
 
             //Mirror copies of ROM if it is 8KB or 16KB to place the vectors at the correct location in memory.
@@ -34,146 +51,103 @@ namespace Emulator6502
             {
                 Cpu.Memory[i + 0x8000] = rom[i % rom.Length];
             }
+
+            Disassembler.DisassembleRom(Cpu);
         }
 
-        public void StartProgram(int framerate, bool hideDebug, bool startPaused)
+        public void StartProgram(bool startPaused)
         {
-            Console.OutputEncoding = Encoding.UTF8;
-            Console.SetWindowSize(102, 25);
-            Console.Clear();
-
             programActive = true;
-            programPaused = startPaused;
-            drawDebug = !hideDebug;
-            Fps = framerate;
+            programPaused = true;
+
+            Thread.Sleep(100);
+            fpsTrackerStartTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
 
             Cpu.Reset();
-            UpdateScreen(false);
+            Thread.Sleep(100);
+            programPaused = startPaused;
+            UpdateScreen(triggerNMI: false);
         }
 
         public void ExitProgram()
         {
             programActive = false;
-            programPaused = true;
-            Console.CursorVisible = true;
-            Console.Clear();
+            Thread.Sleep(1000 / Fps + 10); //Give one frame for the CPU thread to halt before clearing the screen.
+            Screen.RenderedDisplay = "";
         }
 
         public void PauseProgram()
         {
             programPaused = true;
 
-            UpdateScreen(false);
+            UpdateScreen(triggerNMI: false);
         }
 
         public void StepFrame()
         {
-            long lastFrameTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+            int stepsThisFrame = 0;
 
-            //Update the screen at the set framerate.
-            while ((DateTimeOffset.Now.ToUnixTimeMilliseconds() - lastFrameTime) < 1000.0 / Fps)
+            while (stepsThisFrame < stepsPerFrame)
             {
                 Cpu.Step();
+                stepsThisFrame++;
             }
 
-            UpdateScreen(true);
+            //If there is spare time left in the frame, idle.
+            while ((DateTimeOffset.Now.ToUnixTimeMilliseconds() - lastFrameTime) < 1000.0 / Fps) { }
+
+            UpdateScreen(triggerNMI: true);
+
+            lastFrameTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+
+            //Track actual FPS (in 2-second periods) for benchmarking performance.
+            frameCount++;
+            if ((DateTimeOffset.Now.ToUnixTimeMilliseconds() - fpsTrackerStartTime) / 1000 > 2)
+            {
+                realFPS = frameCount / ((DateTimeOffset.Now.ToUnixTimeMilliseconds() - fpsTrackerStartTime) / 1000);
+                Debug.WriteLine("FPS: " + realFPS);
+
+                fpsTrackerStartTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                frameCount = 0;
+            }
         }
 
         public void StepInstruction()
         {
             Cpu.Step();
-            UpdateScreen(false);
+            UpdateScreen(triggerNMI: false);
         }
 
         private void UpdateScreen(bool triggerNMI)
         {
-            if (drawDebug)
-            {
-                Screen.RenderUI(Cpu);
-            }
-
-            Console.SetCursorPosition(0, 0);
-            string statusHeader = programPaused ? programName + ": ▌▌ paused" : programName + ": ► running";
-            Console.WriteLine(statusHeader);
-
             Screen.ReadDisplayBuffers(Cpu.Memory);
             Screen.RenderDisplay();
 
-            Console.Write(new String(' ', Console.WindowWidth));
-            Console.WriteLine("\r" + Disassembler.currentInstruction);
-
-            Console.WriteLine(DateTime.Now.ToLongTimeString() + "\n\n\nESC: return to command line   SPACE: pause/play program   ENTER: step frame   BKSP: step instruction");
-
-            if(triggerNMI)
+            if (triggerNMI)
             {
                 Cpu.NMI();
             }
         }
 
-        public void HandleEmulatorInput()
+        public void KeyChanged(Key key, bool keyIsPressed)
         {
-            //Initialize memory-mapped inputs to 0
-            for (int i = 0; i < 0xFF; i++)
+            byte keyValue = (byte)(keyIsPressed ? 1 : 0);
+
+            _ = key switch
+            {
+                Key.Up => Cpu.Memory[inputAddress] = keyValue,
+                Key.Down => Cpu.Memory[inputAddress + 1] = keyValue,
+                Key.Left => Cpu.Memory[inputAddress + 2] = keyValue,
+                Key.Right => Cpu.Memory[inputAddress + 3] = keyValue,
+                _ => Cpu.Memory[inputAddress + (byte)key] = keyValue
+            };
+        }
+
+        public void ClearKeyboardInput()
+        {
+            for(int i = 0; i < 256; i++)
             {
                 Cpu.Memory[inputAddress + i] = 0;
-            }
-
-            while (Console.KeyAvailable)
-            {
-                ConsoleKeyInfo key = Console.ReadKey(true);
-
-                switch (key.Key)
-                {
-                    case ConsoleKey.Escape:
-                        ExitProgram();
-                        break;
-
-                    case ConsoleKey.Spacebar:
-                        if (programPaused)
-                        {
-                            programPaused = false;
-                        }
-                        else
-                        {
-                            PauseProgram();
-                        }
-                        break;
-
-                    case ConsoleKey.Enter:
-                        PauseProgram();
-                        StepFrame();
-                        break;
-
-                    case ConsoleKey.Backspace:
-                        PauseProgram();
-                        StepInstruction();
-                        break;
-
-                    //Memory-mapped program input
-                    case ConsoleKey.UpArrow:
-                        Cpu.Memory[inputAddress] |= 0b00001000;
-                        break;
-
-                    case ConsoleKey.DownArrow:
-                        Cpu.Memory[inputAddress] |= 0b00000100;
-                        break;
-
-                    case ConsoleKey.LeftArrow:
-                        Cpu.Memory[inputAddress] |= 0b00000010;
-                        break;
-
-                    case ConsoleKey.RightArrow:
-                        Cpu.Memory[inputAddress] |= 0b00000001;
-                        break;
-
-                    default:
-                        //Store keyboard inputs at the input start address + an offset of the ASCII code of the key pressed
-                        if ((int)key.Key > 0 && (int)key.Key <= 0xFF)
-                        {
-                            Cpu.Memory[inputAddress + (byte)key.Key] = 1;
-                        }                        
-                        break;
-                }
             }
         }
     }

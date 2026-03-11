@@ -1,14 +1,33 @@
-﻿using System.Text;
+﻿using System;
+using System.ComponentModel;
+using System.Text;
 
 namespace Emulator6502
 {
-    public class Display
+    public class Display : INotifyPropertyChanged
     {
         readonly ushort backgroundBufferAddress = 0x2000;
         readonly ushort spriteBufferAddress = 0x2100;
 
         byte[] displayBuffer = new byte[256];
         byte[] spriteBuffer = new byte[256];
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private string renderedDisplay;
+
+        public string RenderedDisplay
+        {
+            get { return renderedDisplay; }
+            set
+            {
+                if (renderedDisplay != value)
+                {
+                    renderedDisplay = value;
+                    OnPropertyChanged("RenderedDisplay");
+                }
+            }
+        }
 
 
         public void ReadDisplayBuffers(byte[] memory)
@@ -36,68 +55,38 @@ namespace Emulator6502
             }
         }
 
-        //Converts the display buffer into a 16x16 grid string (plus a border) to be printed to the console.
+        //Converts the display buffer into a 16x16 grid string to be printed to the console.
         public void RenderDisplay()
         {
             StringBuilder displayBuilder = new StringBuilder();
 
-            displayBuilder.AppendLine("╔═════════════════════════════════╗");
-
             for (int i = 0; i < 16; i++)
             {
-                displayBuilder.Append("║ ");
-
                 for (int a = 0; a < 16; a++)
                 {
                     //Replace ASCII control characters with spaces.
                     char character = (displayBuffer[(i * 16) + a] > 31) ? (char)displayBuffer[(i * 16) + a] : (char)0x20;
-                    
-                    displayBuilder.Append(character + " ");
+
+                    displayBuilder.Append(character + ((a < 15) ? " " : ""));
                 }
 
-                displayBuilder.AppendLine("║");
+                if (i < 15) 
+                {
+                    displayBuilder.Append("\n");
+                }
             }
 
-            displayBuilder.AppendLine("╚═════════════════════════════════╝");
-
-            Console.CursorVisible = false;
-            Console.Write(displayBuilder.ToString());
+            RenderedDisplay = displayBuilder.ToString();
         }
 
-        public void RenderUI(CPU cpu)
+        public void ClearDisplay()
         {
-            StringBuilder uiBuilder = new StringBuilder();
+            RenderedDisplay = "";
+        }
 
-            uiBuilder.AppendLine(String.Format("                                           Program Counter:  ${0}        Accumulator:    ${1}\n", 
-                cpu.ProgramCounter.ToString("X4"), 
-                cpu.Accumulator.ToString("X2")));
-            uiBuilder.AppendLine(String.Format("                                           X Register:       ${0}          Stack Pointer:  ${1}\n",
-                cpu.XRegister.ToString("X2"), 
-                cpu.StackPointer.ToString("X2")));
-            uiBuilder.AppendLine(String.Format("                                           Y Register:       ${0}\n",
-                cpu.YRegister.ToString("X2")));
-            uiBuilder.AppendLine("                                           Status Register:");
-            uiBuilder.AppendLine("                                           ┌───┬───┬───┬───┬───┬───┬───┬───┐");
-            uiBuilder.AppendLine(String.Format("                                           │ {0} │ {1} │ 0 │ {2} │ {3} │ {4} │ {5} │ {6} │", 
-                cpu.GetStatusRegisterFlag('N'),
-                cpu.GetStatusRegisterFlag('V'),
-                cpu.GetStatusRegisterFlag('B'),
-                cpu.GetStatusRegisterFlag('D'),
-                cpu.GetStatusRegisterFlag('I'),
-                cpu.GetStatusRegisterFlag('Z'),
-                cpu.GetStatusRegisterFlag('C')));
-            uiBuilder.AppendLine("                                           └───┴───┴───┴───┴───┴───┴───┴───┘");
-            uiBuilder.AppendLine("                                             │   │   │   │   │   │   │   └─ C - Carry");
-            uiBuilder.AppendLine("                                             │   │   │   │   │   │   └───── Z - Zero");
-            uiBuilder.AppendLine("                                             │   │   │   │   │   └───────── I - Interrupt Disable");
-            uiBuilder.AppendLine("                                             │   │   │   │   └───────────── D - Decimal Mode");
-            uiBuilder.AppendLine("                                             │   │   │   └───────────────── B - Break");
-            uiBuilder.AppendLine("                                             │   │   └───────────────────── [ Not Used ]");
-            uiBuilder.AppendLine("                                             │   └───────────────────────── V - Overflow");
-            uiBuilder.AppendLine("                                             └───────────────────────────── N - Negative");
-
-            Console.SetCursorPosition(0, 1);
-            Console.WriteLine(uiBuilder.ToString());
+        protected void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

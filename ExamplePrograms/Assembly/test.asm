@@ -27,7 +27,8 @@ draw_bg_loop:
   INY
   CPX $00
   BNE draw_bg_loop 
-  INC $00 ;shift the background offset by 1 each frame to create motion
+  ;shift the background offset by 1 each frame to create motion
+  INC $00 
   RTI
 
 background:
