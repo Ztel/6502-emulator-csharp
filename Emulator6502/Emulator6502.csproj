@@ -6,7 +6,7 @@
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
     <LangVersion>preview</LangVersion>
     <StartupObject>Emulator6502.App</StartupObject>
-    <ApplicationIcon>6502.ico</ApplicationIcon>
+    <ApplicationIcon>WPF\6502.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Program.cs" />
@@ -15,13 +15,16 @@
     <None Remove="6502.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="6502.ico" />
+    <Page Remove="WPF\App.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="WPF\App.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="WPF\6502.ico" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="6502.ico" />
   </ItemGroup>
 </Project>

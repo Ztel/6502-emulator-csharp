@@ -7,7 +7,7 @@
              DispatcherUnhandledException="App_DispatcherUnhandledException">
     <Application.Resources>
         <ResourceDictionary>
-            <BitmapImage x:Key="AppIcon" UriSource="6502.ico"/>
+            <BitmapImage x:Key="AppIcon" UriSource="WPF/6502.ico"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
